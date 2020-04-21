@@ -1,0 +1,24 @@
+{
+    "compilerOptions": {
+      "target": "es6",
+      "noEmitOnError": true, // Do't compile errored file :)
+      "removeComments": true, // remove comments
+      "sourceMap": true,
+      "experimentalDecorators": true,  //
+      // "noImplicitAny": true,/* Raise error on expressions and declarations with an implied 'any' type. */
+    },
+    "exclude": [
+        "node_modules",
+        "assets"
+      ],
+    "typeAcquisition": {
+      "include": [
+          "jest"
+      ]
+    },
+    "rules": {
+      "no-console": "on",
+      // "123123fsad": true
+    }
+
+  }
