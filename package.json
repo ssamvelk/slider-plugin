@@ -4,46 +4,92 @@
   "description": "mvp slider",
   "main": "index.js",
   "scripts": {
-    "test": "jest --coverage",
     "dev": "webpack-dev-server --open --mode development",
-    "build": "webpack --mode production"
+    "build": "webpack --mode production",
+    "test": "jest",
+    "test:coverage": "jest --coverage",
+    "lint": "eslint ./src",
+    "lint:fix": "eslint ./src --fix"
+    
   },
+  "jest": {
+    "verbose": true,
+    "collectCoverage": true,
+    "testEnvironment": "jest-environment-jsdom-global",
+    "coverageReporters": [
+      "html"
+    ],
+    "transform": {
+      ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
+    "moduleFileExtensions": ["ts", "tsx", "js"]
+  },
+  "browserslist": [
+    "> 1%",
+    "last 3 version"
+  ],
   "author": "Samvel Saakyan",
   "license": "ISC",
+  "eslintIgnore": [
+    "node_modules",
+    "coverage",
+    "dist",
+    "webpack.config.js"
+  ],
   "devDependencies": {
+    "@babel/cli": "^7.8.4",
     "@babel/core": "^7.9.0",
+    "@babel/plugin-proposal-class-properties": "^7.8.3",
+    "@babel/polyfill": "^7.8.7",
     "@babel/preset-env": "^7.9.5",
+    "@babel/preset-typescript": "^7.9.0",
+    "@testing-library/jest-dom": "^5.5.0",
+    "@types/jest": "^25.2.1",
+    "@typescript-eslint/eslint-plugin": "^2.29.0",
+    "@typescript-eslint/parser": "^2.29.0",
     "autoprefixer": "^9.7.6",
     "babel-loader": "^8.1.0",
+    "babel-preset-airbnb": "^5.0.0",
     "clean-webpack-plugin": "^3.0.0",
+    "copy-webpack-plugin": "^5.1.1",
     "css-loader": "^3.5.2",
     "css-mqpacker": "^7.0.0",
     "cssnano": "^4.1.10",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb": "^18.1.0",
+    "eslint-config-airbnb-typescript": "^7.2.1",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-jest": "^23.8.2",
     "file-loader": "^6.0.0",
     "html-loader": "^1.1.0",
     "html-webpack-plugin": "^4.2.0",
     "image-webpack-loader": "^6.0.0",
+    "jest": "^25.4.0",
+    "jest-environment-jsdom": "^25.4.0",
+    "jest-environment-jsdom-global": "^2.0.2",
     "jsdom": "^16.2.2",
     "mini-css-extract-plugin": "^0.9.0",
     "node-sass": "^4.13.1",
+    "optimize-css-assets-webpack-plugin": "^5.0.3",
     "postcss-loader": "^3.0.0",
+    "prettier": "2.0.5",
     "pug": "^2.0.4",
     "pug-html-loader": "^1.1.5",
+    "sass": "^1.26.5",
     "sass-loader": "^8.0.2",
     "style-loader": "^1.1.4",
+    "terser-webpack-plugin": "^2.3.6",
     "ts-jest": "^25.4.0",
     "ts-loader": "^7.0.1",
     "typescript": "^3.8.3",
     "webpack": "^4.43.0",
+    "webpack-bundle-analyzer": "^3.7.0",
     "webpack-cli": "^3.3.11",
     "webpack-dev-server": "^3.10.3"
   },
-  "eslintIgnore": [
-    "node_modules",
-    "coverage",
-    "dist"
-  ],
   "dependencies": {
+    "@types/jquery": "^3.3.35",
     "jquery": "^3.5.0"
   }
 }

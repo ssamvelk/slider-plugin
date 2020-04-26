@@ -1,52 +1,138 @@
-const path = require('path');
+const path = require('path')
+const webpack = require('webpack')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
+const {CleanWebpackPlugin} = require('clean-webpack-plugin')
+const {BundleAnalyzerPlugin} = require('webpack-bundle-analyzer')
+const OptimizeCssAssetWebpackPlugin = require('optimize-css-assets-webpack-plugin')
+const TerserWebpackPlugin = require('terser-webpack-plugin')
 
-const webpack = require('webpack');
+const isDev = process.env.NODE_ENV === 'development'
+const isProd = !isDev
 
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const optimization = () => {
+    const config = {
+      splitChunks: {
+        chunks: 'all'
+      }
+    }
+  
+    if (isProd) {
+      config.minimizer = [
+        new OptimizeCssAssetWebpackPlugin(),
+        new TerserWebpackPlugin()
+      ]
+    }
+  
+    return config
+}
 
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const cssLoaders = extra => {
+    const loaders = [
+        {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+                hmr: isDev,
+                reloadAll: true
+            },
+        },
+        'css-loader',
+        {
+            loader: "postcss-loader",
+            options:{ sourceMap: true, config: {path: 'postcss.config.js'} }
+        }
+    ]
+  
+    if (extra) {
+      loaders.push(extra)
+    }
+  
+    return loaders
+}
 
-//const CleanWebpackPlugin = require('clean-webpack-plugin');
+const babelOptions = preset => {
+    const opts = {
+      presets: [
+        '@babel/preset-env'
+      ],
+      plugins: [
+        '@babel/plugin-proposal-class-properties'
+      ]
+    }
+  
+    if (preset) {
+      opts.presets.push(preset)
+    }
+  
+    return opts
+}
 
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const jsLoaders = () => {
+    const loaders = [{
+        loader: 'babel-loader',
+        options: babelOptions()
+    }]
+  
+    if (isDev) {
+        loaders.push('eslint-loader')
+    }
+  
+    return loaders
+}
 
 module.exports = {
-    // context: path.resolve(__dirname, 'src'),
+    context: path.resolve(__dirname, 'src'),
 
     entry: {
-        app: './src/js/index.ts'
+        app: ['@babel/polyfill', './js/index.ts']
     },
+
     output: {
         filename: '[name].js',
-        path: path.resolve(__dirname, 'dist'),
-        publicPath: '',
-        libraryExport: 'default'
+        path: path.resolve(__dirname, 'dist')
     },
-    optimization: {
-        splitChunks: {
-        chunks: 'all',
-        }
-    },
+
+    optimization: optimization(),
+    
     resolve: {
         // Add `.ts` and `.tsx` as a resolvable extension.
         extensions: [".ts", ".tsx", ".js"]
       },
+
     module: {
         rules: [
+            {//--------------------------------CSS
+                test: /\.css$/,
+                use: cssLoaders(),
+            },
+
+            {//-------------------------------SCSS
+                test: /\.s[ac]ss$/,
+                use: cssLoaders('sass-loader')
+            },
             
-            { //--------------------------------TS
-                test: /\.tsx?$/, loader: "ts-loader" 
-            },
             {//--------------------------------JS
-                test: /\.m?js$/,
+                test: /\.js$/,
                 exclude: /(node_modules|bower_components)/,
-                use: {
-                    loader: 'babel-loader',
-                    options: {
-                    presets: ['@babel/preset-env']
-                }
-              }
+                use: jsLoaders()
             },
+
+            { //--------------------------------TS
+                test: /\.tsx?$/,
+                exclude: /(node_modules|bower_components)/,
+                use: [
+                    {
+                        loader: 'babel-loader',
+                        options: babelOptions('@babel/preset-typescript')
+                    },
+                    {
+                        loader: 'ts-loader'
+                    }
+                ] 
+                
+            },
+            
             {//--------------------------------PUG
                 test: /\.pug$/,
                 use:[
@@ -54,27 +140,7 @@ module.exports = {
                     {loader: 'pug-html-loader', options: { data: {} }}
                 ]
             },
-            {//--------------------------------CSS
-                test: /\.css$/,
-                use: ['style-loader', 'css-loader'],
-            },
-            {//-------------------------------SCSS
-                test: /\.scss$/,
-                use: [
-                    'style-loader',
-                    MiniCssExtractPlugin.loader,
-                    {
-                        loader: "css-loader",
-                        options:{ sourceMap: true }
-                    }, {
-                        loader: "postcss-loader",
-                        options:{ sourceMap: true, config: {path: 'src/js/postcss.config.js'} }
-                    }, {
-                        loader: "sass-loader",
-                        options:{ sourceMap: true }
-                    }
-                ]
-            },
+            
             {//-------------------------------IMAGE
                 test: /\.(gif|png|jpe?g|svg)$/i,
                 use: [
@@ -123,16 +189,24 @@ module.exports = {
                         //exclude: ['src/static/', '/src/blocks/']
                     }
                 }]
-            },
+            }
         ]
-    },  //-----------module
-    devServer: {
-        overlay: true
     },
+
+    devServer: {
+        overlay: true,
+        hot: isDev
+    },
+
+    devtool: isDev ? 'source-map' : '',
+
     plugins: [
         new HtmlWebpackPlugin({
-            template: "./src/pug/index.pug",
+            template: "pug/index.pug",
             filename:  'index.html',
+            minify: {
+                collapseWhitespace: isProd
+            }
             //inject: false
           }),
 
@@ -143,13 +217,18 @@ module.exports = {
         
         new CleanWebpackPlugin(),
 
+        new CopyWebpackPlugin([
+            {
+                from: 'assets/favicon.ico',//path.resolve(__dirname, 'src/assets/favicon.ico'),
+                to: path.resolve(__dirname, 'dist/img')
+            }
+        ]),
+
         new webpack.ProvidePlugin({
             $: "jquery",
             jQuery: "jquery",
             "window.jQuery": "jquery'",
             "window.$": "jquery"
-        }),
-        
-    ],
-    devtool: 'eval'
+        })
+    ]
 };

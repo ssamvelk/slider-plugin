@@ -1,0 +1,12 @@
+{
+  // "plugins": [
+  //   ["transform-class-properties", { "spec": true, "loose": true }],
+  //   [
+  //     "transform-export-default"/*,
+  //     "add-module-exports" */
+  //   ]
+  // ],
+  // "presets": [["airbnb"]]
+
+  "presets": ["@babel/preset-env"]
+}
