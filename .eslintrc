@@ -19,7 +19,8 @@
     "window": "readonly"
   },
   "plugins": [
-    "@typescript-eslint"
+    "@typescript-eslint",
+    "jest"
   ],
 
   "rules": {
@@ -27,7 +28,7 @@
     "@typescript-eslint/explicit-function-return-type": "off",
     "@typescript-eslint/no-explicit-any": "warn",
     "@typescript-eslint/indent": [
-      "error",
+      "warn",
       2
     ],
     "@typescript-eslint/no-var-requires": "off",
@@ -63,7 +64,7 @@
       "warn",
       "single"
     ],
-    "no-trailing-spaces": "error", //disallow trailing whitespace at the end of lines
+    "no-trailing-spaces": ["error", { "skipBlankLines": true }], //disallow trailing whitespace at the end of lines
     "no-prototype-builtins": "error",
     "no-mixed-spaces-and-tabs": [
       "error",
@@ -76,6 +77,12 @@
         "js": "never",
         "ts": "never"
       }
-    ]
+    ],
+    "prefer-destructuring": ["warn", {
+      "array": true,
+      "object": true
+    }, {
+      "enforceForRenamedProperties": false
+    }]
   }
 }

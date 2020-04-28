@@ -13,6 +13,9 @@
     
   },
   "jest": {
+    "roots": [
+      "<rootDir>/src/tests"
+    ],
     "verbose": true,
     "collectCoverage": true,
     "testEnvironment": "jest-environment-jsdom-global",

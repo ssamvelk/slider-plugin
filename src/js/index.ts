@@ -1,3 +1,3 @@
 import '../scss/main.scss';
 
-import './common';
+import '../blocks/model/model';

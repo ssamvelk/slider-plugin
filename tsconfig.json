@@ -73,6 +73,6 @@
     ]
   },
   "rules": {
-    "no-console": "on"
+    // "no-console": "on"
   }
 }
