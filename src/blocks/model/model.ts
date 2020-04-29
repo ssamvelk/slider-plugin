@@ -17,22 +17,13 @@ export default class Model implements IModel {
 
   scale: boolean;
 
-  // ----------------------------- single
-  singleValue?: number;
-
-  // singleSelected?: number;
-
-  // ----------------------------- range
-  rangeValueMin?: number;
-
-  rangeValueMax?: number;
-
-  // static rangeSelected?: number;
-
-  // ----------------------------
+  value: number | [ number, number ];
+  
   private sliderLength: number;
   
-  selectedLength: number;
+  private selectedLength: number;
+
+  // setValue(value: number | [number, number]): object;
 
   constructor(options: modelOptions) {
     this.min = options.min || 0;
@@ -48,34 +39,9 @@ export default class Model implements IModel {
     
     // const sliderLength = this.max - this.min;
     this.sliderLength = this.max - this.min;
-    let select = 0;
-    // --------------single
-    if (this.type === 'single') {
-      let { value } = options; // let value: number = options.value;
-
-      if (value! < this.min) value = this.min;
-      if (value! > this.max) value = this.max;
-
-      this.singleValue = value || this.max / 2;
-
-      select = ((this.singleValue - this.min) / this.sliderLength) * 100;
-    }
-    // --------------range
-    // eslint-disable-next-line no-empty
-    if (this.type === 'range') {
-      let valMin = options.rangeValueMin || this.min;
-      let valMax = options.rangeValueMax || this.max;
-
-      if (valMin! < this.min) valMin = this.min;
-      if (valMax! > this.max) valMax = this.max;
-      if (valMin! > valMax!) valMin = valMax;
-
-      this.rangeValueMin = valMin;
-      this.rangeValueMax = valMax;
-      select = ((this.rangeValueMax! - this.rangeValueMin!) / this.sliderLength) * 100;
-    }
-
-    this.selectedLength = select;
+    this.value = 0;
+    this.selectedLength = 0;
+    this.setValue(options.value!);
     this.tooltip = options.tooltip || false;
     this.scale = options.scale || false;
   }
@@ -83,11 +49,49 @@ export default class Model implements IModel {
   getType(): sliderType {
     return this.type;
   }
+
+  setValue(value?: number | [number, number]): object {
+    let select = 0;
+    let val: number | [number, number] = 0;
+    // --------------single
+    if (this.type === 'single') {
+      let singleVal = value ? value as number : this.max / 2; // let value: number = options.value;
+
+      if (singleVal < this.min) singleVal = this.min;
+      if (singleVal > this.max) singleVal = this.max;
+
+      val = singleVal as number;
+      select = ((val - this.min) / this.sliderLength) * 100;
+    }
+    // --------------range
+    // eslint-disable-next-line no-empty
+    if (this.type === 'range') {
+      // eslint-disable-next-line prefer-const
+      let rangeVal = value
+        ? value as [number, number]
+        : [this.min + this.step, this.max - this.step];
+
+      if (rangeVal[0] < this.min) rangeVal[0] = this.min;
+      if (rangeVal[1] > this.max) rangeVal[1] = this.max;
+      if (rangeVal[0] > rangeVal[1]) rangeVal[0] = rangeVal[1]; // (rangeVal[1] - this.step) < this.min ? this.min : rangeVal[1] - this.step;
+
+      val = rangeVal as [number, number];
+      select = ((val[1] - val[0]) / this.sliderLength) * 100;
+    }
+
+    this.value = val;
+    this.selectedLength = select;
+
+    return {
+      value,
+      select,
+    };
+  }
 }
 
 const m = new Model({ });
 const m2 = new Model({
-  type: 'range', direction: 'horizontal', rangeValueMin: 50, rangeValueMax: 77,
+  type: 'range', direction: 'horizontal', value: [50, 77],
 });
 console.log(m);
 console.log(m2);

@@ -10,9 +10,10 @@ type modelOptions = {
   direction?: sliderDirection;
   tooltip?: boolean;
   scale?: boolean;
-  value?: number;
-  rangeValueMin?: number;
-  rangeValueMax?: number;
+  value?: number | [ number, number];
+  // value?: number;
+  // minValue?: number;
+  // maxValue?: number;
 };
 
 interface IModel {
@@ -21,19 +22,14 @@ interface IModel {
   step: number;
   type: sliderType;
   direction: sliderDirection;
-  // sliderLength: number;
   tooltip: boolean;
   scale: boolean;
-  selectedLength: number;
-  // ----------------------------- single
-  singleValue?: number;
-  // singleSelected?: number;
-  // ----------------------------- range
-  rangeValueMin?: number;
-  rangeValueMax?: number;
-  // rangeSelected?: number;
+  value: number | [ number, number];
+  // selectedLength: number;
   // ------------------------------ metods
   getType(): sliderType;
+
+  setValue(value: number | [number, number]): object;
   // getValue(): number;
   // getLimits(): object;
   // getStep(): number;
