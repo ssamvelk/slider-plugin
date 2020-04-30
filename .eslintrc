@@ -47,6 +47,8 @@
         "ignoreRestSiblings": false
       }
     ],
+    "no-unused-expressions": "off",
+  "@typescript-eslint/no-unused-expressions": ["error"],
     "max-len": [
       "warn",
       {
