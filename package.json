@@ -20,6 +20,7 @@
     "collectCoverage": true,
     "testEnvironment": "jest-environment-jsdom-global",
     "coverageReporters": [
+      "text",
       "html"
     ],
     "transform": {

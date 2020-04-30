@@ -2,6 +2,8 @@ type sliderType = 'single' | 'range';
 
 type sliderDirection = 'horizontal' | 'vertical';
 
+type sliderRangeValueType = [number, number];
+
 type modelOptions = {
   min?: number;
   max?: number;
@@ -10,10 +12,7 @@ type modelOptions = {
   direction?: sliderDirection;
   tooltip?: boolean;
   scale?: boolean;
-  value?: number | [ number, number];
-  // value?: number;
-  // minValue?: number;
-  // maxValue?: number;
+  value?: number | sliderRangeValueType;
 };
 
 interface IModel {
@@ -47,6 +46,7 @@ interface IModel {
 export {
   IModel,
   sliderType,
+  sliderRangeValueType,
   sliderDirection,
   modelOptions,
 };

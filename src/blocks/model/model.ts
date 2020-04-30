@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // eslint-disable-next-line object-curly-newline
-import { IModel, sliderType, sliderDirection, modelOptions } from './interfaces';
+import { IModel, sliderType, sliderDirection, modelOptions } from './IModel';
 
 export default class Model implements IModel {
   min: number;
@@ -32,6 +32,8 @@ export default class Model implements IModel {
     // this.selectedLength = 0;
     if (this.min >= this.max) {
       this.max = this.min + this.step;
+      console.log('!!! min >= max !!!');
+      // throw Error(' min >= max');
     }
 
     this.type = options.type || 'single';
@@ -50,11 +52,19 @@ export default class Model implements IModel {
     return this.type;
   }
 
+  getStep(): number {
+    return this.step;
+  }
+
+  getValue(): number | [number, number] {
+    return this.value;
+  }
+
   setValue(value?: number | [number, number]): object {
     let select = 0;
     let val: number | [number, number] = 0;
-    // --------------single
-    if (this.type === 'single') {
+    
+    if (this.type === 'single') { // && typeof value === 'number'
       let singleVal = value ? value as number : this.max / 2; // let value: number = options.value;
 
       if (singleVal < this.min) singleVal = this.min;
@@ -63,18 +73,21 @@ export default class Model implements IModel {
       val = singleVal as number;
       select = ((val - this.min) / this.sliderLength) * 100;
     }
-    // --------------range
-    // eslint-disable-next-line no-empty
-    if (this.type === 'range') {
+    
+    if (this.type === 'range') { // && value instanceof Array && value[0] && value[1]
       // eslint-disable-next-line prefer-const
       let rangeVal = value
         ? value as [number, number]
         : [this.min + this.step, this.max - this.step];
 
       if (rangeVal[0] < this.min) rangeVal[0] = this.min;
+      else if (rangeVal[0] > this.max) rangeVal[0] = this.max;
+      
       if (rangeVal[1] > this.max) rangeVal[1] = this.max;
-      if (rangeVal[0] > rangeVal[1]) rangeVal[0] = rangeVal[1]; // (rangeVal[1] - this.step) < this.min ? this.min : rangeVal[1] - this.step;
+      else if (rangeVal[1] < this.min) rangeVal[1] = this.min;
 
+      if (rangeVal[0] > rangeVal[1]) rangeVal[0] = rangeVal[1];
+      
       val = rangeVal as [number, number];
       select = ((val[1] - val[0]) / this.sliderLength) * 100;
     }
@@ -89,12 +102,11 @@ export default class Model implements IModel {
   }
 }
 
-const m = new Model({ });
 const m2 = new Model({
-  type: 'range', direction: 'horizontal', value: [50, 77],
+  min: 10, max: 5, type: 'range', direction: 'horizontal', value: [50, 77],
 });
-console.log(m);
 console.log(m2);
+
 
 // getValue(): number {
 //   throw new Error('Method not implemented.');
@@ -139,3 +151,11 @@ console.log(m2);
 // setNearestValue(value: number, viaPercents: boolean, isAuto: boolean): void {
 //   throw new Error('Method not implemented.');
 // }
+
+
+// const a: sliderRangeValueType = [10, 22];
+// const [b, c] = a;
+
+// console.log(b);
+// console.log(c);
+// console.log('a =', a, typeof a, Array.isArray(a), '----instance', a instanceof Array);

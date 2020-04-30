@@ -1,3 +1,3 @@
 import '../scss/main.scss';
 
-import '../blocks/model/model';
+import '../blocks/model/Model.ts';
