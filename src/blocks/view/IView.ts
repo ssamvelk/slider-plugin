@@ -27,6 +27,8 @@ type viewOptions = {
   scale?: boolean;
   value?: number | sliderRangeValueType;
 };
+
+
 // min:number;// мин значение шкалы
 // max:number;// макс значение шкалы
 // value: number;

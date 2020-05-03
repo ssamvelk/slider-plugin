@@ -86,6 +86,7 @@ export default class Model implements IModel {
       if (rangeVal[1] > this.max) rangeVal[1] = this.max;
       else if (rangeVal[1] < this.min) rangeVal[1] = this.min;
 
+      // eslint-disable-next-line prefer-destructuring
       if (rangeVal[0] > rangeVal[1]) rangeVal[0] = rangeVal[1];
       
       val = rangeVal as [number, number];
