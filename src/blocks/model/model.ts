@@ -103,10 +103,10 @@ export default class Model implements IModel {
   }
 }
 
-const m2 = new Model({
-  min: 10, max: 5, type: 'range', direction: 'horizontal', value: [50, 77],
-});
-console.log(m2);
+// const m2 = new Model({
+//   min: 10, max: 5, type: 'range', direction: 'horizontal', value: [50, 77],
+// });
+// console.log(m2);
 
 
 // getValue(): number {

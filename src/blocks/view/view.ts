@@ -18,7 +18,7 @@ class View implements IView {
 
   handleMax?: HTMLDivElement | undefined;
 
-  tooltip?: HTMLDivElement | undefined;
+  tooltip?: HTMLDivElement;
 
   tooltipMin?: HTMLDivElement | undefined;
 
@@ -26,25 +26,26 @@ class View implements IView {
 
   scale?: HTMLDivElement | undefined;
 
-  
+  // private viewValues: object;
+
   constructor(options: viewOptions) {
     this.init(options);
     this.initStyles(options.type, options.direction);
   }
 
   private init(opt: viewOptions) {
-    console.log('init start work');
     this.root = document
       .getElementById(opt.root as string) as HTMLDivElement || document.body;
-    
+
     (this.base = document.createElement('div')).classList.add('slider__wrp');
 
-    if (document.querySelector('script')) {
+    if (this.root === document.body) {
       this.root.insertBefore(this.base, document.querySelector('script'));
-    } else this.root.appendChild(this.base);
+    } else {
+      this.root.appendChild(this.base);
+    }
 
-    this.sliderLine = document.createElement('div');
-    this.sliderLine.classList.add('slider__line');
+    (this.sliderLine = document.createElement('div')).classList.add('slider__line');
 
     this.base.appendChild(this.sliderLine);
 
@@ -56,6 +57,11 @@ class View implements IView {
       (this.handle = document.createElement('div')).classList.add('slider__handle');
 
       this.sliderLine.appendChild(this.handle);
+
+      if (opt.tooltip) {
+        (this.tooltip = document.createElement('div')).classList.add('slider__tooltip');
+        this.handle.appendChild(this.tooltip);
+      }
     } else if (opt.type === 'range') {
       (this.handleMin = document.createElement('div')).classList.add('slider__handle');
       
@@ -66,28 +72,71 @@ class View implements IView {
       (this.handleMax = document.createElement('div')).classList.add('slider__handle');
       
       this.sliderLine.appendChild(this.handleMax);
+
+      if (opt.tooltip) {
+        (this.tooltipMin = document.createElement('div')).classList.add('slider__tooltip');
+        this.handleMin.appendChild(this.tooltipMin);
+
+        (this.tooltipMax = document.createElement('div')).classList.add('slider__tooltip');
+        this.handleMax.appendChild(this.tooltipMax);
+      }
     }
-    console.log('init end work');
+
+    if (opt.scale) {
+      (this.scale = document.createElement('div')).classList.add('slider__scale');
+      const ul = document.createElement('ul');
+      ul.classList.add('slider__scale-list');
+
+      for (let i = 0; i < 5; i += 1) {
+        const li = document.createElement('li');
+        li.classList.add('slider__scale-item');
+        li.id = `slider__scale-item${i + 1}`;
+        ul.appendChild(li);
+      }
+      this.scale.appendChild(ul);
+      this.base.appendChild(this.scale);
+    }
   }
 
   private initStyles(type: sliderType = 'single', direction: sliderDirection = 'horizontal') {
-    console.log('initStyles');
-    
     if (direction === 'horizontal') {
       this.base.classList.add('slider__wrp_horizontal');
       this.sliderLine.classList.add('slider__line_horizontal');
       this.selectSegment.classList.add('slider__select_horizontal');
+      if (this.scale) this.scale.classList.add('slider__scale_horizontal');
+      if (this.tooltip) this.tooltip.classList.add('slider__tooltip_horizontal');
+      if (this.tooltipMin) this.tooltipMin.classList.add('slider__tooltip_horizontal');
+      if (this.tooltipMax) this.tooltipMax.classList.add('slider__tooltip_horizontal');
     } else if (direction === 'vertical') {
-      this.base.classList.add('slider-wrp_vertical');
+      this.base.classList.add('slider__wrp_vertical');
       this.sliderLine.classList.add('slider__line_vertical');
       this.selectSegment.classList.add('slider__select_vertical');
+      if (this.scale) this.scale.classList.add('slider__scale_vertical');
+      if (this.tooltip) this.tooltip.classList.add('slider__tooltip_vertical');
+      if (this.tooltipMin) this.tooltipMin.classList.add('slider__tooltip_vertical');
+      if (this.tooltipMax) this.tooltipMax.classList.add('slider__tooltip_vertical');
     }
   }
 }
 
-const v = new View({ type: 'single' });
-const v2 = new View({ type: 'range' });
-const v3 = new View({ direction: 'vertical' });
+const v = new View({ type: 'single', tooltip: true, scale: true });
+const v2 = new View({ type: 'range', tooltip: true, scale: true });
+const v3 = new View({ direction: 'vertical', tooltip: true, scale: true });
 console.log('--------------------------- v ', v, '-------------------', v2);
 console.log('-------------------v3', v3);
+
+const v4 = new View({ root: 'mySlider' });
+
+const v5 = new View({
+  root: 'mySliderRange',
+  direction: 'vertical',
+  type: 'range',
+  tooltip: true,
+  scale: true,
+  min: -100,
+  max: 200,
+  step: 50,
+});
+console.dir('v4 ---', v4);
+console.dir('v5 ---', v5);
 export default View;
