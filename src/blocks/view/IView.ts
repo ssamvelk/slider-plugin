@@ -2,7 +2,7 @@ import { sliderType, sliderDirection, sliderRangeValueType } from '../model/IMod
 
 interface IView {
   root: HTMLDivElement, // | HTMLBodyElement
-  base: HTMLDivElement, // базовый див
+  wrap: HTMLDivElement, // базовый див
   sliderLine: HTMLDivElement, // линия слайдера
   selectSegment?: HTMLDivElement, // выделенное расстояние
   // handle при сингле, handleMin и handleMax при рандже

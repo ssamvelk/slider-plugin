@@ -6,7 +6,7 @@ class View implements IView {
   root!: HTMLDivElement; // | HTMLBodyElement
   // | HTMLBodyElement
 
-  base!: HTMLDivElement;
+  wrap!: HTMLDivElement;
 
   sliderLine!: HTMLDivElement;
 
@@ -26,9 +26,16 @@ class View implements IView {
 
   scale?: HTMLDivElement | undefined;
 
-  // private DefaulValues: object;
+  private DefaulValues: object;
 
   constructor(options: viewOptions) {
+    this.DefaulValues = {
+      min: options.min || 0,
+      max: options.max || 100,
+      step: options.step || 1,
+      value: options.value || (options.type === 'single') ? 50 : [0, 100],
+    };
+    
     this.init(options);
     this.initStyles(options.type, options.direction);
   }
@@ -39,17 +46,17 @@ class View implements IView {
 
     // const slider = (document.createElement('div')).classList.add('slider');
 
-    (this.base = document.createElement('div')).classList.add('slider__wrp');
+    (this.wrap = document.createElement('div')).classList.add('slider__wrp');
 
     if (this.root === document.body) {
-      this.root.insertBefore(this.base, document.querySelector('script'));
+      this.root.insertBefore(this.wrap, document.querySelector('script'));
     } else {
-      this.root.appendChild(this.base);
+      this.root.appendChild(this.wrap);
     }
 
     (this.sliderLine = document.createElement('div')).classList.add('slider__line');
 
-    this.base.appendChild(this.sliderLine);
+    this.wrap.appendChild(this.sliderLine);
 
     (this.selectSegment = document.createElement('div')).classList.add('slider__select');
     
@@ -91,27 +98,36 @@ class View implements IView {
 
   private initStyles(type: sliderType = 'single', direction: sliderDirection = 'horizontal') {
     if (direction === 'horizontal') {
-      this.base.classList.add('slider__wrp_horizontal');
+      this.wrap.classList.add('slider__wrp_horizontal');
       this.sliderLine.classList.add('slider__line_horizontal');
       this.selectSegment.classList.add('slider__select_horizontal');
-      if (this.handle) this.handle.classList.add('slider__handle_horizontal');
-      if (this.handleMin) this.handleMin.classList.add('slider__handle_horizontal');
-      if (this.handleMax) this.handleMax.classList.add('slider__handle_horizontal');
+
+      if (type === 'single') {
+        if (this.handle) this.handle.classList.add('slider__handle_horizontal');
+        if (this.tooltip) this.tooltip.classList.add('slider__tooltip_horizontal');
+      } else if (type === 'range') {
+        if (this.handleMin) this.handleMin.classList.add('slider__handle_horizontal');
+        if (this.handleMax) this.handleMax.classList.add('slider__handle_horizontal');
+        if (this.tooltipMin) this.tooltipMin.classList.add('slider__tooltip_horizontal');
+        if (this.tooltipMax) this.tooltipMax.classList.add('slider__tooltip_horizontal');
+      }
+      
       if (this.scale) this.scale.classList.add('slider__scale_horizontal');
-      if (this.tooltip) this.tooltip.classList.add('slider__tooltip_horizontal');
-      if (this.tooltipMin) this.tooltipMin.classList.add('slider__tooltip_horizontal');
-      if (this.tooltipMax) this.tooltipMax.classList.add('slider__tooltip_horizontal');
     } else if (direction === 'vertical') {
-      this.base.classList.add('slider__wrp_vertical');
+      this.wrap.classList.add('slider__wrp_vertical');
       this.sliderLine.classList.add('slider__line_vertical');
       this.selectSegment.classList.add('slider__select_vertical');
-      if (this.handle) this.handle.classList.add('slider__handle_vertical');
-      if (this.handleMin) this.handleMin.classList.add('slider__handle_vertical');
-      if (this.handleMax) this.handleMax.classList.add('slider__handle_vertical');
+
+      if (type === 'single') {
+        if (this.handle) this.handle.classList.add('slider__handle_vertical');
+        if (this.tooltip) this.tooltip.classList.add('slider__tooltip_vertical');
+      } else if (type === 'range') {
+        if (this.handleMin) this.handleMin.classList.add('slider__handle_vertical');
+        if (this.handleMax) this.handleMax.classList.add('slider__handle_vertical');
+        if (this.tooltipMin) this.tooltipMin.classList.add('slider__tooltip_vertical');
+        if (this.tooltipMax) this.tooltipMax.classList.add('slider__tooltip_vertical');
+      }
       if (this.scale) this.scale.classList.add('slider__scale_vertical');
-      if (this.tooltip) this.tooltip.classList.add('slider__tooltip_vertical');
-      if (this.tooltipMin) this.tooltipMin.classList.add('slider__tooltip_vertical');
-      if (this.tooltipMax) this.tooltipMax.classList.add('slider__tooltip_vertical');
     }
   }
 
@@ -131,7 +147,7 @@ class View implements IView {
       ul.appendChild(li);
     }
     this.scale.appendChild(ul);
-    this.base.appendChild(this.scale);
+    this.wrap.appendChild(this.scale);
   }
 }
 
@@ -157,6 +173,19 @@ const v5 = new View({
   max: 200,
   step: 50,
 });
+
+const v6 = new View({
+  direction: 'horizontal',
+  type: 'range',
+  tooltip: true,
+  scale: true,
+  min: -100,
+  max: 200,
+  step: 50,
+});
+
 console.dir('v4 ---', v4);
 console.dir('v5 ---', v5);
+console.dir('v6 ---', v6);
+
 export default View;
