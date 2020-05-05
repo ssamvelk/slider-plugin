@@ -26,7 +26,7 @@ class View implements IView {
 
   scale?: HTMLDivElement | undefined;
 
-  // private viewValues: object;
+  // private DefaulValues: object;
 
   constructor(options: viewOptions) {
     this.init(options);
@@ -36,6 +36,8 @@ class View implements IView {
   private init(opt: viewOptions) {
     this.root = document
       .getElementById(opt.root as string) as HTMLDivElement || document.body;
+
+    // const slider = (document.createElement('div')).classList.add('slider');
 
     (this.base = document.createElement('div')).classList.add('slider__wrp');
 
@@ -83,18 +85,7 @@ class View implements IView {
     }
 
     if (opt.scale) {
-      (this.scale = document.createElement('div')).classList.add('slider__scale');
-      const ul = document.createElement('ul');
-      ul.classList.add('slider__scale-list');
-
-      for (let i = 0; i < 5; i += 1) {
-        const li = document.createElement('li');
-        li.classList.add('slider__scale-item');
-        li.id = `slider__scale-item${i + 1}`;
-        ul.appendChild(li);
-      }
-      this.scale.appendChild(ul);
-      this.base.appendChild(this.scale);
+      this.initScale(opt.direction);
     }
   }
 
@@ -103,6 +94,9 @@ class View implements IView {
       this.base.classList.add('slider__wrp_horizontal');
       this.sliderLine.classList.add('slider__line_horizontal');
       this.selectSegment.classList.add('slider__select_horizontal');
+      if (this.handle) this.handle.classList.add('slider__handle_horizontal');
+      if (this.handleMin) this.handleMin.classList.add('slider__handle_horizontal');
+      if (this.handleMax) this.handleMax.classList.add('slider__handle_horizontal');
       if (this.scale) this.scale.classList.add('slider__scale_horizontal');
       if (this.tooltip) this.tooltip.classList.add('slider__tooltip_horizontal');
       if (this.tooltipMin) this.tooltipMin.classList.add('slider__tooltip_horizontal');
@@ -111,21 +105,47 @@ class View implements IView {
       this.base.classList.add('slider__wrp_vertical');
       this.sliderLine.classList.add('slider__line_vertical');
       this.selectSegment.classList.add('slider__select_vertical');
+      if (this.handle) this.handle.classList.add('slider__handle_vertical');
+      if (this.handleMin) this.handleMin.classList.add('slider__handle_vertical');
+      if (this.handleMax) this.handleMax.classList.add('slider__handle_vertical');
       if (this.scale) this.scale.classList.add('slider__scale_vertical');
       if (this.tooltip) this.tooltip.classList.add('slider__tooltip_vertical');
       if (this.tooltipMin) this.tooltipMin.classList.add('slider__tooltip_vertical');
       if (this.tooltipMax) this.tooltipMax.classList.add('slider__tooltip_vertical');
     }
   }
+
+  private initScale(direction?: sliderDirection) {
+    (this.scale = document.createElement('div')).classList.add('slider__scale');
+    const ul = document.createElement('ul');
+    ul.classList.add('slider__scale-list');
+    const dirLocalValue = direction || 'horizontal';
+    if (dirLocalValue === 'horizontal') ul.classList.add('slider__scale-list_horizontal');
+    else if (dirLocalValue === 'vertical') ul.classList.add('slider__scale-list_vertical');
+
+    for (let i = 0; i < 5; i += 1) {
+      const li = document.createElement('li');
+      li.classList.add('slider__scale-item');
+      li.classList.add(`slider__scale-item_${dirLocalValue}`);
+      li.id = `slider__scale-item${i + 1}`;
+      ul.appendChild(li);
+    }
+    this.scale.appendChild(ul);
+    this.base.appendChild(this.scale);
+  }
 }
 
 const v = new View({ type: 'single', tooltip: true, scale: true });
-const v2 = new View({ type: 'range', tooltip: true, scale: true });
+const v2 = new View({
+  type: 'range', tooltip: true, scale: true, direction: 'horizontal',
+});
 const v3 = new View({ direction: 'vertical', tooltip: true, scale: true });
 console.log('--------------------------- v ', v, '-------------------', v2);
 console.log('-------------------v3', v3);
 
-const v4 = new View({ root: 'mySlider' });
+const v4 = new View({
+  root: 'mySlider', scale: true, tooltip: true, direction: 'horizontal',
+});
 
 const v5 = new View({
   root: 'mySliderRange',
