@@ -33,8 +33,8 @@ class View implements IView {
       min: options.min || 0,
       max: options.max || 100,
       step: options.step || 1,
-      value: options.value || ((options.type === 'single') ? 50 : [0, 100]),
       type: options.type || 'single',
+      value: options.value || ((options.type === 'range') ? [0, 100] : 50),
       direction: options.direction || 'horizontal',
       scale: options.scale || false,
       tooltip: options.tooltip || false,
@@ -248,6 +248,28 @@ class View implements IView {
     this.initStyles(this.viewValues.type, this.viewValues.direction);
     this.setValue(this.viewValues.value, this.viewValues.type);
   }
+  
+  changeType(type: sliderType, value?: sliderValueType): boolean {
+    if (type === this.viewValues.type) {
+      console.log('Нельзя поменять тип слайдера на тот же самый, который установлен');
+      return false;
+    }
+    
+    this.viewValues.type = type;
+    
+    let localValue: sliderValueType;
+    if (value) this.viewValues.value = value;
+    else if (!value) {
+      localValue = this.viewValues.value;
+      (this.viewValues.value as [number, number]) = [localValue as number, localValue as number];
+    }
+    
+    this.clearRoot();
+    this.init(this.viewValues);
+    this.initStyles(this.viewValues.type, this.viewValues.direction);
+    this.setValue(this.viewValues.value, this.viewValues.type);
+    return true;
+  }
 
   getValues() {
     return this.viewValues;
@@ -266,24 +288,23 @@ const v4 = new View({
   value: 500, min: 0, max: 1000, root: 'mySlider', scale: true, tooltip: true, direction: 'vertical',
 });
 
-v4.changeDirection();
+v4.changeType('range', [150, 1111]);
 // v4.changeDirection();
+console.dir('v4 ---', v4.getValues());
 
-const v5 = new View({
-  root: 'mySliderRange',
-  direction: 'vertical',
-  type: 'range',
-  tooltip: true,
-  scale: true,
-  min: 0,
-  max: 1000,
-  step: 50,
-  value: [250, 750],
-});
+// const v5 = new View({
+//   root: 'mySliderRange',
+//   direction: 'vertical',
+//   type: 'range',
+//   tooltip: true,
+//   scale: true,
+//   min: 0,
+//   max: 1000,
+//   step: 50,
+//   value: [250, 750],
+// });
 
-v5.changeDirection();
 
-v5.changeDirection();
 // const v6 = new View({
 //   direction: 'horizontal',
 //   type: 'range',
@@ -294,11 +315,13 @@ v5.changeDirection();
 //   step: 50,
 // });
 
-console.dir('v4 ---', v4.getValues());
-console.dir('v5 ---', v5.getValues());
+
+// console.dir('v5 ---', v5.getValues());
 // console.dir('v6 ---', v6);
 
 // const v7 = new View({});
+
+// v7.changeType('range');
 // const handleStyle = getComputedStyle(v7.handle!);
-// console.log('-----v7', v7, handleStyle.left);
+// console.log('-----v7', v7.getValues());
 export default View;

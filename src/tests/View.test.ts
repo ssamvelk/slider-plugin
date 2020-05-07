@@ -29,6 +29,7 @@ describe('Тестирование View', () => {
     expect(v).toHaveProperty('selectSegment');
     expect(v).toHaveProperty('sliderLine');
     expect(v).toHaveProperty('handle');
+    expect(v).toHaveProperty('viewValues');
   });
 
   test('Создание эксземпляра класса View с параметром root', () => {
@@ -43,6 +44,7 @@ describe('Тестирование View', () => {
     expect(v2).toHaveProperty('tooltipMin');
     expect(v2).toHaveProperty('tooltipMax');
     expect(v2).toHaveProperty('scale');
+    expect(v2).toHaveProperty('viewValues');
   });
 
   test('Проверка DOM элементов эксземпляров класса View', () => {
@@ -147,5 +149,16 @@ describe('Тестирование View', () => {
     v2.changeDirection();
     expect(v.getValues().direction).toEqual('horizontal');
     expect(v2.getValues().direction).toEqual('vertical');
+  });
+
+  test('Тестирование метода changeType', () => {
+    v.changeType('range');
+
+    expect(v.getValues().type).toEqual('range');
+    expect(v.getValues().value).toEqual([50, 50]);
+
+    v.changeType('single');
+    expect(v.getValues().type).toEqual('single');
+    expect(v.getValues().value).toEqual(50);
   });
 });
