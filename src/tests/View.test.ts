@@ -136,4 +136,16 @@ describe('Тестирование View', () => {
     expect(v7.getValues().value).toEqual([45, 45]);
     expect(v8.getValues().value).toEqual([0, 100]);
   });
+
+  test('Тестирование метода changeDirection', () => {
+    v.changeDirection();
+    v2.changeDirection();
+    expect(v.getValues().direction).toEqual('vertical');
+    expect(v2.getValues().direction).toEqual('horizontal');
+    
+    v.changeDirection();
+    v2.changeDirection();
+    expect(v.getValues().direction).toEqual('horizontal');
+    expect(v2.getValues().direction).toEqual('vertical');
+  });
 });

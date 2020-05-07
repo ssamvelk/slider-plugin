@@ -240,7 +240,13 @@ class View implements IView {
   }
 
   changeDirection() {
-    console.log('заглушка');
+    if (this.viewValues.direction === 'horizontal') this.viewValues.direction = 'vertical';
+    else if (this.viewValues.direction === 'vertical') this.viewValues.direction = 'horizontal';
+
+    this.clearRoot();
+    this.init(this.viewValues);
+    this.initStyles(this.viewValues.type, this.viewValues.direction);
+    this.setValue(this.viewValues.value, this.viewValues.type);
   }
 
   getValues() {
@@ -260,6 +266,9 @@ const v4 = new View({
   value: 500, min: 0, max: 1000, root: 'mySlider', scale: true, tooltip: true, direction: 'vertical',
 });
 
+v4.changeDirection();
+// v4.changeDirection();
+
 const v5 = new View({
   root: 'mySliderRange',
   direction: 'vertical',
@@ -272,6 +281,9 @@ const v5 = new View({
   value: [250, 750],
 });
 
+v5.changeDirection();
+
+v5.changeDirection();
 // const v6 = new View({
 //   direction: 'horizontal',
 //   type: 'range',
