@@ -153,12 +153,13 @@ class View implements IView {
   }
 
   private setValue(value: sliderValueType, type: sliderType) {
+    const localValue = this.checkValue(value);
     if (type === 'single') {
-      this.viewValues.value = value as number;
+      this.viewValues.value = localValue as number;
       this.selectSegment.style.width = `calc(${this.invertToPersent(this.viewValues.value)}%)`; // `calc(${this.viewValues.value}%)`;
       this.handle!.style.left = `calc(${this.invertToPersent(this.viewValues.value)}% - 15px)`;
     } else if (type === 'range') {
-      this.viewValues.value = value as [number, number];
+      this.viewValues.value = localValue as [number, number];
       
       this.handleMin!.style.left = `calc(${this.invertToPersent(this.viewValues.value[0])}% - 15px)`;
 
@@ -166,6 +167,45 @@ class View implements IView {
       this.selectSegment.style.left = `calc(${this.invertToPersent(this.viewValues.value[0])}%)`;
 
       this.handleMax!.style.left = `calc(${this.invertToPersent(this.viewValues.value[1])}% - 15px)`;
+    }
+  }
+
+  private checkValue(value: sliderValueType) {
+    let newLocal = value as number;
+    if (this.viewValues.type === 'single') {
+      if (newLocal < this.viewValues.min) {
+        newLocal = this.viewValues.min;
+        console.log('value не может быть меньше минимального порога значений, меняем на минимальный');
+      }
+      if (newLocal > this.viewValues.max) {
+        newLocal = this.viewValues.max;
+        console.log('value не может быть больше максимального порога значений, меняем на максимальный');
+      }
+      return newLocal;
+    } if (this.viewValues.type === 'range' && (value instanceof Array === true)) {
+      const newLocal2 = value as [number, number];
+      if (newLocal2[0] < this.viewValues.min) {
+        newLocal2[0] = this.viewValues.min;
+        console.log('valueMin не может быть меньше минимального порога значений, меняем на минимальный');
+      }
+      if (newLocal2[0] > this.viewValues.max) {
+        newLocal2[0] = this.viewValues.max;
+        console.log('valueMin не может быть больше максимального порога значений, меняем на максимальный');
+      }
+      if (newLocal2[1] > this.viewValues.max) {
+        newLocal2[1] = this.viewValues.max;
+        console.log('valueMax не может быть больше максимального порога значений, меняем на максимальный');
+      }
+      if (newLocal2[1] < newLocal2[0]) {
+        console.log('valueMax не может быть меньше valueMin, уравниваем их');
+        newLocal2[1] = newLocal2[0];
+      }
+      // eslint-disable-next-line prefer-destructuring
+      if (newLocal2[0] > newLocal2[1]) {
+        console.log('valueMin не может быть больше valueMax, уравниваем их');
+        newLocal2[0] = newLocal2[1];
+      }
+      return newLocal2;
     }
   }
 
@@ -187,7 +227,7 @@ class View implements IView {
 // console.log('-------------------v3', v3);
 
 const v4 = new View({
-  value: 250, min: 0, max: 1000, root: 'mySlider', scale: true, tooltip: true, direction: 'horizontal',
+  value: 50, min: 0, max: 1000, root: 'mySlider', scale: true, tooltip: true, direction: 'horizontal',
 });
 
 const v5 = new View({
@@ -199,7 +239,7 @@ const v5 = new View({
   min: 0,
   max: 1000,
   step: 50,
-  value: [100, 500],
+  value: [111, 1120],
 });
 
 // const v6 = new View({
@@ -212,8 +252,8 @@ const v5 = new View({
 //   step: 50,
 // });
 
-// console.dir('v4 ---', v4.getValues());
-// console.dir('v5 ---', v5.getValues());
+console.dir('v4 ---', v4.getValues());
+console.dir('v5 ---', v5.getValues());
 // console.dir('v6 ---', v6);
 
 // const v7 = new View({});

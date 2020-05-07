@@ -104,9 +104,36 @@ describe('Тестирование View', () => {
     expect(v2.scale!.classList).toContain('slider__scale_vertical');
   });
 
-  // test('Тестирование метода invertToPersent', () => {
-  //   // const handleStyle = getComputedStyle(v.handle!);
-  //   // // expect(v.selectSegment.style.width).toEqual('50%');
-  //   // expect(handleStyle.left).toEqual('calc(50% - 15px)');
-  // });
+  test('Тестирование метода checkValue', () => {
+    const v3 = new View({
+      value: -50,
+    });
+    const v4 = new View({
+      value: 1500,
+    });
+    expect(v3.getValues().value).toEqual(0);
+    expect(v4.getValues().value).toEqual(100);
+
+    const v5 = new View({
+      value: [-50, 70],
+      type: 'range',
+    });
+    const v6 = new View({
+      value: [45, 700],
+      type: 'range',
+    });
+    const v7 = new View({
+      value: [45, 10],
+      type: 'range',
+    });
+    const v8 = new View({
+      value: [-45, 110],
+      type: 'range',
+    });
+
+    expect(v5.getValues().value).toEqual([0, 70]);
+    expect(v6.getValues().value).toEqual([45, 100]);
+    expect(v7.getValues().value).toEqual([45, 45]);
+    expect(v8.getValues().value).toEqual([0, 100]);
+  });
 });
