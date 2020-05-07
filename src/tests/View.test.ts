@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-named-as-default-member
 import View from '../blocks/view/View';
 import '@testing-library/jest-dom';
 // import 'jest-dom/extend-expect';
@@ -15,6 +16,8 @@ describe('Тестирование View', () => {
     direction: 'vertical',
     scale: true,
     tooltip: true,
+    min: 100,
+    max: 200,
   });
   
 
@@ -100,4 +103,10 @@ describe('Тестирование View', () => {
     expect(v2.scale!.classList).toContain('slider__scale');
     expect(v2.scale!.classList).toContain('slider__scale_vertical');
   });
+
+  // test('Тестирование метода invertToPersent', () => {
+  //   // const handleStyle = getComputedStyle(v.handle!);
+  //   // // expect(v.selectSegment.style.width).toEqual('50%');
+  //   // expect(handleStyle.left).toEqual('calc(50% - 15px)');
+  // });
 });

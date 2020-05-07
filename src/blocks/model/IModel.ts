@@ -2,6 +2,7 @@ type sliderType = 'single' | 'range';
 
 type sliderDirection = 'horizontal' | 'vertical';
 
+type sliderValueType = number | sliderRangeValueType;
 type sliderRangeValueType = [number, number];
 
 type modelOptions = {
@@ -12,7 +13,7 @@ type modelOptions = {
   direction?: sliderDirection;
   tooltip?: boolean;
   scale?: boolean;
-  value?: number | sliderRangeValueType;
+  value?: sliderValueType;
 };
 
 interface IModel {
@@ -46,7 +47,8 @@ interface IModel {
 export {
   IModel,
   sliderType,
-  sliderRangeValueType,
+  sliderValueType,
   sliderDirection,
   modelOptions,
+  sliderRangeValueType,
 };

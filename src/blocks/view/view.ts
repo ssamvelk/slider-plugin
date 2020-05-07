@@ -1,5 +1,5 @@
-import { IView, viewOptions } from './IView';
-import { sliderType, sliderDirection } from '../model/IModel';
+import { IView, initViewOptions, defaultViewOptions } from './IView';
+import { sliderType, sliderDirection, sliderValueType } from '../model/IModel';
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 class View implements IView {
@@ -26,25 +26,27 @@ class View implements IView {
 
   scale?: HTMLDivElement | undefined;
 
-  private DefaulValues: object;
+  private viewValues: defaultViewOptions;
 
-  constructor(options: viewOptions) {
-    this.DefaulValues = {
+  constructor(options: initViewOptions) {
+    this.viewValues = {
       min: options.min || 0,
       max: options.max || 100,
       step: options.step || 1,
-      value: options.value || (options.type === 'single') ? 50 : [0, 100],
+      value: options.value || ((options.type === 'single') ? 50 : [0, 100]),
+      type: options.type || 'single',
+      scale: options.scale || false,
+      tooltip: options.tooltip || false,
     };
     
     this.init(options);
     this.initStyles(options.type, options.direction);
+    this.setValue(this.viewValues.value, this.viewValues.type);
   }
 
-  private init(opt: viewOptions) {
+  private init(opt: initViewOptions) {
     this.root = document
       .getElementById(opt.root as string) as HTMLDivElement || document.body;
-
-    // const slider = (document.createElement('div')).classList.add('slider');
 
     (this.wrap = document.createElement('div')).classList.add('slider__wrp');
 
@@ -60,18 +62,18 @@ class View implements IView {
 
     (this.selectSegment = document.createElement('div')).classList.add('slider__select');
     
-    if (opt.type === 'single' || opt.type === undefined) {
+    if (this.viewValues.type === 'single') {
       this.sliderLine.appendChild(this.selectSegment);
 
       (this.handle = document.createElement('div')).classList.add('slider__handle');
 
       this.sliderLine.appendChild(this.handle);
 
-      if (opt.tooltip) {
+      if (this.viewValues.tooltip) {
         (this.tooltip = document.createElement('div')).classList.add('slider__tooltip');
         this.handle.appendChild(this.tooltip);
       }
-    } else if (opt.type === 'range') {
+    } else if (this.viewValues.type === 'range') {
       (this.handleMin = document.createElement('div')).classList.add('slider__handle');
       
       this.sliderLine.appendChild(this.handleMin);
@@ -82,7 +84,7 @@ class View implements IView {
       
       this.sliderLine.appendChild(this.handleMax);
 
-      if (opt.tooltip) {
+      if (this.viewValues.tooltip) {
         (this.tooltipMin = document.createElement('div')).classList.add('slider__tooltip');
         this.handleMin.appendChild(this.tooltipMin);
 
@@ -91,7 +93,7 @@ class View implements IView {
       }
     }
 
-    if (opt.scale) {
+    if (this.viewValues.scale) {
       this.initScale(opt.direction);
     }
   }
@@ -149,43 +151,72 @@ class View implements IView {
     this.scale.appendChild(ul);
     this.wrap.appendChild(this.scale);
   }
-}
 
-const v = new View({ type: 'single', tooltip: true, scale: true });
-const v2 = new View({
-  type: 'range', tooltip: true, scale: true, direction: 'horizontal',
-});
-const v3 = new View({ direction: 'vertical', tooltip: true, scale: true });
-console.log('--------------------------- v ', v, '-------------------', v2);
-console.log('-------------------v3', v3);
+  private setValue(value: sliderValueType, type: sliderType) {
+    if (type === 'single') {
+      this.viewValues.value = value as number;
+      this.selectSegment.style.width = `calc(${this.invertToPersent(this.viewValues.value)}%)`; // `calc(${this.viewValues.value}%)`;
+      this.handle!.style.left = `calc(${this.invertToPersent(this.viewValues.value)}% - 15px)`;
+    } else if (type === 'range') {
+      this.viewValues.value = value as [number, number];
+      
+      this.handleMin!.style.left = `calc(${this.invertToPersent(this.viewValues.value[0])}% - 15px)`;
+
+      this.selectSegment.style.width = `calc(${this.invertToPersent(this.viewValues.value[1]) - this.invertToPersent(this.viewValues.value[0])}%)`;
+      this.selectSegment.style.left = `calc(${this.invertToPersent(this.viewValues.value[0])}%)`;
+
+      this.handleMax!.style.left = `calc(${this.invertToPersent(this.viewValues.value[1])}% - 15px)`;
+    }
+  }
+
+  private invertToPersent(value: number) {
+    return ((value - this.viewValues.min) / (this.viewValues.max - this.viewValues.min)) * 100;
+  }
+
+  getValues() {
+    return this.viewValues;
+  }
+}
+  
+// const v = new View({ type: 'single', tooltip: true, scale: true });
+// const v2 = new View({
+//   type: 'range', tooltip: true, scale: true, direction: 'horizontal',
+// });
+// const v3 = new View({ direction: 'vertical', tooltip: true, scale: true });
+// console.log('--------------------------- v ', v, '-------------------', v2);
+// console.log('-------------------v3', v3);
 
 const v4 = new View({
-  root: 'mySlider', scale: true, tooltip: true, direction: 'horizontal',
+  value: 250, min: 0, max: 1000, root: 'mySlider', scale: true, tooltip: true, direction: 'horizontal',
 });
 
 const v5 = new View({
   root: 'mySliderRange',
-  direction: 'vertical',
-  type: 'range',
-  tooltip: true,
-  scale: true,
-  min: -100,
-  max: 200,
-  step: 50,
-});
-
-const v6 = new View({
   direction: 'horizontal',
   type: 'range',
   tooltip: true,
   scale: true,
-  min: -100,
-  max: 200,
+  min: 0,
+  max: 1000,
   step: 50,
+  value: [100, 500],
 });
 
-console.dir('v4 ---', v4);
-console.dir('v5 ---', v5);
-console.dir('v6 ---', v6);
+// const v6 = new View({
+//   direction: 'horizontal',
+//   type: 'range',
+//   tooltip: true,
+//   scale: true,
+//   min: -100,
+//   max: 200,
+//   step: 50,
+// });
 
+// console.dir('v4 ---', v4.getValues());
+// console.dir('v5 ---', v5.getValues());
+// console.dir('v6 ---', v6);
+
+// const v7 = new View({});
+// const handleStyle = getComputedStyle(v7.handle!);
+// console.log('-----v7', v7, handleStyle.left);
 export default View;

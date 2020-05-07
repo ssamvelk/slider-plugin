@@ -1,4 +1,4 @@
-import { sliderType, sliderDirection, sliderRangeValueType } from '../model/IModel';
+import { sliderType, sliderDirection, sliderValueType } from '../model/IModel';
 
 interface IView {
   root: HTMLDivElement, // | HTMLBodyElement
@@ -16,7 +16,7 @@ interface IView {
 
 }
 
-type viewOptions = {
+type initViewOptions = {
   root?: string;
   min?: number;
   max?: number;
@@ -25,10 +25,18 @@ type viewOptions = {
   direction?: sliderDirection;
   tooltip?: boolean;
   scale?: boolean;
-  value?: number | sliderRangeValueType;
+  value?: sliderValueType;
 };
 
-
+type defaultViewOptions = {
+  min: number;
+  max: number;
+  step: number;
+  value: sliderValueType;
+  type: sliderType;
+  scale: boolean;
+  tooltip: boolean;
+};
 // min:number;// мин значение шкалы
 // max:number;// макс значение шкалы
 // value: number;
@@ -38,5 +46,6 @@ type viewOptions = {
 // scaleDisplay: boolean;// опция шкалы (вкл\выкл)
 export {
   IView,
-  viewOptions,
+  initViewOptions,
+  defaultViewOptions,
 };
