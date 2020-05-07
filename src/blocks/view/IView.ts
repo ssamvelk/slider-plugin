@@ -34,6 +34,7 @@ type defaultViewOptions = {
   step: number;
   value: sliderValueType;
   type: sliderType;
+  direction: sliderDirection;
   scale: boolean;
   tooltip: boolean;
 };

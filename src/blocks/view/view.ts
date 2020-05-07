@@ -35,6 +35,7 @@ class View implements IView {
       step: options.step || 1,
       value: options.value || ((options.type === 'single') ? 50 : [0, 100]),
       type: options.type || 'single',
+      direction: options.direction || 'horizontal',
       scale: options.scale || false,
       tooltip: options.tooltip || false,
     };
@@ -45,8 +46,10 @@ class View implements IView {
   }
 
   private init(opt: initViewOptions) {
-    this.root = document
-      .getElementById(opt.root as string) as HTMLDivElement || document.body;
+    if (!this.root) {
+      this.root = document
+        .getElementById(opt.root as string) as HTMLDivElement || document.body;
+    }
 
     (this.wrap = document.createElement('div')).classList.add('slider__wrp');
 
@@ -154,19 +157,36 @@ class View implements IView {
 
   private setValue(value: sliderValueType, type: sliderType) {
     const localValue = this.checkValue(value);
-    if (type === 'single') {
-      this.viewValues.value = localValue as number;
-      this.selectSegment.style.width = `calc(${this.invertToPersent(this.viewValues.value)}%)`; // `calc(${this.viewValues.value}%)`;
-      this.handle!.style.left = `calc(${this.invertToPersent(this.viewValues.value)}% - 15px)`;
-    } else if (type === 'range') {
-      this.viewValues.value = localValue as [number, number];
-      
-      this.handleMin!.style.left = `calc(${this.invertToPersent(this.viewValues.value[0])}% - 15px)`;
-
-      this.selectSegment.style.width = `calc(${this.invertToPersent(this.viewValues.value[1]) - this.invertToPersent(this.viewValues.value[0])}%)`;
-      this.selectSegment.style.left = `calc(${this.invertToPersent(this.viewValues.value[0])}%)`;
-
-      this.handleMax!.style.left = `calc(${this.invertToPersent(this.viewValues.value[1])}% - 15px)`;
+    if (this.viewValues.direction === 'horizontal') {
+      if (type === 'single') {
+        this.viewValues.value = localValue as number;
+        this.selectSegment.style.width = `calc(${this.invertToPersent(this.viewValues.value)}%)`; // `calc(${this.viewValues.value}%)`;
+        this.handle!.style.left = `calc(${this.invertToPersent(this.viewValues.value)}% - 15px)`;
+      } else if (type === 'range') {
+        this.viewValues.value = localValue as [number, number];
+        
+        this.handleMin!.style.left = `calc(${this.invertToPersent(this.viewValues.value[0])}% - 15px)`;
+  
+        this.selectSegment.style.width = `calc(${this.invertToPersent(this.viewValues.value[1]) - this.invertToPersent(this.viewValues.value[0])}%)`;
+        this.selectSegment.style.left = `calc(${this.invertToPersent(this.viewValues.value[0])}%)`;
+  
+        this.handleMax!.style.left = `calc(${this.invertToPersent(this.viewValues.value[1])}% - 15px)`;
+      }
+    } else if (this.viewValues.direction === 'vertical') {
+      if (type === 'single') {
+        this.viewValues.value = localValue as number;
+        this.selectSegment.style.height = `calc(${this.invertToPersent(this.viewValues.value)}%)`; // `calc(${this.viewValues.value}%)`;
+        this.handle!.style.top = `calc(${this.invertToPersent(this.viewValues.value)}% - 15px)`;
+      } else if (type === 'range') {
+        this.viewValues.value = localValue as [number, number];
+        
+        this.handleMin!.style.top = `calc(${this.invertToPersent(this.viewValues.value[0])}% - 15px)`;
+  
+        this.selectSegment.style.height = `calc(${this.invertToPersent(this.viewValues.value[1]) - this.invertToPersent(this.viewValues.value[0])}%)`;
+        this.selectSegment.style.top = `calc(${this.invertToPersent(this.viewValues.value[0])}%)`;
+  
+        this.handleMax!.style.top = `calc(${this.invertToPersent(this.viewValues.value[1])}% - 15px)`;
+      }
     }
   }
 
@@ -213,6 +233,16 @@ class View implements IView {
     return ((value - this.viewValues.min) / (this.viewValues.max - this.viewValues.min)) * 100;
   }
 
+  private clearRoot() {
+    // this.sliderLine.remove();
+    // this.scale?.remove();
+    this.wrap.remove();
+  }
+
+  changeDirection() {
+    console.log('заглушка');
+  }
+
   getValues() {
     return this.viewValues;
   }
@@ -227,19 +257,19 @@ class View implements IView {
 // console.log('-------------------v3', v3);
 
 const v4 = new View({
-  value: 50, min: 0, max: 1000, root: 'mySlider', scale: true, tooltip: true, direction: 'horizontal',
+  value: 500, min: 0, max: 1000, root: 'mySlider', scale: true, tooltip: true, direction: 'vertical',
 });
 
 const v5 = new View({
   root: 'mySliderRange',
-  direction: 'horizontal',
+  direction: 'vertical',
   type: 'range',
   tooltip: true,
   scale: true,
   min: 0,
   max: 1000,
   step: 50,
-  value: [111, 1120],
+  value: [250, 750],
 });
 
 // const v6 = new View({
