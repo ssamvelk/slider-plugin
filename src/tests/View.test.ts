@@ -14,7 +14,7 @@ describe('Тестирование View', () => {
     root: 'divForSlider',
     type: 'range',
     direction: 'vertical',
-    scale: true,
+    scale: { init: true, num: 11, type: 'numeric' },
     tooltip: true,
     min: 100,
     max: 200,
@@ -177,21 +177,38 @@ describe('Тестирование View', () => {
     expect(localValue).toEqual(true);
     expect(v.getValues().type).toEqual('range');
     expect(v.getValues().value).toEqual([30, 80]);
-
-    v.changeType('single', 50); // возврат в исходное состояние
+    
 
     localValue = v.changeType('single');
-    expect(localValue).toEqual(false);
-    
+    expect(localValue).toEqual(true);
+    expect(v.getValues().value).toEqual(30);
+
     localValue = v.changeType('single', 55);
     expect(localValue).toEqual(false);
 
     localValue = v.changeType('range', 55);
     expect(localValue).toEqual(false);
     
+    // проверки ниже не работают, т.к. TS самостоятельно не пропускает)))
     // localValue = v.changeType('range', 'afdasf');
     // localValue = v.changeType('single', [551, 78, 788]);
+    // localValue = v.changeType('range', true);
     expect(localValue).toEqual(false);
+
+    localValue = v.changeType('single', 50); // возврат в исходное состояние
+    expect(localValue).toEqual(true);
+    expect(v.getValues().value).toEqual(50);
   });
 
+  test('Тестирование scale', () => {
+    expect(v.getValues().scale).toHaveProperty('init', false);
+    expect(v.getValues().scale).toHaveProperty('num', 7);
+    expect(v.getValues().scale).toHaveProperty('type', 'usual');
+    expect(v.getValues().scale).toEqual({ type: 'usual', num: 7, init: false });
+
+    expect(v2.getValues().scale).toHaveProperty('init', true);
+    expect(v2.getValues().scale).toHaveProperty('num', 11);
+    expect(v2.getValues().scale).toHaveProperty('type', 'numeric');
+    expect(v2.getValues().scale).toEqual({ type: 'numeric', num: 11, init: true });
+  });
 });

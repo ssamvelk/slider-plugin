@@ -1,4 +1,6 @@
-import { IView, initViewOptions, defaultViewOptions } from './IView';
+import {
+  IView, initViewOptions, defaultViewOptions, scaleType,
+} from './IView';
 import {
   sliderType, sliderDirection, sliderValueType, sliderRangeValueType,
 } from '../model/IModel';
@@ -38,8 +40,15 @@ class View implements IView {
       type: options.type || 'single',
       value: options.value || ((options.type === 'range') ? [0, 100] : 50),
       direction: options.direction || 'horizontal',
-      scale: options.scale || false,
       tooltip: options.tooltip || false,
+      scale: {
+        // eslint-disable-next-line no-nested-ternary
+        init: ((typeof options.scale) === 'boolean')
+          ? (options.scale as boolean)
+          : (((options.scale instanceof Object) && options.scale !== undefined) ? options.scale.init : false),
+        num: ((options.scale instanceof Object) && options.scale.num) ? (options.scale as scaleType).num : 7,
+        type: (options.scale instanceof Object && options.scale.type) ? (options.scale as scaleType).type : 'usual',
+      },
     };
     
     this.init(options);
@@ -98,8 +107,8 @@ class View implements IView {
       }
     }
 
-    if (this.viewValues.scale) {
-      this.initScale(opt.direction);
+    if (this.viewValues.scale.init) {
+      this.initScale(opt.direction, this.viewValues.scale);
     }
   }
 
@@ -138,7 +147,7 @@ class View implements IView {
     }
   }
 
-  private initScale(direction?: sliderDirection) {
+  private initScale(direction?: sliderDirection, opt?: scaleType) {
     (this.scale = document.createElement('div')).classList.add('slider__scale');
     const ul = document.createElement('ul');
     ul.classList.add('slider__scale-list');
@@ -146,11 +155,17 @@ class View implements IView {
     if (dirLocalValue === 'horizontal') ul.classList.add('slider__scale-list_horizontal');
     else if (dirLocalValue === 'vertical') ul.classList.add('slider__scale-list_vertical');
 
-    for (let i = 0; i < 5; i += 1) {
+    const localValue = (opt!.num || 7);
+    for (let i = 0; i < localValue; i += 1) {
       const li = document.createElement('li');
       li.classList.add('slider__scale-item');
       li.classList.add(`slider__scale-item_${dirLocalValue}`);
+      if (this.viewValues.scale.type === 'numeric') {
+        li.classList.add('slider__scale-item_numeric');
+        li.innerHTML = ((((this.viewValues.max - this.viewValues.min) / (localValue - 1)) * i) + this.viewValues.min).toFixed().toString();
+      }
       li.id = `slider__scale-item${i + 1}`;
+      
       ul.appendChild(li);
     }
     this.scale.appendChild(ul);
@@ -300,13 +315,35 @@ class View implements IView {
   }
 }
 
+const v4 = new View({
+  value: 2222, min: 1000, max: 10000, root: 'mySlider', scale: { init: true, num: 5, type: 'numeric' }, tooltip: true,
+});
+
+// v4.changeType('range', [150, 750]);
+// v4.changeType('single', 700);
+// v4.changeType('range', [250, 750]);
+// v4.changeDirection();
+console.dir('v4 ---', v4.getValues());
+
+const v5 = new View({
+  root: 'mySliderRange',
+  direction: 'vertical',
+  type: 'range',
+  tooltip: true,
+  scale: { init: true, num: 5, type: 'numeric' },
+  min: 0,
+  max: 10000,
+  step: 50,
+  value: [2500, 7500],
+});
+
 const v = new View({});
-// console.dir(v.getValues());
+console.dir(v.getValues());
 // console.log(v.getValues().value);
-v.changeType('range', [77, 72]);
-console.log(v.getValues().value);
-v.changeType('single', 11);
-console.log(v.getValues().value);
+// v.changeType('range', [77, 72]);
+// console.log(v.getValues().value);
+// v.changeType('single', 11);
+// console.log(v.getValues().value);
 // v.changeType('single');
 // console.log(v.getValues().value);
 // v.changeType('range');
@@ -318,26 +355,4 @@ console.log(v.getValues().value);
 // console.dir(v.getValues());
 // v.changeType('range', [110, 123]);
 // console.dir(v.getValues());
-// const v4 = new View({
-//   value: 500, min: 0, max: 1000, root: 'mySlider', scale: true, tooltip: true, direction: 'vertical',
-// });
-
-// v4.changeType('range', [150, 750]);
-// v4.changeType('single', 700);
-// v4.changeType('range', [250, 750]);
-// v4.changeDirection();
-// console.dir('v4 ---', v4.getValues());
-
-// const v5 = new View({
-//   root: 'mySliderRange',
-//   direction: 'vertical',
-//   type: 'range',
-//   tooltip: true,
-//   scale: true,
-//   min: 0,
-//   max: 1000,
-//   step: 50,
-//   value: [250, 750],
-// });
-
 export default View;

@@ -24,7 +24,7 @@ type initViewOptions = {
   type?: sliderType;
   direction?: sliderDirection;
   tooltip?: boolean;
-  scale?: boolean;
+  scale?: boolean | scaleType;
   value?: sliderValueType;
 };
 
@@ -35,18 +35,19 @@ type defaultViewOptions = {
   value: sliderValueType;
   type: sliderType;
   direction: sliderDirection;
-  scale: boolean;
+  scale: scaleType;
   tooltip: boolean;
 };
-// min:number;// мин значение шкалы
-// max:number;// макс значение шкалы
-// value: number;
-// type: sliderType;
-// direction: sliderDirection;
-// tooltipDisplay: boolean;// опция тултипа (вкл\выкл)
-// scaleDisplay: boolean;// опция шкалы (вкл\выкл)
+
+type scaleType = {
+  init: boolean;
+  num?: number;
+  type?: 'numeric' | 'usual';
+};
+
 export {
   IView,
   initViewOptions,
   defaultViewOptions,
+  scaleType,
 };
