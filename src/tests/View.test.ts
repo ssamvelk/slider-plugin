@@ -152,13 +152,46 @@ describe('Тестирование View', () => {
   });
 
   test('Тестирование метода changeType', () => {
-    v.changeType('range');
+    let localValue: boolean;
 
+    localValue = v.changeType('range');
+
+    expect(localValue).toEqual(true);
     expect(v.getValues().type).toEqual('range');
     expect(v.getValues().value).toEqual([50, 50]);
 
     v.changeType('single');
+    expect(localValue).toEqual(true);
     expect(v.getValues().type).toEqual('single');
     expect(v.getValues().value).toEqual(50);
+
+    v.changeType('range');
+    expect(v.getValues().type).toEqual('range');
+    expect(v.getValues().value).toEqual([50, 50]);
+
+    v.changeType('single', 75);
+    expect(v.getValues().type).toEqual('single');
+    expect(v.getValues().value).toEqual(75);
+
+    localValue = v.changeType('range', [30, 80]);
+    expect(localValue).toEqual(true);
+    expect(v.getValues().type).toEqual('range');
+    expect(v.getValues().value).toEqual([30, 80]);
+
+    v.changeType('single', 50); // возврат в исходное состояние
+
+    localValue = v.changeType('single');
+    expect(localValue).toEqual(false);
+    
+    localValue = v.changeType('single', 55);
+    expect(localValue).toEqual(false);
+
+    localValue = v.changeType('range', 55);
+    expect(localValue).toEqual(false);
+    
+    // localValue = v.changeType('range', 'afdasf');
+    // localValue = v.changeType('single', [551, 78, 788]);
+    expect(localValue).toEqual(false);
   });
+
 });

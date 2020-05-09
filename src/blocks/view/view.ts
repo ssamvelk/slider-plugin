@@ -1,5 +1,7 @@
 import { IView, initViewOptions, defaultViewOptions } from './IView';
-import { sliderType, sliderDirection, sliderValueType } from '../model/IModel';
+import {
+  sliderType, sliderDirection, sliderValueType, sliderRangeValueType,
+} from '../model/IModel';
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 class View implements IView {
@@ -252,16 +254,38 @@ class View implements IView {
   changeType(type: sliderType, value?: sliderValueType): boolean {
     if (type === this.viewValues.type) {
       console.log('Нельзя поменять тип слайдера на тот же самый, который установлен');
+      // throw new Error('Нельзя поменять тип слайдера на тот же самый, который установлен');
       return false;
     }
     
     this.viewValues.type = type;
     
     let localValue: sliderValueType;
-    if (value) this.viewValues.value = value;
-    else if (!value) {
-      localValue = this.viewValues.value;
-      (this.viewValues.value as [number, number]) = [localValue as number, localValue as number];
+
+    if (value) {
+      if (this.viewValues.type === 'single') { // range -> single
+        if ((typeof value) === 'number') {
+          this.viewValues.value = value;
+        } else {
+          console.log('Введенное значение должно быть числом');
+          return false;
+        }
+      } else if (this.viewValues.type === 'range') { // single -> range
+        if (Array.isArray(value) && value.length === 2) {
+          this.viewValues.value = value;
+        } else {
+          console.log('Введенное значение должно быть массивом из 2х чисел');
+          return false;
+        }
+      }
+    } else if (!value) {
+      if (this.viewValues.type === 'single') { // range -> single
+        [localValue] = this.viewValues.value as sliderRangeValueType;
+        (this.viewValues.value as number) = localValue;
+      } else if (this.viewValues.type === 'range') { // single -> range
+        localValue = [this.viewValues.value, this.viewValues.value] as sliderRangeValueType;
+        (this.viewValues.value as sliderRangeValueType) = localValue;
+      }
     }
     
     this.clearRoot();
@@ -275,22 +299,34 @@ class View implements IView {
     return this.viewValues;
   }
 }
-  
-// const v = new View({ type: 'single', tooltip: true, scale: true });
-// const v2 = new View({
-//   type: 'range', tooltip: true, scale: true, direction: 'horizontal',
+
+const v = new View({});
+// console.dir(v.getValues());
+// console.log(v.getValues().value);
+v.changeType('range', [77, 72]);
+console.log(v.getValues().value);
+v.changeType('single', 11);
+console.log(v.getValues().value);
+// v.changeType('single');
+// console.log(v.getValues().value);
+// v.changeType('range');
+// console.log(v.getValues().value);
+// v.changeType('single', 77);
+// console.log(v.getValues().value);
+// v.changeType('range');
+// console.log(v.getValues().value);
+// console.dir(v.getValues());
+// v.changeType('range', [110, 123]);
+// console.dir(v.getValues());
+// const v4 = new View({
+//   value: 500, min: 0, max: 1000, root: 'mySlider', scale: true, tooltip: true, direction: 'vertical',
 // });
-// const v3 = new View({ direction: 'vertical', tooltip: true, scale: true });
-// console.log('--------------------------- v ', v, '-------------------', v2);
-// console.log('-------------------v3', v3);
 
-const v4 = new View({
-  value: 500, min: 0, max: 1000, root: 'mySlider', scale: true, tooltip: true, direction: 'vertical',
-});
-
-v4.changeType('range', [150, 1111]);
+// v4.changeType('range', [150, 750]);
+// v4.changeType('single', 700);
+// v4.changeType('range', [250, 750]);
 // v4.changeDirection();
-console.dir('v4 ---', v4.getValues());
+// console.dir('v4 ---', v4.getValues());
 
 // const v5 = new View({
 //   root: 'mySliderRange',
@@ -304,24 +340,4 @@ console.dir('v4 ---', v4.getValues());
 //   value: [250, 750],
 // });
 
-
-// const v6 = new View({
-//   direction: 'horizontal',
-//   type: 'range',
-//   tooltip: true,
-//   scale: true,
-//   min: -100,
-//   max: 200,
-//   step: 50,
-// });
-
-
-// console.dir('v5 ---', v5.getValues());
-// console.dir('v6 ---', v6);
-
-// const v7 = new View({});
-
-// v7.changeType('range');
-// const handleStyle = getComputedStyle(v7.handle!);
-// console.log('-----v7', v7.getValues());
 export default View;
