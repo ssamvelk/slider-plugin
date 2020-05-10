@@ -256,6 +256,15 @@ class View implements IView {
     this.wrap.remove();
   }
 
+  private stepСheck(value: number): number {
+    if (value <= this.viewValues.min) return this.viewValues.min;
+    if (value > this.viewValues.max) return this.stepСheck(this.viewValues.max);
+    if (((value % this.viewValues.step) + this.viewValues.min) === 0) {
+      return value + this.viewValues.min;
+    }
+    return (value + this.viewValues.min) - (value % this.viewValues.step);
+  }
+
   changeDirection() {
     if (this.viewValues.direction === 'horizontal') this.viewValues.direction = 'vertical';
     else if (this.viewValues.direction === 'vertical') this.viewValues.direction = 'horizontal';
@@ -321,6 +330,8 @@ class View implements IView {
     this.setValue(value, this.viewValues.type);
     return this.viewValues.value;
   }
+
+  
 
   getValues() {
     return this.viewValues;

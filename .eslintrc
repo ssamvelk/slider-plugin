@@ -52,7 +52,7 @@
     "max-len": [
       "warn",
       {
-        "code": 100,
+        "code": 200,
         "tabWidth": 2,
         "ignoreComments": true
       }
