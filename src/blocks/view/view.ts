@@ -310,13 +310,30 @@ class View implements IView {
     return true;
   }
 
+  changeValue(value: sliderValueType) {
+    if (this.viewValues.type === 'single' && (typeof value) !== 'number') {
+      return new Error('введите корректное значение, а именно number');
+    }
+    // eslint-disable-next-line no-mixed-operators
+    if ((this.viewValues.type === 'range' && !Array.isArray(value)) || ((this.viewValues.type === 'range' && Array.isArray(value) && (value.length !== 2)))) {
+      return new Error('введите корректное значение, а именно [number, number]');
+    }
+    this.setValue(value, this.viewValues.type);
+    return this.viewValues.value;
+  }
+
   getValues() {
     return this.viewValues;
   }
 }
 
 const v4 = new View({
-  value: 2222, min: 1000, max: 10000, root: 'mySlider', scale: { init: true, num: 5, type: 'numeric' }, tooltip: true,
+  value: 3250,
+  min: 1000,
+  max: 10000,
+  root: 'mySlider',
+  scale: { init: true, num: 5, type: 'numeric' },
+  tooltip: true,
 });
 
 // v4.changeType('range', [150, 750]);
@@ -339,6 +356,12 @@ const v5 = new View({
 
 const v = new View({});
 console.dir(v.getValues());
+
+const qq = v5.changeValue([65, 7500]);
+console.log(qq, v5.getValues().value);
+
+// const qq2 = v5.changeValue([5500, 7000]);
+// console.log(qq2);
 // console.log(v.getValues().value);
 // v.changeType('range', [77, 72]);
 // console.log(v.getValues().value);

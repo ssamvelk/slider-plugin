@@ -211,4 +211,20 @@ describe('Тестирование View', () => {
     expect(v2.getValues().scale).toHaveProperty('type', 'numeric');
     expect(v2.getValues().scale).toEqual({ type: 'numeric', num: 11, init: true });
   });
+
+  test('Тестирование метода changeValue', () => {
+    expect(v.changeValue(70)).toEqual(70);
+    expect(v.getValues().value).toEqual(70);
+    expect(v.changeValue(-50)).toEqual(0);
+    expect(v.changeValue(789790)).toEqual(100);
+    // expect(v.changeValue([122, 900])).toEqual([Error: введите корректное значение, а именно number]);
+
+    expect(v2.changeValue([150, 170])).toEqual([150, 170]);
+    expect(v2.changeValue([700, 1170])).toEqual([200, 200]);
+    expect(v2.changeValue([-700, 1170])).toEqual([100, 200]);
+    
+    // возврат в исходное состояние v, v2
+    v.changeValue(50);
+    v2.changeValue([100, 200]);
+  });
 });
