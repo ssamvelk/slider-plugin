@@ -16,19 +16,19 @@ class View implements IView {
 
   selectSegment!: HTMLDivElement;
 
-  handle?: HTMLDivElement | undefined;
+  handle?: HTMLDivElement;
 
-  handleMin?: HTMLDivElement | undefined;
+  handleMin?: HTMLDivElement;
 
-  handleMax?: HTMLDivElement | undefined;
+  handleMax?: HTMLDivElement;
 
   tooltip?: HTMLDivElement;
 
-  tooltipMin?: HTMLDivElement | undefined;
+  tooltipMin?: HTMLDivElement;
 
-  tooltipMax?: HTMLDivElement | undefined;
+  tooltipMax?: HTMLDivElement;
 
-  scale?: HTMLDivElement | undefined;
+  scale?: HTMLDivElement;
 
   private viewValues: defaultViewOptions;
 
@@ -54,6 +54,7 @@ class View implements IView {
     this.init(options);
     this.initStyles(options.type, options.direction);
     this.setValue(this.viewValues.value, this.viewValues.type);
+    this.addMoveListener();
   }
 
   private init(opt: initViewOptions) {
@@ -177,8 +178,11 @@ class View implements IView {
     if (this.viewValues.direction === 'horizontal') {
       if (type === 'single') {
         this.viewValues.value = localValue as number;
-        this.selectSegment.style.width = `calc(${this.invertToPersent(this.viewValues.value)}%)`; // `calc(${this.viewValues.value}%)`;
+        
+        this.selectSegment.style.width = `calc(${this.invertToPersent(this.viewValues.value)}%)`;
         this.handle!.style.left = `calc(${this.invertToPersent(this.viewValues.value)}% - 15px)`;
+
+        if (this.tooltip) this.tooltip.innerHTML = (this.viewValues.value).toString();
       } else if (type === 'range') {
         this.viewValues.value = localValue as [number, number];
         
@@ -188,12 +192,18 @@ class View implements IView {
         this.selectSegment.style.left = `calc(${this.invertToPersent(this.viewValues.value[0])}%)`;
   
         this.handleMax!.style.left = `calc(${this.invertToPersent(this.viewValues.value[1])}% - 15px)`;
+
+        if (this.tooltipMin) this.tooltipMin.innerHTML = (this.viewValues.value[0]).toString();
+        if (this.tooltipMax) this.tooltipMax.innerHTML = (this.viewValues.value[1]).toString();
       }
     } else if (this.viewValues.direction === 'vertical') {
       if (type === 'single') {
         this.viewValues.value = localValue as number;
+
         this.selectSegment.style.height = `calc(${this.invertToPersent(this.viewValues.value)}%)`; // `calc(${this.viewValues.value}%)`;
         this.handle!.style.top = `calc(${this.invertToPersent(this.viewValues.value)}% - 15px)`;
+        
+        if (this.tooltip) this.tooltip.innerHTML = (this.viewValues.value).toString();
       } else if (type === 'range') {
         this.viewValues.value = localValue as [number, number];
         
@@ -203,6 +213,9 @@ class View implements IView {
         this.selectSegment.style.top = `calc(${this.invertToPersent(this.viewValues.value[0])}%)`;
   
         this.handleMax!.style.top = `calc(${this.invertToPersent(this.viewValues.value[1])}% - 15px)`;
+
+        if (this.tooltipMin) this.tooltipMin.innerHTML = (this.viewValues.value[0]).toString();
+        if (this.tooltipMax) this.tooltipMax.innerHTML = (this.viewValues.value[1]).toString();
       }
     }
   }
@@ -246,10 +259,6 @@ class View implements IView {
     }
   }
 
-  private invertToPersent(value: number) {
-    return ((value - this.viewValues.min) / (this.viewValues.max - this.viewValues.min)) * 100;
-  }
-
   private clearRoot() {
     // this.sliderLine.remove();
     // this.scale?.remove();
@@ -263,6 +272,54 @@ class View implements IView {
       return value + this.viewValues.min;
     }
     return (value + this.viewValues.min) - (value % this.viewValues.step);
+  }
+  
+  private invertToPersent(value: number) { // перевод из значения в % от длины.ширины
+    return ((value - this.viewValues.min) / (this.viewValues.max - this.viewValues.min)) * 100;
+  }
+
+  private invertCoordinate(value: number) { // перевод координаты мыши в % (длины\ширины)
+    let localPersentValue = Number((((value - this.sliderLine.getBoundingClientRect().left)
+                              / this.sliderLine.getBoundingClientRect().width) * 100).toFixed(2));
+    if (localPersentValue < 0) localPersentValue = 0;
+    if (localPersentValue > 100) localPersentValue = 100;
+    const localValue = (Number(localPersentValue) / 100) * (this.viewValues.max - this.viewValues.min);
+
+    return {
+      inPersent: localPersentValue,
+      inValue: Number(localValue.toFixed()),
+    };
+  }
+
+  private addMoveListener() { // handle: HTMLDivElement
+    const onMouseMove = (e: MouseEvent) => {
+      if (this.viewValues.direction === 'horizontal') {
+        e.preventDefault();
+
+        const localValue = this.invertCoordinate(e.clientX).inPersent;
+        const localValue2 = this.invertCoordinate(e.clientX).inValue;
+
+        this.handle!.style.left = `calc(${localValue}% - ${this.handle!.getBoundingClientRect().width / 2}px)`;
+        this.selectSegment.style.width = `${localValue}%`;
+        if (this.tooltip) {
+          this.tooltip.innerHTML = (localValue2).toString();
+        }
+      }
+    };
+    
+    const onMouseUp = () => {
+      document.removeEventListener('mouseup', onMouseUp);
+      document.removeEventListener('mousemove', onMouseMove);
+    };
+
+    if (this.viewValues.type === 'single') {
+      this.handle!.addEventListener('mousedown', (e: MouseEvent) => {
+        if (e.button === 0) {
+          document.addEventListener('mousemove', onMouseMove);
+          document.addEventListener('mouseup', onMouseUp);
+        }
+      });
+    }
   }
 
   changeDirection() {
@@ -330,7 +387,6 @@ class View implements IView {
     this.setValue(value, this.viewValues.type);
     return this.viewValues.value;
   }
-
   
 
   getValues() {
@@ -340,8 +396,8 @@ class View implements IView {
 
 const v4 = new View({
   value: 3250,
-  min: 1000,
-  max: 10000,
+  min: 0,
+  max: 1000,
   root: 'mySlider',
   scale: { init: true, num: 5, type: 'numeric' },
   tooltip: true,
@@ -365,28 +421,10 @@ const v5 = new View({
   value: [2500, 7500],
 });
 
-const v = new View({});
-console.dir(v.getValues());
+// const qq = v5.changeValue([65, 7500]);
+// console.log(qq, v5.getValues().value);
 
-const qq = v5.changeValue([65, 7500]);
-console.log(qq, v5.getValues().value);
+const v = new View({ tooltip: true, scale: { init: true, type: 'numeric' } });
+// console.dir(v.getValues());
 
-// const qq2 = v5.changeValue([5500, 7000]);
-// console.log(qq2);
-// console.log(v.getValues().value);
-// v.changeType('range', [77, 72]);
-// console.log(v.getValues().value);
-// v.changeType('single', 11);
-// console.log(v.getValues().value);
-// v.changeType('single');
-// console.log(v.getValues().value);
-// v.changeType('range');
-// console.log(v.getValues().value);
-// v.changeType('single', 77);
-// console.log(v.getValues().value);
-// v.changeType('range');
-// console.log(v.getValues().value);
-// console.dir(v.getValues());
-// v.changeType('range', [110, 123]);
-// console.dir(v.getValues());
 export default View;

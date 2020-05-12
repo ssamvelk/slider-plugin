@@ -5,7 +5,7 @@
   // position: absolute;
   // right: 0;
   // top: 0;
-  height: 700px;
+  height: 300px;
 }
 
 .slider__wrp {
@@ -15,7 +15,7 @@
   &_horizontal {
     min-width: 300px;
     min-height: 90px;
-    padding: 5px 15px;
+    padding: 5px 20px;
   }
 
   &_vertical {
@@ -96,7 +96,7 @@
   color: white;
   font-size: 12px;
   background-color: #e5573d;
-
+  user-select: none;
   &_horizontal {
     top: -35px;
     left: -5px;
@@ -105,7 +105,7 @@
       display: block;
       width: 5px;
       height: 5px;
-      position: relative;
+      position: absolute;
       background-color: #e5573d;
       top: 27px;
       left: 17px;
@@ -122,7 +122,7 @@
       display: block;
       width: 5px;
       height: 5px;
-      position: relative;
+      position: absolute;
       background-color: #e5573d;
       top: 13px;
       left: -2px;
@@ -132,7 +132,7 @@
 }
 
 .slider__scale {
-   
+  user-select: none;
   &_horizontal {
     position: relative;
     width: 100%;
