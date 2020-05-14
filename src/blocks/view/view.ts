@@ -279,8 +279,16 @@ class View implements IView {
   }
 
   private invertCoordinate(value: number) { // перевод координаты мыши в % (длины\ширины)
-    let localPersentValue = Number((((value - this.sliderLine.getBoundingClientRect().left)
+    let localPersentValue: number = 0;
+
+    if (this.viewValues.direction === 'horizontal') {
+      localPersentValue = Number((((value - this.sliderLine.getBoundingClientRect().left)
                               / this.sliderLine.getBoundingClientRect().width) * 100).toFixed(2));
+    } else if (this.viewValues.direction === 'vertical') {
+      localPersentValue = Number((((value - this.sliderLine.getBoundingClientRect().top)
+                              / this.sliderLine.getBoundingClientRect().height) * 100).toFixed(2));
+    }
+
     if (localPersentValue < 0) localPersentValue = 0;
     if (localPersentValue > 100) localPersentValue = 100;
     const localValue = (Number(localPersentValue) / 100) * (this.viewValues.max - this.viewValues.min);
@@ -292,30 +300,131 @@ class View implements IView {
   }
 
   private addMoveListener() { // handle: HTMLDivElement
-    const onMouseMove = (e: MouseEvent) => {
+    const handleShiftWidth = (this.handle) ? (this.handle.getBoundingClientRect().width / 2) : (this.handleMin!.getBoundingClientRect().width / 2);
+    let handleMaxPositionInPersents: number = 0;
+    let handleMinPositionInPersents: number = 0;
+    let MousePositionInPersents: number = 0;
+    let MousePositionOnSlider: number = 0;
+
+    const onMouseMoveHandle = (e: MouseEvent) => {
+      e.preventDefault();
+      
       if (this.viewValues.direction === 'horizontal') {
-        e.preventDefault();
+        MousePositionInPersents = this.invertCoordinate(e.clientX).inPersent;
+        MousePositionOnSlider = this.invertCoordinate(e.clientX).inValue;
 
-        const localValue = this.invertCoordinate(e.clientX).inPersent;
-        const localValue2 = this.invertCoordinate(e.clientX).inValue;
+        this.handle!.style.left = `calc(${MousePositionInPersents}% - ${handleShiftWidth}px)`;
+        this.selectSegment.style.width = `${MousePositionInPersents}%`;
 
-        this.handle!.style.left = `calc(${localValue}% - ${this.handle!.getBoundingClientRect().width / 2}px)`;
-        this.selectSegment.style.width = `${localValue}%`;
         if (this.tooltip) {
-          this.tooltip.innerHTML = (localValue2).toString();
+          this.tooltip.innerHTML = (MousePositionOnSlider).toString();
+        }
+      } else if (this.viewValues.direction === 'vertical') {
+        MousePositionInPersents = this.invertCoordinate(e.clientY).inPersent;
+        MousePositionOnSlider = this.invertCoordinate(e.clientY).inValue;
+
+        this.handle!.style.top = `calc(${MousePositionInPersents}% - ${handleShiftWidth}px)`;
+        this.selectSegment.style.height = `${MousePositionInPersents}%`;
+        
+        if (this.tooltip) {
+          this.tooltip.innerHTML = (MousePositionOnSlider).toString();
         }
       }
+      
+      this.viewValues.value = MousePositionOnSlider;
+    };
+
+    const onMouseMoveHandleMin = (e: MouseEvent) => {
+      e.preventDefault();
+
+      if (this.viewValues.direction === 'horizontal') {
+        MousePositionInPersents = this.invertCoordinate(e.clientX).inPersent;
+        MousePositionOnSlider = this.invertCoordinate(e.clientX).inValue;
+        handleMaxPositionInPersents = this.invertCoordinate(this.handleMax!.getBoundingClientRect().left).inPersent;
+
+        (this.handleMin as HTMLDivElement).style.left = `calc(${MousePositionInPersents}% - ${handleShiftWidth}px)`;
+        
+        this.selectSegment.style.left = `${MousePositionInPersents}%`;
+        this.selectSegment.style.width = `calc(${handleMaxPositionInPersents - MousePositionInPersents}% + ${handleShiftWidth}px)`;
+        
+        if (this.tooltipMin) {
+          this.tooltipMin.innerHTML = (MousePositionOnSlider).toString();
+        }
+      } else if (this.viewValues.direction === 'vertical') {
+        MousePositionInPersents = this.invertCoordinate(e.clientY).inPersent;
+        MousePositionOnSlider = this.invertCoordinate(e.clientY).inValue;
+        handleMaxPositionInPersents = this.invertCoordinate(this.handleMax!.getBoundingClientRect().top).inPersent;
+
+        (this.handleMin as HTMLDivElement).style.top = `calc(${MousePositionInPersents}% - ${handleShiftWidth}px)`;
+        
+        this.selectSegment.style.top = `${MousePositionInPersents}%`;
+        this.selectSegment.style.height = `calc(${handleMaxPositionInPersents - MousePositionInPersents}% + ${handleShiftWidth}px)`;
+        
+        if (this.tooltipMin) {
+          this.tooltipMin.innerHTML = (MousePositionOnSlider).toString();
+        }
+      }
+      (this.viewValues.value as sliderRangeValueType)[0] = MousePositionOnSlider;
+    };
+
+    const onMouseMoveHandleMax = (e: MouseEvent) => {
+      e.preventDefault();
+
+      if (this.viewValues.direction === 'horizontal') {
+        MousePositionInPersents = this.invertCoordinate(e.clientX).inPersent;
+        MousePositionOnSlider = this.invertCoordinate(e.clientX).inValue;
+        handleMinPositionInPersents = this.invertCoordinate(this.handleMin!.getBoundingClientRect().left).inPersent;
+
+        (this.handleMax as HTMLDivElement).style.left = `calc(${MousePositionInPersents}% - ${handleShiftWidth}px)`;
+        
+        this.selectSegment.style.left = `calc(${handleMinPositionInPersents}% `;
+        this.selectSegment.style.width = `calc(${MousePositionInPersents - handleMinPositionInPersents}% + ${handleShiftWidth}px)`;
+        
+        if (this.tooltipMax) {
+          this.tooltipMax.innerHTML = (MousePositionOnSlider).toString();
+        }
+      } else if (this.viewValues.direction === 'vertical') {
+        MousePositionInPersents = this.invertCoordinate(e.clientY).inPersent;
+        MousePositionOnSlider = this.invertCoordinate(e.clientY).inValue;
+        handleMinPositionInPersents = this.invertCoordinate(this.handleMin!.getBoundingClientRect().top).inPersent;
+
+        (this.handleMax as HTMLDivElement).style.top = `calc(${MousePositionInPersents}% - ${handleShiftWidth}px)`;
+        
+        this.selectSegment.style.top = `${MousePositionInPersents}%`;
+        this.selectSegment.style.height = `calc(${MousePositionInPersents - handleMinPositionInPersents}% + ${handleShiftWidth}px)`;
+        
+        if (this.tooltipMax) {
+          this.tooltipMax.innerHTML = (MousePositionOnSlider).toString();
+        }
+      }
+      (this.viewValues.value as sliderRangeValueType)[1] = MousePositionOnSlider!;
     };
     
     const onMouseUp = () => {
       document.removeEventListener('mouseup', onMouseUp);
-      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mousemove', onMouseMoveHandle);
+      document.removeEventListener('mousemove', onMouseMoveHandleMin);
+      document.removeEventListener('mousemove', onMouseMoveHandleMax);
+      console.log(this.viewValues.value);
     };
 
     if (this.viewValues.type === 'single') {
       this.handle!.addEventListener('mousedown', (e: MouseEvent) => {
         if (e.button === 0) {
-          document.addEventListener('mousemove', onMouseMove);
+          document.addEventListener('mousemove', onMouseMoveHandle);
+          document.addEventListener('mouseup', onMouseUp);
+        }
+      });
+    } else if (this.viewValues.type === 'range') {
+      this.handleMin!.addEventListener('mousedown', (e: MouseEvent) => {
+        if (e.button === 0) {
+          document.addEventListener('mousemove', onMouseMoveHandleMin);
+          document.addEventListener('mouseup', onMouseUp);
+        }
+      });
+      this.handleMax!.addEventListener('mousedown', (e: MouseEvent) => {
+        if (e.button === 0) {
+          document.addEventListener('mousemove', onMouseMoveHandleMax);
           document.addEventListener('mouseup', onMouseUp);
         }
       });
@@ -387,7 +496,6 @@ class View implements IView {
     this.setValue(value, this.viewValues.type);
     return this.viewValues.value;
   }
-  
 
   getValues() {
     return this.viewValues;
@@ -397,9 +505,9 @@ class View implements IView {
 const v4 = new View({
   value: 3250,
   min: 0,
-  max: 1000,
+  max: 31,
   root: 'mySlider',
-  scale: { init: true, num: 5, type: 'numeric' },
+  scale: { init: true, num: 31, type: 'usual' },
   tooltip: true,
 });
 
@@ -424,7 +532,11 @@ const v5 = new View({
 // const qq = v5.changeValue([65, 7500]);
 // console.log(qq, v5.getValues().value);
 
-const v = new View({ tooltip: true, scale: { init: true, type: 'numeric' } });
+const v = new View({ tooltip: true, scale: { init: true, type: 'numeric' }, direction: 'vertical' });
+
+const v2 = new View({
+  value: [25, 75], type: 'range', tooltip: true, scale: { init: true, type: 'numeric', num: 5 },
+});
 // console.dir(v.getValues());
 
 export default View;
