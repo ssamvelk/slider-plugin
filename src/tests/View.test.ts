@@ -135,7 +135,7 @@ describe('Тестирование View', () => {
 
     expect(v5.getValues().value).toEqual([0, 70]);
     expect(v6.getValues().value).toEqual([45, 100]);
-    expect(v7.getValues().value).toEqual([45, 45]);
+    expect(v7.getValues().value).toEqual([9, 10]);
     expect(v8.getValues().value).toEqual([0, 100]);
   });
 
@@ -158,16 +158,16 @@ describe('Тестирование View', () => {
 
     expect(localValue).toEqual(true);
     expect(v.getValues().type).toEqual('range');
-    expect(v.getValues().value).toEqual([50, 50]);
+    expect(v.getValues().value).toEqual([49, 50]);
 
     v.changeType('single');
     expect(localValue).toEqual(true);
     expect(v.getValues().type).toEqual('single');
-    expect(v.getValues().value).toEqual(50);
+    expect(v.getValues().value).toEqual(49);
 
     v.changeType('range');
     expect(v.getValues().type).toEqual('range');
-    expect(v.getValues().value).toEqual([50, 50]);
+    expect(v.getValues().value).toEqual([48, 49]);
 
     v.changeType('single', 75);
     expect(v.getValues().type).toEqual('single');
@@ -220,11 +220,17 @@ describe('Тестирование View', () => {
     // expect(v.changeValue([122, 900])).toEqual([Error: введите корректное значение, а именно number]);
 
     expect(v2.changeValue([150, 170])).toEqual([150, 170]);
-    expect(v2.changeValue([700, 1170])).toEqual([200, 200]);
+    expect(v2.changeValue([700, 1170])).toEqual([199, 200]);
     expect(v2.changeValue([-700, 1170])).toEqual([100, 200]);
+    expect(v2.changeValue([150, 50])).toEqual([49, 50]);
     
     // возврат в исходное состояние v, v2
     v.changeValue(50);
     v2.changeValue([100, 200]);
+
+    const v3 = new View({
+      min: 1, max: 100, step: 3, value: 99,
+    });
+    expect(v3.getValues().value).toEqual(99);
   });
 });

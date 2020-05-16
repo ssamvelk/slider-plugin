@@ -221,40 +221,52 @@ class View implements IView {
   }
 
   private checkValue(value: sliderValueType) {
-    let newLocal = value as number;
+    let newLocal: number = value as number;
     if (this.viewValues.type === 'single') {
       if (newLocal < this.viewValues.min) {
         newLocal = this.viewValues.min;
         console.log('value не может быть меньше минимального порога значений, меняем на минимальный');
       }
+      // if ((((newLocal - this.viewValues.min) % this.viewValues.step)) !== 0) {
+      //   newLocal = newLocal - (newLocal % this.viewValues.step);
+      // }
       if (newLocal > this.viewValues.max) {
-        newLocal = this.viewValues.max;
-        console.log('value не может быть больше максимального порога значений, меняем на максимальный');
+        newLocal = this.viewValues.max; //  - (this.viewValues.max % this.viewValues.step);
+        console.log('value не может быть больше максимального порога значений, меняем на максимальный возможный');
       }
       return newLocal;
-    } if (this.viewValues.type === 'range' && (value instanceof Array === true)) {
+    }
+    if (this.viewValues.type === 'range' && (value instanceof Array === true)) {
       const newLocal2 = value as [number, number];
       if (newLocal2[0] < this.viewValues.min) {
         newLocal2[0] = this.viewValues.min;
         console.log('valueMin не может быть меньше минимального порога значений, меняем на минимальный');
       }
-      if (newLocal2[0] > this.viewValues.max) {
-        newLocal2[0] = this.viewValues.max;
-        console.log('valueMin не может быть больше максимального порога значений, меняем на максимальный');
-      }
-      // eslint-disable-next-line prefer-destructuring
-      if (newLocal2[0] > newLocal2[1] - this.viewValues.step) {
-        console.log('valueMin не может быть больше valueMax - step');
-        newLocal2[0] = newLocal2[1] - this.viewValues.step;
-      }
       if (newLocal2[1] > this.viewValues.max) {
         newLocal2[1] = this.viewValues.max;
         console.log('valueMax не может быть больше максимального порога значений, меняем на максимальный');
       }
+
+      if (newLocal2[0] >= newLocal2[1]) {
+        newLocal2[0] = newLocal2[1] - this.viewValues.step;
+        console.log('valueMin не может быть больше valueMax - step');
+      }
+
       if (newLocal2[1] < newLocal2[0] + this.viewValues.step) {
         console.log('valueMax не может быть меньше valueMin + step');
-        newLocal2[1] = newLocal2[0] + this.viewValues.step;
+        newLocal2[0] = newLocal2[1] - this.viewValues.step;
       }
+      
+      // if (newLocal2[0] === newLocal2[1]) {
+      //   if (newLocal2[0] === this.viewValues.min) {
+      //     newLocal2[1] = newLocal2[0] + this.viewValues.step;
+      //     console.log('1');
+      //   }
+      //   if (newLocal2[1] === this.viewValues.max) {
+      //     newLocal2[0] = newLocal2[1] - this.viewValues.step;
+      //     console.log('2');
+      //   }
+      // }
       
       return newLocal2;
     }
@@ -286,7 +298,7 @@ class View implements IView {
     const localValue = ((Number(localPersentValue) / 100) * (this.viewValues.max - this.viewValues.min)) + this.viewValues.min;
 
     return {
-      inPersent: Number(localPersentValue.toFixed(2)),
+      inPersent: Number(localPersentValue.toFixed()),
       inValue: Number(localValue.toFixed()),
     };
   }
@@ -351,12 +363,46 @@ class View implements IView {
         MousePositionOnSlider = this.invertCoordinate(e.clientX).inValue;
         handleMaxPositionInPersents = this.invertCoordinate(this.handleMax!.getBoundingClientRect().left).inPersent;
 
-        if (MousePositionOnSlider > (this.viewValues.value as sliderRangeValueType)[1]) {
-          this.setValue([(this.viewValues.value as sliderRangeValueType)[1], (this.viewValues.value as sliderRangeValueType)[1]], 'range');
+        const localMin = (this.viewValues.value as sliderRangeValueType)[0];
+        const localMax = (this.viewValues.value as sliderRangeValueType)[1];
+
+        if (MousePositionOnSlider >= localMax) {
+          if (localMax === this.viewValues.max) {
+            this.setValue(
+              [this.viewValues.max - this.viewValues.step,
+                this.viewValues.max],
+              'range',
+            );
+            return;
+          }
+          this.setValue(
+            [localMax,
+              localMax + this.viewValues.step],
+            'range',
+          );
           return;
         }
 
+        // if (MousePositionOnSlider <= localMin - this.viewValues.step) {
+        //   this.setValue(
+        //     [localMin - this.viewValues.step,
+        //       localMax],
+        //     'range',
+        //   );
+        //   // return;
+        // }
+
+        // if (MousePositionOnSlider >= localMin + this.viewValues.step) {
+        //   this.setValue(
+        //     [localMin + this.viewValues.step,
+        //       localMax],
+        //     'range',
+        //   );
+        //   // return;
+        // }
+
         if ((MousePositionOnSlider % this.viewValues.step) !== 0) {
+          console.log('MousePositionOnSlider % this.viewValues.step =', MousePositionOnSlider % this.viewValues.step);
           return;
         }
 
@@ -373,8 +419,20 @@ class View implements IView {
         MousePositionOnSlider = this.invertCoordinate(e.clientY).inValue;
         handleMaxPositionInPersents = this.invertCoordinate(this.handleMax!.getBoundingClientRect().top).inPersent;
 
-        if (MousePositionOnSlider > (this.viewValues.value as sliderRangeValueType)[1]) {
-          this.setValue([(this.viewValues.value as sliderRangeValueType)[1], (this.viewValues.value as sliderRangeValueType)[1]], 'range');
+        if (MousePositionOnSlider >= (this.viewValues.value as sliderRangeValueType)[1]) {
+          if ((this.viewValues.value as sliderRangeValueType)[1] === this.viewValues.max) {
+            this.setValue(
+              [this.viewValues.max - this.viewValues.step,
+                this.viewValues.max],
+              'range',
+            );
+            return;
+          }
+          this.setValue(
+            [(this.viewValues.value as sliderRangeValueType)[1],
+              (this.viewValues.value as sliderRangeValueType)[1] + this.viewValues.step],
+            'range',
+          );
           return;
         }
 
@@ -402,8 +460,20 @@ class View implements IView {
         MousePositionOnSlider = this.invertCoordinate(e.clientX).inValue;
         handleMinPositionInPersents = this.invertCoordinate(this.handleMin!.getBoundingClientRect().left + handleShiftWidth).inPersent;
 
-        if (MousePositionOnSlider < (this.viewValues.value as sliderRangeValueType)[0]) {
-          this.setValue([(this.viewValues.value as sliderRangeValueType)[0], (this.viewValues.value as sliderRangeValueType)[0]], 'range');
+        if (MousePositionOnSlider <= (this.viewValues.value as sliderRangeValueType)[0]) {
+          if ((this.viewValues.value as sliderRangeValueType)[0] === this.viewValues.min) {
+            this.setValue(
+              [this.viewValues.min,
+                this.viewValues.min + this.viewValues.step],
+              'range',
+            );
+            return;
+          }
+          this.setValue(
+            [(this.viewValues.value as sliderRangeValueType)[0] - this.viewValues.step,
+              (this.viewValues.value as sliderRangeValueType)[0]],
+            'range',
+          );
           return;
         }
 
@@ -424,8 +494,20 @@ class View implements IView {
         MousePositionOnSlider = this.invertCoordinate(e.clientY).inValue;
         handleMinPositionInPersents = this.invertCoordinate(this.handleMin!.getBoundingClientRect().top + handleShiftWidth).inPersent;
 
-        if (MousePositionOnSlider < (this.viewValues.value as sliderRangeValueType)[0]) {
-          this.setValue([(this.viewValues.value as sliderRangeValueType)[0], (this.viewValues.value as sliderRangeValueType)[0]], 'range');
+        if (MousePositionOnSlider <= (this.viewValues.value as sliderRangeValueType)[0]) {
+          if ((this.viewValues.value as sliderRangeValueType)[0] === this.viewValues.min) {
+            this.setValue(
+              [this.viewValues.min,
+                this.viewValues.min + this.viewValues.step],
+              'range',
+            );
+            return;
+          }
+          this.setValue(
+            [(this.viewValues.value as sliderRangeValueType)[0] - this.viewValues.step,
+              (this.viewValues.value as sliderRangeValueType)[0]],
+            'range',
+          );
           return;
         }
 
@@ -551,35 +633,31 @@ class View implements IView {
 }
 
 const v1 = new View({
-  value: 510,
-  min: 0,
-  max: 120,
-  root: 'mySlider',
-  scale: { init: true, num: 31, type: 'usual' },
-  tooltip: true,
-  step: 12,
+  min: 1, max: 32, step: 3, value: 450, root: 'mySlider', scale: true,
+  
 });
 
-const v2 = new View({
-  root: 'mySliderRange',
-  direction: 'vertical',
-  type: 'range',
-  tooltip: true,
-  scale: { init: true, num: 5, type: 'numeric' },
-  min: 400,
-  max: 1000,
-  step: 1,
-  value: [500, 1000],
-});
+// const v2 = new View({
+//   root: 'mySliderRange',
+//   direction: 'vertical',
+//   type: 'range',
+//   tooltip: true,
+//   scale: { init: true, num: 5, type: 'numeric' },
+//   min: 400,
+//   max: 1000,
+//   step: 50,
+//   value: [400, 1000],
+// });
 
 
-const v3 = new View({
-  step: 50, tooltip: true, scale: { init: true, type: 'numeric' }, direction: 'vertical',
-});
+// const v3 = new View({
+//   type: 'range',
+//   step: 3,
+// });
 
-const v4 = new View({
-  step: 5, max: 100, value: [25, 75], type: 'range', tooltip: true, scale: { init: true, type: 'numeric', num: 5 },
-});
-// console.dir(v.getValues());
+// const v4 = new View({
+//   step: 5, max: 1000, value: [2000, 5000], type: 'range', tooltip: true, scale: { init: true, type: 'numeric', num: 5 },
+// });
+console.log(v1.getValues().value);
 
 export default View;
