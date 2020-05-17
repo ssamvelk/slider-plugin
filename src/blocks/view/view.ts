@@ -222,7 +222,7 @@ class View implements IView {
 
   private checkValue(value: sliderValueType, autoStepCheck: boolean = true) {
     let newLocal: number = value as number;
-    console.log('---', newLocal, this.viewValues.min);
+    
     if (this.viewValues.type === 'single') {
       if (newLocal <= this.viewValues.min) {
         newLocal = this.viewValues.min;
@@ -230,51 +230,41 @@ class View implements IView {
         return newLocal;
       }
       if (newLocal > this.viewValues.max) {
-        newLocal = this.viewValues.max; //  - (this.viewValues.max % this.viewValues.step);
+        newLocal = this.viewValues.max;
         console.log('value не может быть больше максимального порога значений, меняем на максимальный возможный');
       }
       // -------stepCheck
       if (autoStepCheck) {
         newLocal = this.stepСheck(newLocal);
-        // if ((newLocal - this.viewValues.min) % this.viewValues.step !== 0) {
-        //   newLocal = this.viewValues.min
-        //     + Number(((newLocal - this.viewValues.min) / this.viewValues.step).toFixed())
-        //       * this.viewValues.step;
-        // }
       }
       return newLocal;
     }
     if (this.viewValues.type === 'range' && (value instanceof Array === true)) {
       const newLocal2 = value as [number, number];
-      if (newLocal2[0] < this.viewValues.min) {
+      if (newLocal2[0] <= this.viewValues.min) {
         newLocal2[0] = this.viewValues.min;
         console.log('valueMin не может быть меньше минимального порога значений, меняем на минимальный');
+        if (newLocal2[1] <= this.viewValues.min) newLocal2[1] = newLocal2[0] + this.viewValues.step;
       }
-      if (newLocal2[1] > this.viewValues.max) {
-        newLocal2[1] = this.viewValues.max;
+      if (newLocal2[1] >= this.viewValues.max) {
+        newLocal2[1] = this.stepСheck(this.viewValues.max);
         console.log('valueMax не может быть больше максимального порога значений, меняем на максимальный');
+        if (newLocal2[0] >= newLocal2[1]) newLocal2[0] = newLocal2[1] - this.viewValues.step;
       }
 
+      newLocal2[0] = this.stepСheck(newLocal2[0]);
+      newLocal2[1] = this.stepСheck(newLocal2[1]);
+  
       if (newLocal2[0] >= newLocal2[1]) {
-        newLocal2[0] = newLocal2[1] - this.viewValues.step;
-        console.log('valueMin не может быть больше valueMax - step');
+        if (newLocal2[1] === this.stepСheck(this.viewValues.max)) {
+          newLocal2[0] = newLocal2[1] - this.viewValues.step;
+          
+          console.log('valueMin не может быть больше либо равно valueMax, уменьшаем valueMin на step');
+        } else {
+          newLocal2[1] = (newLocal2[0] + this.viewValues.step);
+          console.log(' valueMax  не может быть меньше либо равно valueMin, увеличиваем на step');
+        }
       }
-
-      if (newLocal2[1] < newLocal2[0] + this.viewValues.step) {
-        console.log('valueMax не может быть меньше valueMin + step');
-        newLocal2[0] = newLocal2[1] - this.viewValues.step;
-      }
-      
-      // if (newLocal2[0] === newLocal2[1]) {
-      //   if (newLocal2[0] === this.viewValues.min) {
-      //     newLocal2[1] = newLocal2[0] + this.viewValues.step;
-      //     console.log('1');
-      //   }
-      //   if (newLocal2[1] === this.viewValues.max) {
-      //     newLocal2[0] = newLocal2[1] - this.viewValues.step;
-      //     console.log('2');
-      //   }
-      // }
       
       return newLocal2;
     }
@@ -322,53 +312,16 @@ class View implements IView {
     return value;
   }
 
-  private addMoveListener() { // handle: HTMLDivElement
-    const handleShiftWidth: number = (this.handle) ? (this.handle.getBoundingClientRect().width / 2) : (this.handleMin!.getBoundingClientRect().width / 2);
-    let handleMaxPositionInPersents: number = 0;
-    let handleMinPositionInPersents: number = 0;
-    let MousePositionInPersents: number = 0;
+  private addMoveListener() {
     let MousePositionOnSlider: number = 0;
 
     const onMouseMoveHandle = (e: MouseEvent) => {
       e.preventDefault();
-
+      
       if (this.viewValues.direction === 'horizontal') {
-        MousePositionInPersents = this.invertCoordinate(e.clientX).inPersent;
         MousePositionOnSlider = this.invertCoordinate(e.clientX).inValue;
-        
-        MousePositionOnSlider = this.stepСheck(MousePositionOnSlider);
-
-        this.setValue(MousePositionOnSlider, 'single');
-        // console.dir('MousePositionOnSlider = ', MousePositionOnSlider);
-        // if (MousePositionOnSlider <= this.viewValues.min) {
-        //   this.setValue(this.viewValues.min, 'single');
-        //   return;
-        // }
-        // if ((MousePositionOnSlider % this.viewValues.step) !== 0) {
-        //   return;
-        // }
-
-        // this.handle!.style.left = `calc(${MousePositionInPersents}% - ${handleShiftWidth}px)`;
-        // this.selectSegment.style.width = `${MousePositionInPersents}%`;
-
-        // if (this.tooltip) {
-        //   this.tooltip.innerHTML = (MousePositionOnSlider).toString();
-        // }
       } else if (this.viewValues.direction === 'vertical') {
-        MousePositionInPersents = this.invertCoordinate(e.clientY).inPersent;
         MousePositionOnSlider = this.invertCoordinate(e.clientY).inValue;
-
-        
-        // if ((MousePositionOnSlider % this.viewValues.step) !== 0) {
-        //   return;
-        // }
-
-        // this.handle!.style.top = `calc(${MousePositionInPersents}% - ${handleShiftWidth}px)`;
-        // this.selectSegment.style.height = `${MousePositionInPersents}%`;
-        
-        // if (this.tooltip) {
-        //   this.tooltip.innerHTML = (MousePositionOnSlider).toString();
-        // }
       }
 
       MousePositionOnSlider = this.stepСheck(MousePositionOnSlider);
@@ -379,174 +332,38 @@ class View implements IView {
 
     const onMouseMoveHandleMin = (e: MouseEvent) => {
       e.preventDefault();
-
+      // const localMax = (this.viewValues.value as sliderRangeValueType)[1];
+      const [localMax] = [(this.viewValues.value as sliderRangeValueType)[1]];
+      
       if (this.viewValues.direction === 'horizontal') {
-        MousePositionInPersents = this.invertCoordinate(e.clientX).inPersent;
         MousePositionOnSlider = this.invertCoordinate(e.clientX).inValue;
-        handleMaxPositionInPersents = this.invertCoordinate(this.handleMax!.getBoundingClientRect().left).inPersent;
-
-        const localMin = (this.viewValues.value as sliderRangeValueType)[0];
-        const localMax = (this.viewValues.value as sliderRangeValueType)[1];
-
-        if (MousePositionOnSlider >= localMax) {
-          if (localMax === this.viewValues.max) {
-            this.setValue(
-              [this.viewValues.max - this.viewValues.step,
-                this.viewValues.max],
-              'range',
-            );
-            return;
-          }
-          this.setValue(
-            [localMax,
-              localMax + this.viewValues.step],
-            'range',
-          );
-          return;
-        }
-
-        // if (MousePositionOnSlider <= localMin - this.viewValues.step) {
-        //   this.setValue(
-        //     [localMin - this.viewValues.step,
-        //       localMax],
-        //     'range',
-        //   );
-        //   // return;
-        // }
-
-        // if (MousePositionOnSlider >= localMin + this.viewValues.step) {
-        //   this.setValue(
-        //     [localMin + this.viewValues.step,
-        //       localMax],
-        //     'range',
-        //   );
-        //   // return;
-        // }
-
-        if ((MousePositionOnSlider % this.viewValues.step) !== 0) {
-          console.log('MousePositionOnSlider % this.viewValues.step =', MousePositionOnSlider % this.viewValues.step);
-          return;
-        }
-
-        (this.handleMin as HTMLDivElement).style.left = `calc(${MousePositionInPersents}% - ${handleShiftWidth}px)`;
         
-        this.selectSegment.style.left = `${MousePositionInPersents}%`;
-        this.selectSegment.style.width = `calc(${handleMaxPositionInPersents - MousePositionInPersents}% + ${handleShiftWidth}px)`;
-        
-        if (this.tooltipMin) {
-          this.tooltipMin.innerHTML = (MousePositionOnSlider).toString();
-        }
+        MousePositionOnSlider = this.stepСheck(MousePositionOnSlider);
       } else if (this.viewValues.direction === 'vertical') {
-        MousePositionInPersents = this.invertCoordinate(e.clientY).inPersent;
         MousePositionOnSlider = this.invertCoordinate(e.clientY).inValue;
-        handleMaxPositionInPersents = this.invertCoordinate(this.handleMax!.getBoundingClientRect().top).inPersent;
 
-        if (MousePositionOnSlider >= (this.viewValues.value as sliderRangeValueType)[1]) {
-          if ((this.viewValues.value as sliderRangeValueType)[1] === this.viewValues.max) {
-            this.setValue(
-              [this.viewValues.max - this.viewValues.step,
-                this.viewValues.max],
-              'range',
-            );
-            return;
-          }
-          this.setValue(
-            [(this.viewValues.value as sliderRangeValueType)[1],
-              (this.viewValues.value as sliderRangeValueType)[1] + this.viewValues.step],
-            'range',
-          );
-          return;
-        }
-
-        if ((MousePositionOnSlider % this.viewValues.step) !== 0) {
-          return;
-        }
-
-        (this.handleMin as HTMLDivElement).style.top = `calc(${MousePositionInPersents}% - ${handleShiftWidth}px)`;
-        
-        this.selectSegment.style.top = `${MousePositionInPersents}%`;
-        this.selectSegment.style.height = `calc(${handleMaxPositionInPersents - MousePositionInPersents}% + ${handleShiftWidth}px)`;
-        
-        if (this.tooltipMin) {
-          this.tooltipMin.innerHTML = (MousePositionOnSlider).toString();
-        }
+        MousePositionOnSlider = this.stepСheck(MousePositionOnSlider);
       }
-      (this.viewValues.value as sliderRangeValueType)[0] = MousePositionOnSlider;
+
+      this.setValue([MousePositionOnSlider, localMax], 'range');
     };
 
     const onMouseMoveHandleMax = (e: MouseEvent) => {
       e.preventDefault();
-
+      // const localMin = (this.viewValues.value as sliderRangeValueType)[0];
+      const [localMin] = [(this.viewValues.value as sliderRangeValueType)[0]];
       if (this.viewValues.direction === 'horizontal') {
-        MousePositionInPersents = this.invertCoordinate(e.clientX).inPersent;
         MousePositionOnSlider = this.invertCoordinate(e.clientX).inValue;
-        handleMinPositionInPersents = this.invertCoordinate(this.handleMin!.getBoundingClientRect().left + handleShiftWidth).inPersent;
-
-        if (MousePositionOnSlider <= (this.viewValues.value as sliderRangeValueType)[0]) {
-          if ((this.viewValues.value as sliderRangeValueType)[0] === this.viewValues.min) {
-            this.setValue(
-              [this.viewValues.min,
-                this.viewValues.min + this.viewValues.step],
-              'range',
-            );
-            return;
-          }
-          this.setValue(
-            [(this.viewValues.value as sliderRangeValueType)[0] - this.viewValues.step,
-              (this.viewValues.value as sliderRangeValueType)[0]],
-            'range',
-          );
-          return;
-        }
-
-        if ((MousePositionOnSlider % this.viewValues.step) !== 0) {
-          return;
-        }
-
-        (this.handleMax as HTMLDivElement).style.left = `calc(${MousePositionInPersents}% - ${handleShiftWidth}px)`;
         
-        this.selectSegment.style.left = `calc(${handleMinPositionInPersents}%)`;
-        this.selectSegment.style.width = `calc(${MousePositionInPersents - handleMinPositionInPersents}%)`;
-        
-        if (this.tooltipMax) {
-          this.tooltipMax.innerHTML = (MousePositionOnSlider).toString();
-        }
+        MousePositionOnSlider = this.stepСheck(MousePositionOnSlider);
       } else if (this.viewValues.direction === 'vertical') {
-        MousePositionInPersents = this.invertCoordinate(e.clientY).inPersent;
         MousePositionOnSlider = this.invertCoordinate(e.clientY).inValue;
-        handleMinPositionInPersents = this.invertCoordinate(this.handleMin!.getBoundingClientRect().top + handleShiftWidth).inPersent;
-
-        if (MousePositionOnSlider <= (this.viewValues.value as sliderRangeValueType)[0]) {
-          if ((this.viewValues.value as sliderRangeValueType)[0] === this.viewValues.min) {
-            this.setValue(
-              [this.viewValues.min,
-                this.viewValues.min + this.viewValues.step],
-              'range',
-            );
-            return;
-          }
-          this.setValue(
-            [(this.viewValues.value as sliderRangeValueType)[0] - this.viewValues.step,
-              (this.viewValues.value as sliderRangeValueType)[0]],
-            'range',
-          );
-          return;
-        }
-
-        if ((MousePositionOnSlider % this.viewValues.step) !== 0) {
-          return;
-        }
-
-        (this.handleMax as HTMLDivElement).style.top = `calc(${MousePositionInPersents}% - ${handleShiftWidth}px)`;
         
-        this.selectSegment.style.top = `calc(${handleMinPositionInPersents}%)`;
-        this.selectSegment.style.height = `calc(${MousePositionInPersents - handleMinPositionInPersents}%)`;
-        
-        if (this.tooltipMax) {
-          this.tooltipMax.innerHTML = (MousePositionOnSlider).toString();
-        }
+        MousePositionOnSlider = this.stepСheck(MousePositionOnSlider);
       }
-      (this.viewValues.value as sliderRangeValueType)[1] = MousePositionOnSlider!;
+      if (MousePositionOnSlider <= localMin) {
+        this.setValue([localMin - this.viewValues.step, MousePositionOnSlider], 'range');
+      } else this.setValue([localMin, MousePositionOnSlider], 'range');
     };
     
     const onMouseUp = () => {
@@ -558,9 +375,8 @@ class View implements IView {
     };
 
     if (this.viewValues.type === 'single') {
-      this.handle!.ondragstart = () => false;
+      // this.handle!.ondragstart = () => false;
       this.handle!.addEventListener('mousedown', (e: MouseEvent) => {
-        // const handleCoordinateY = e.clientY;
         if (e.button === 0) {
           document.addEventListener('mousemove', onMouseMoveHandle);
           document.addEventListener('mouseup', onMouseUp);
@@ -655,25 +471,26 @@ class View implements IView {
 }
 
 const v1 = new View({
-  min: 10,
-  max: 105,
-  step: 25,
-  value: 155,
+  min: 1,
+  max: 100,
+  step: 33,
+  // value: [961, 96],
   tooltip: true,
   root: 'mySlider',
   scale: { init: true, type: 'numeric' },
+  // type: 'range',
 });
 
 const v2 = new View({
   root: 'mySliderRange',
   direction: 'vertical',
-  type: 'single',
+  type: 'range',
   tooltip: true,
   scale: { init: true, num: 5, type: 'numeric' },
   min: 400,
   max: 1000,
   step: 50,
-  value: 1,
+  value: [1, 500],
 });
 
 
