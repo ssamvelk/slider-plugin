@@ -106,6 +106,50 @@ describe('Тестирование View', () => {
     expect(v2.scale!.classList).toContain('slider__scale_vertical');
   });
 
+  test('Тестирование на правильность значений при создании экземпляра View', () => {
+    const singleView = new View({
+      min: 10,
+      max: 105,
+      step: 25,
+      value: -10,
+    });
+    expect(singleView.getValues().value).toEqual(10);
+
+    const singleView1 = new View({
+      min: 10,
+      max: 105,
+      step: 25,
+      value: 105,
+    });
+
+    expect(singleView1.getValues().value).toEqual(85);
+
+    const singleView2 = new View({
+      min: 10,
+      max: 105,
+      step: 25,
+      value: 155,
+    });
+    expect(singleView2.getValues().value).toEqual(85);
+
+    const singleView3 = new View({
+      min: 100,
+      max: 1000,
+      step: 50,
+      value: 750,
+    });
+    expect(singleView3.getValues().value).toEqual(750);
+
+    const singleView4 = new View({
+      min: 100,
+      max: 1000,
+      step: 50,
+      value: 133,
+      direction: 'vertical',
+    });
+    expect(singleView4.getValues().value).toEqual(150);
+  });
+
   test('Тестирование метода checkValue', () => {
     const v3 = new View({
       value: -50,
@@ -158,16 +202,16 @@ describe('Тестирование View', () => {
 
     expect(localValue).toEqual(true);
     expect(v.getValues().type).toEqual('range');
-    expect(v.getValues().value).toEqual([49, 50]);
+    expect(v.getValues().value).toEqual([-1, 0]);
 
     v.changeType('single');
     expect(localValue).toEqual(true);
     expect(v.getValues().type).toEqual('single');
-    expect(v.getValues().value).toEqual(49);
+    expect(v.getValues().value).toEqual(0);
 
     v.changeType('range');
     expect(v.getValues().type).toEqual('range');
-    expect(v.getValues().value).toEqual([48, 49]);
+    expect(v.getValues().value).toEqual([-1, 0]);
 
     v.changeType('single', 75);
     expect(v.getValues().type).toEqual('single');
@@ -231,6 +275,6 @@ describe('Тестирование View', () => {
     const v3 = new View({
       min: 1, max: 100, step: 3, value: 99,
     });
-    expect(v3.getValues().value).toEqual(99);
+    expect(v3.getValues().value).toEqual(100);
   });
 });

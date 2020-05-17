@@ -38,7 +38,7 @@ class View implements IView {
       max: options.max || 100,
       step: options.step || 1,
       type: options.type || 'single',
-      value: options.value || ((options.type === 'range') ? [0, 100] : 50),
+      value: options.value || ((options.type === 'range') ? [0, 100] : 0),
       direction: options.direction || 'horizontal',
       tooltip: options.tooltip || false,
       scale: {
@@ -220,19 +220,27 @@ class View implements IView {
     }
   }
 
-  private checkValue(value: sliderValueType) {
+  private checkValue(value: sliderValueType, autoStepCheck: boolean = true) {
     let newLocal: number = value as number;
+    console.log('---', newLocal, this.viewValues.min);
     if (this.viewValues.type === 'single') {
-      if (newLocal < this.viewValues.min) {
+      if (newLocal <= this.viewValues.min) {
         newLocal = this.viewValues.min;
         console.log('value не может быть меньше минимального порога значений, меняем на минимальный');
+        return newLocal;
       }
-      // if ((((newLocal - this.viewValues.min) % this.viewValues.step)) !== 0) {
-      //   newLocal = newLocal - (newLocal % this.viewValues.step);
-      // }
       if (newLocal > this.viewValues.max) {
         newLocal = this.viewValues.max; //  - (this.viewValues.max % this.viewValues.step);
         console.log('value не может быть больше максимального порога значений, меняем на максимальный возможный');
+      }
+      // -------stepCheck
+      if (autoStepCheck) {
+        newLocal = this.stepСheck(newLocal);
+        // if ((newLocal - this.viewValues.min) % this.viewValues.step !== 0) {
+        //   newLocal = this.viewValues.min
+        //     + Number(((newLocal - this.viewValues.min) / this.viewValues.step).toFixed())
+        //       * this.viewValues.step;
+        // }
       }
       return newLocal;
     }
@@ -306,10 +314,12 @@ class View implements IView {
   private stepСheck(value: number): number {
     if (value <= this.viewValues.min) return this.viewValues.min;
     if (value > this.viewValues.max) return this.stepСheck(this.viewValues.max);
-    if (((value % this.viewValues.step) + this.viewValues.min) === 0) {
-      return value + this.viewValues.min;
+    if (((value - this.viewValues.min) % this.viewValues.step) !== 0) {
+      return ((this.viewValues.min + Number(((value - this.viewValues.min) / this.viewValues.step).toFixed()) * this.viewValues.step) <= this.viewValues.max)
+        ? (this.viewValues.min + Number(((value - this.viewValues.min) / this.viewValues.step).toFixed()) * this.viewValues.step)
+        : (this.viewValues.min + Number(((value - this.viewValues.min) / this.viewValues.step).toFixed()) * this.viewValues.step) - this.viewValues.step;
     }
-    return (value + this.viewValues.min) - (value % this.viewValues.step);
+    return value;
   }
 
   private addMoveListener() { // handle: HTMLDivElement
@@ -325,32 +335,44 @@ class View implements IView {
       if (this.viewValues.direction === 'horizontal') {
         MousePositionInPersents = this.invertCoordinate(e.clientX).inPersent;
         MousePositionOnSlider = this.invertCoordinate(e.clientX).inValue;
+        
+        MousePositionOnSlider = this.stepСheck(MousePositionOnSlider);
 
-        if ((MousePositionOnSlider % this.viewValues.step) !== 0) {
-          return;
-        }
+        this.setValue(MousePositionOnSlider, 'single');
+        // console.dir('MousePositionOnSlider = ', MousePositionOnSlider);
+        // if (MousePositionOnSlider <= this.viewValues.min) {
+        //   this.setValue(this.viewValues.min, 'single');
+        //   return;
+        // }
+        // if ((MousePositionOnSlider % this.viewValues.step) !== 0) {
+        //   return;
+        // }
 
-        this.handle!.style.left = `calc(${MousePositionInPersents}% - ${handleShiftWidth}px)`;
-        this.selectSegment.style.width = `${MousePositionInPersents}%`;
+        // this.handle!.style.left = `calc(${MousePositionInPersents}% - ${handleShiftWidth}px)`;
+        // this.selectSegment.style.width = `${MousePositionInPersents}%`;
 
-        if (this.tooltip) {
-          this.tooltip.innerHTML = (MousePositionOnSlider).toString();
-        }
+        // if (this.tooltip) {
+        //   this.tooltip.innerHTML = (MousePositionOnSlider).toString();
+        // }
       } else if (this.viewValues.direction === 'vertical') {
         MousePositionInPersents = this.invertCoordinate(e.clientY).inPersent;
         MousePositionOnSlider = this.invertCoordinate(e.clientY).inValue;
 
-        if ((MousePositionOnSlider % this.viewValues.step) !== 0) {
-          return;
-        }
-
-        this.handle!.style.top = `calc(${MousePositionInPersents}% - ${handleShiftWidth}px)`;
-        this.selectSegment.style.height = `${MousePositionInPersents}%`;
         
-        if (this.tooltip) {
-          this.tooltip.innerHTML = (MousePositionOnSlider).toString();
-        }
+        // if ((MousePositionOnSlider % this.viewValues.step) !== 0) {
+        //   return;
+        // }
+
+        // this.handle!.style.top = `calc(${MousePositionInPersents}% - ${handleShiftWidth}px)`;
+        // this.selectSegment.style.height = `${MousePositionInPersents}%`;
+        
+        // if (this.tooltip) {
+        //   this.tooltip.innerHTML = (MousePositionOnSlider).toString();
+        // }
       }
+
+      MousePositionOnSlider = this.stepСheck(MousePositionOnSlider);
+      this.setValue(MousePositionOnSlider, 'single');
       
       this.viewValues.value = MousePositionOnSlider;
     };
@@ -633,21 +655,26 @@ class View implements IView {
 }
 
 const v1 = new View({
-  min: 1, max: 32, step: 3, value: 450, root: 'mySlider', scale: true,
-  
+  min: 10,
+  max: 105,
+  step: 25,
+  value: 155,
+  tooltip: true,
+  root: 'mySlider',
+  scale: { init: true, type: 'numeric' },
 });
 
-// const v2 = new View({
-//   root: 'mySliderRange',
-//   direction: 'vertical',
-//   type: 'range',
-//   tooltip: true,
-//   scale: { init: true, num: 5, type: 'numeric' },
-//   min: 400,
-//   max: 1000,
-//   step: 50,
-//   value: [400, 1000],
-// });
+const v2 = new View({
+  root: 'mySliderRange',
+  direction: 'vertical',
+  type: 'single',
+  tooltip: true,
+  scale: { init: true, num: 5, type: 'numeric' },
+  min: 400,
+  max: 1000,
+  step: 50,
+  value: 1,
+});
 
 
 // const v3 = new View({
