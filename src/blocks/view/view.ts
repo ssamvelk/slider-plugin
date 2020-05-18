@@ -120,11 +120,20 @@ class View implements IView {
       this.selectSegment.classList.add('slider__select_horizontal');
 
       if (type === 'single') {
-        if (this.handle) this.handle.classList.add('slider__handle_horizontal');
+        if (this.handle) {
+          this.handle.classList.add('slider__handle_horizontal');
+          this.handle.tabIndex = 1;
+        }
         if (this.tooltip) this.tooltip.classList.add('slider__tooltip_horizontal');
       } else if (type === 'range') {
-        if (this.handleMin) this.handleMin.classList.add('slider__handle_horizontal');
-        if (this.handleMax) this.handleMax.classList.add('slider__handle_horizontal');
+        if (this.handleMin) {
+          this.handleMin.classList.add('slider__handle_horizontal');
+          this.handleMin.tabIndex = 1;
+        }
+        if (this.handleMax) {
+          this.handleMax.classList.add('slider__handle_horizontal');
+          this.handleMax.tabIndex = 1;
+        }
         if (this.tooltipMin) this.tooltipMin.classList.add('slider__tooltip_horizontal');
         if (this.tooltipMax) this.tooltipMax.classList.add('slider__tooltip_horizontal');
       }
@@ -136,11 +145,20 @@ class View implements IView {
       this.selectSegment.classList.add('slider__select_vertical');
 
       if (type === 'single') {
-        if (this.handle) this.handle.classList.add('slider__handle_vertical');
+        if (this.handle) {
+          this.handle.classList.add('slider__handle_vertical');
+          this.handle.tabIndex = 1;
+        }
         if (this.tooltip) this.tooltip.classList.add('slider__tooltip_vertical');
       } else if (type === 'range') {
-        if (this.handleMin) this.handleMin.classList.add('slider__handle_vertical');
-        if (this.handleMax) this.handleMax.classList.add('slider__handle_vertical');
+        if (this.handleMin) {
+          this.handleMin.classList.add('slider__handle_vertical');
+          this.handleMin.tabIndex = 1;
+        }
+        if (this.handleMax) {
+          this.handleMax.classList.add('slider__handle_vertical');
+          this.handleMax.tabIndex = 1;
+        }
         if (this.tooltipMin) this.tooltipMin.classList.add('slider__tooltip_vertical');
         if (this.tooltipMax) this.tooltipMax.classList.add('slider__tooltip_vertical');
       }
@@ -374,26 +392,132 @@ class View implements IView {
       console.log(this.viewValues.value);
     };
 
+    const onFocusHandle = (e: KeyboardEvent) => {
+      e.preventDefault();
+      if ((e.code === 'ArrowLeft') || (e.code === 'ArrowDown')) {
+        this.setValue(((this.viewValues.value as number) - this.viewValues.step), 'single');
+      }
+      if ((e.code === 'ArrowRight') || (e.code === 'ArrowUp')) {
+        this.setValue(((this.viewValues.value as number) + this.viewValues.step), 'single');
+      }
+    };
+
+    const onFocusHandleMin = (e: KeyboardEvent) => {
+      e.preventDefault();
+      if ((e.code === 'ArrowRight') || (e.code === 'ArrowDown')) {
+        this.setValue(
+          [((this.viewValues.value as sliderRangeValueType)[0] + this.viewValues.step), (this.viewValues.value as sliderRangeValueType)[1]],
+          'range',
+        );
+      }
+      if ((e.code === 'ArrowLeft') || (e.code === 'ArrowUp')) {
+        this.setValue(
+          [((this.viewValues.value as sliderRangeValueType)[0] - this.viewValues.step), (this.viewValues.value as sliderRangeValueType)[1]],
+          'range',
+        );
+      }
+    };
+    const onFocusHandleMax = (e: KeyboardEvent) => {
+      e.preventDefault();
+      if ((e.code === 'ArrowRight') || (e.code === 'ArrowDown')) {
+        this.setValue(
+          [(this.viewValues.value as sliderRangeValueType)[0], ((this.viewValues.value as sliderRangeValueType)[1] + this.viewValues.step)],
+          'range',
+        );
+      }
+      if ((e.code === 'ArrowLeft') || (e.code === 'ArrowUp')) {
+        if (((this.viewValues.value as sliderRangeValueType)[1] - (this.viewValues.value as sliderRangeValueType)[0]) === this.viewValues.step) {
+          this.setValue(
+            [(this.viewValues.value as sliderRangeValueType)[0] - this.viewValues.step, ((this.viewValues.value as sliderRangeValueType)[1] - this.viewValues.step)],
+            'range',
+          );
+          return;
+        }
+        this.setValue(
+          [(this.viewValues.value as sliderRangeValueType)[0], ((this.viewValues.value as sliderRangeValueType)[1] - this.viewValues.step)],
+          'range',
+        );
+      }
+    };
+
+    const onBlurHandle = () => {
+      if (this.viewValues.type === 'single') {
+        this.handle?.removeEventListener('keydown', onFocusHandle);
+      } else if (this.viewValues.type === 'range') {
+        this.handleMin?.removeEventListener('keydown', onFocusHandleMin);
+        this.handleMax?.removeEventListener('keydown', onFocusHandleMax);
+      }
+    };
+
     if (this.viewValues.type === 'single') {
-      // this.handle!.ondragstart = () => false;
       this.handle!.addEventListener('mousedown', (e: MouseEvent) => {
         if (e.button === 0) {
           document.addEventListener('mousemove', onMouseMoveHandle);
           document.addEventListener('mouseup', onMouseUp);
         }
       });
+      // --
+      this.handle!.addEventListener('focus', () => {
+        this.handle!.addEventListener('keydown', onFocusHandle);
+      });
+
+      this.handle!.addEventListener('blur', onBlurHandle);
+      // --
     } else if (this.viewValues.type === 'range') {
-      this.handleMin!.ondragstart = () => false;
       this.handleMin!.addEventListener('mousedown', (e: MouseEvent) => {
         if (e.button === 0) {
           document.addEventListener('mousemove', onMouseMoveHandleMin);
           document.addEventListener('mouseup', onMouseUp);
         }
       });
+      // --
+      this.handleMin!.addEventListener('focus', () => {
+        this.handleMin!.addEventListener('keydown', onFocusHandleMin);
+      });
+
+      this.handleMin!.addEventListener('blur', onBlurHandle);
+      // --
       this.handleMax!.addEventListener('mousedown', (e: MouseEvent) => {
         if (e.button === 0) {
           document.addEventListener('mousemove', onMouseMoveHandleMax);
           document.addEventListener('mouseup', onMouseUp);
+        }
+      });
+      // --
+      this.handleMax!.addEventListener('focus', () => {
+        this.handleMax!.addEventListener('keydown', onFocusHandleMax);
+      });
+
+      this.handleMax!.addEventListener('blur', onBlurHandle);
+      // --onFocusHandleMax
+    }
+
+    if (this.viewValues.scale.init) {
+      this.scale!.addEventListener('mousedown', (e: MouseEvent) => {
+        if ((e.target as HTMLLIElement).classList.contains('slider__scale-item')) {
+          let localValue: sliderValueType;
+          
+          if (this.viewValues.type === 'single') {
+            if (this.viewValues.direction === 'horizontal') {
+              (localValue! as number) = this.invertCoordinate(e.clientX).inValue;
+            } else if (this.viewValues.direction === 'vertical') {
+              (localValue! as number) = this.invertCoordinate(e.clientY).inValue;
+            }
+            
+            this.setValue(localValue!, 'single');
+          } else if (this.viewValues.type === 'range') {
+            if (this.viewValues.direction === 'horizontal') {
+              (localValue! as number) = this.invertCoordinate(e.clientX).inValue;
+            } else if (this.viewValues.direction === 'vertical') {
+              (localValue! as number) = this.invertCoordinate(e.clientY).inValue;
+            }
+            
+            if (localValue! <= (this.viewValues.value as sliderRangeValueType)[1]) {
+              this.setValue([(localValue! as number), (this.viewValues.value as sliderRangeValueType)[1]], 'range');
+            } else {
+              this.setValue([(this.viewValues.value as sliderRangeValueType)[0], (localValue! as number)], 'range');
+            }
+          }
         }
       });
     }
@@ -473,11 +597,11 @@ class View implements IView {
 const v1 = new View({
   min: 1,
   max: 100,
-  step: 33,
+  step: 1,
   // value: [961, 96],
   tooltip: true,
   root: 'mySlider',
-  scale: { init: true, type: 'numeric' },
+  scale: { init: true, type: 'usual', num: 15 },
   // type: 'range',
 });
 
@@ -490,7 +614,7 @@ const v2 = new View({
   min: 400,
   max: 1000,
   step: 50,
-  value: [1, 500],
+  // value: [1, 500],
 });
 
 
