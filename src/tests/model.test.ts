@@ -11,7 +11,7 @@ describe('Model', () => {
     direction: 'vertical',
     value: [60, 61],
     tooltip: true,
-    scale: true,
+    scale: { init: true, num: 7, type: 'numeric' },
   });
 
   test('Проверка инстанс модели без параметров', () => {
@@ -29,7 +29,7 @@ describe('Model', () => {
       value: 50,
       selectedLength: 50,
       tooltip: false,
-      scale: false,
+      scale: { init: false, num: 7, type: 'usual' },
     });
   });
 
@@ -48,7 +48,7 @@ describe('Model', () => {
       value: [60, 61],
       selectedLength: 5,
       tooltip: true,
-      scale: true,
+      scale: { init: true, num: 7, type: 'numeric' },
     });
   });
 
@@ -72,7 +72,7 @@ describe('Model', () => {
       value: [200, 300],
       selectedLength: 20,
       tooltip: true,
-      scale: false,
+      scale: { init: false, num: 7, type: 'usual' },
     });
   });
 
@@ -88,10 +88,10 @@ describe('Model', () => {
       type: 'range',
       direction: 'horizontal',
       sliderLength: 100,
-      value: [1, 99],
-      selectedLength: 98,
+      value: [0, 100],
+      selectedLength: 100,
       tooltip: false,
-      scale: false,
+      scale: { init: false, num: 7, type: 'usual' },
     });
   });
 
@@ -113,7 +113,7 @@ describe('Model', () => {
       value: 50,
       selectedLength: 0,
       tooltip: false,
-      scale: false,
+      scale: { init: false, num: 7, type: 'usual' },
     });
   });
   
@@ -121,6 +121,7 @@ describe('Model', () => {
     const model6 = new Model({
       value: [100, 90],
       type: 'range',
+      scale: true,
     });
       
     expect(model6).toEqual({
@@ -133,7 +134,7 @@ describe('Model', () => {
       value: [90, 90],
       selectedLength: 0,
       tooltip: false,
-      scale: false,
+      scale: { init: true, num: 7, type: 'usual' },
     });
   });
 

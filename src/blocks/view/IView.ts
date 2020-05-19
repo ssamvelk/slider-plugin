@@ -13,7 +13,6 @@ interface IView {
   tooltipMin?: HTMLDivElement;
   tooltipMax?: HTMLDivElement;
   scale?: HTMLDivElement; // шкала
-
 }
 
 type initViewOptions = {

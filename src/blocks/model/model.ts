@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // eslint-disable-next-line object-curly-newline
-import { IModel, sliderType, sliderDirection, modelOptions } from './IModel';
+import { IModel, sliderType, sliderDirection, modelOptions, scaleType, sliderValueType } from './IModel';
+import { stepСheck, checkValue } from '../utils/Utils';
 
 export default class Model implements IModel {
   min: number;
@@ -15,7 +16,7 @@ export default class Model implements IModel {
 
   tooltip: boolean;
 
-  scale: boolean;
+  scale: scaleType;
 
   value: number | [ number, number ];
   
@@ -32,8 +33,6 @@ export default class Model implements IModel {
     // this.selectedLength = 0;
     if (this.min >= this.max) {
       this.max = this.min + this.step;
-      console.log('!!! min >= max !!!');
-      // throw Error(' min >= max');
     }
 
     this.type = options.type || 'single';
@@ -41,11 +40,19 @@ export default class Model implements IModel {
     
     // const sliderLength = this.max - this.min;
     this.sliderLength = this.max - this.min;
-    this.value = 0;
+    this.value = options.value || ((this.type === 'range') ? [0, 100] : 0);
+    this.tooltip = options.tooltip || false;
+    // this.scale = options.scale || { init: false, num: 5, type: 'usual' };
+    this.scale = {
+      // eslint-disable-next-line no-nested-ternary
+      init: ((typeof options.scale) === 'boolean')
+        ? (options.scale as boolean)
+        : (((options.scale instanceof Object) && options.scale !== undefined) ? options.scale.init : false),
+      num: ((options.scale instanceof Object) && options.scale.num) ? (options.scale as scaleType).num : 7,
+      type: (options.scale instanceof Object && options.scale.type) ? (options.scale as scaleType).type : 'usual',
+    };
     this.selectedLength = 0;
     this.setValue(options.value!);
-    this.tooltip = options.tooltip || false;
-    this.scale = options.scale || false;
   }
 
   getType(): sliderType {
@@ -78,7 +85,7 @@ export default class Model implements IModel {
       // eslint-disable-next-line prefer-const
       let rangeVal = value
         ? value as [number, number]
-        : [this.min + this.step, this.max - this.step];
+        : [this.min, this.max];
 
       if (rangeVal[0] < this.min) rangeVal[0] = this.min;
       else if (rangeVal[0] > this.max) rangeVal[0] = this.max;
@@ -101,62 +108,17 @@ export default class Model implements IModel {
       select,
     };
   }
+
+  private stepСheck(value: number): number {
+    return stepСheck(value, this.min, this.max, this.step);
+  }
+
+  private checkValue(value: sliderValueType) {
+    return checkValue(value, this.min, this.max, this.step, this.type);
+  }
 }
 
 // const m2 = new Model({
-//   min: 10, max: 5, type: 'range', direction: 'horizontal', value: [50, 77],
+//   step: 3, min: 0, max: 100, type: 'range', direction: 'horizontal', value: [50, 77], scale: { init: true, type: 'numeric' },
 // });
-// console.log(m2);
-
-
-// getValue(): number {
-//   throw new Error('Method not implemented.');
-// }
-
-// getLimits(): object {
-//   throw new Error('Method not implemented.');
-// }
-
-// getStep(): number {
-//   throw new Error('Method not implemented.');
-// }
-
-// setType(newType: string): void {
-//   throw new Error('Method not implemented.');
-// }
-
-// setLimits(): void {
-//   throw new Error('Method not implemented.');
-// }
-
-// setStep(newStep: number): void {
-//   throw new Error('Method not implemented.');
-// }
-
-// setAValueTo(newValue: number, mutable: boolean, isAuto: boolean): void {
-//   throw new Error('Method not implemented.');
-// }
-
-// setSingleValue(newValue: number, isAuto: boolean): void {
-//   throw new Error('Method not implemented.');
-// }
-
-// setRangeValue(newValues: number, isAuto: boolean): void {
-//   throw new Error('Method not implemented.');
-// }
-
-// recalculateValue(): void {
-//   throw new Error('Method not implemented.');
-// }
-
-// setNearestValue(value: number, viaPercents: boolean, isAuto: boolean): void {
-//   throw new Error('Method not implemented.');
-// }
-
-
-// const a: sliderRangeValueType = [10, 22];
-// const [b, c] = a;
-
-// console.log(b);
-// console.log(c);
-// console.log('a =', a, typeof a, Array.isArray(a), '----instance', a instanceof Array);
+// console.log('m2 ====', m2.checkValue([33, 22]));

@@ -331,6 +331,7 @@ describe('Тестирование View', () => {
     expect(v2.changeValue([700, 1170])).toEqual([199, 200]);
     expect(v2.changeValue([-700, 1170])).toEqual([100, 200]);
     expect(v2.changeValue([150, 50])).toEqual([150, 151]);
+    expect(v2.changeValue([150, 150])).toEqual([150, 151]);
     expect(v2.changeValue(77)).toEqual(new Error('введите корректное значение, а именно [number, number]'));
     // возврат в исходное состояние v, v2
     v.changeValue(50);
@@ -339,6 +340,8 @@ describe('Тестирование View', () => {
     const v3 = new View({
       min: 1, max: 100, step: 3, value: 99,
     });
+    expect(v3.getValues().value).toEqual(100);
+    v3.changeValue(200);
     expect(v3.getValues().value).toEqual(100);
   });
 });

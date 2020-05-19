@@ -602,7 +602,7 @@ const v1 = new View({
   tooltip: true,
   root: 'mySlider',
   scale: { init: true, type: 'usual', num: 15 },
-  // type: 'range',
+  type: 'range',
 });
 
 const v2 = new View({
@@ -626,6 +626,8 @@ const v2 = new View({
 // const v4 = new View({
 //   step: 5, max: 1000, value: [2000, 5000], type: 'range', tooltip: true, scale: { init: true, type: 'numeric', num: 5 },
 // });
-console.log(v1.getValues().value);
+// setInterval(() => {
+//   console.log(v1.getValues().value);
+// }, 3000);
 
 export default View;

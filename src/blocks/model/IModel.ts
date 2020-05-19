@@ -5,6 +5,12 @@ type sliderDirection = 'horizontal' | 'vertical';
 type sliderValueType = number | sliderRangeValueType;
 type sliderRangeValueType = [number, number];
 
+type scaleType = {
+  init: boolean;
+  num?: number;
+  type?: 'numeric' | 'usual';
+};
+
 type modelOptions = {
   min?: number;
   max?: number;
@@ -12,7 +18,7 @@ type modelOptions = {
   type?: sliderType;
   direction?: sliderDirection;
   tooltip?: boolean;
-  scale?: boolean;
+  scale?: boolean | scaleType;
   value?: sliderValueType;
 };
 
@@ -23,7 +29,7 @@ interface IModel {
   type: sliderType;
   direction: sliderDirection;
   tooltip: boolean;
-  scale: boolean;
+  scale: scaleType;
   value: number | [ number, number];
   // selectedLength: number;
   // ------------------------------ metods
@@ -51,4 +57,5 @@ export {
   sliderDirection,
   modelOptions,
   sliderRangeValueType,
+  scaleType,
 };
