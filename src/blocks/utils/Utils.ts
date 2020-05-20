@@ -1,4 +1,4 @@
-import { sliderValueType, sliderType } from '../model/IModel';
+import { sliderValueType, sliderType, sliderRangeValueType } from '../model/IModel';
 
 // stepСheck - функции, которая проверяет значение на соответствие установленному шагу,
 // в случае несоответствия, корректирует его в большую или меньшую сторону(в зависимости от округления)
@@ -36,7 +36,7 @@ const checkValue = (value: sliderValueType, min: number, max: number, step: numb
     return newLocal;
   }
   if (type === 'range' && (value instanceof Array === true)) {
-    const newLocal2 = value as [number, number];
+    const newLocal2 = value as sliderRangeValueType;
     if (newLocal2[0] <= min) {
       newLocal2[0] = min;
       console.log('valueMin не может быть меньше минимального порога значений, меняем на минимальный');
@@ -52,16 +52,15 @@ const checkValue = (value: sliderValueType, min: number, max: number, step: numb
     newLocal2[1] = stepСheck(newLocal2[1], min, max, step);
 
     if (newLocal2[0] >= newLocal2[1]) {
-      if (newLocal2[1] === stepСheck(max, min, max, step)) {
-        newLocal2[0] = newLocal2[1] - step;
-        
-        console.log('valueMin не может быть больше либо равно valueMax, уменьшаем valueMin на step');
-      } else {
-        newLocal2[1] = (newLocal2[0] + step);
+      if (newLocal2[0] <= stepСheck(max, min, max, step) - step) {
+        newLocal2[1] = newLocal2[0] + step;
         console.log(' valueMax  не может быть меньше либо равно valueMin, увеличиваем на step');
+      } else if (newLocal2[0] > stepСheck(max, min, max, step) - step) {
+        newLocal2[0] = stepСheck(max, min, max, step) - step;
+        newLocal2[1] = stepСheck(max, min, max, step);
+        console.log('valueMin не может быть больше либо равно valueMax = max, уменьшаем valueMin на step');
       }
     }
-    
     return newLocal2;
   }
 };

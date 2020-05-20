@@ -35,7 +35,7 @@ interface IModel {
   // ------------------------------ metods
   getType(): sliderType;
 
-  setValue(value: number | [number, number]): object;
+  setValue(value: sliderValueType, type: sliderType): void;
   // getValue(): number;
   // getLimits(): object;
   // getStep(): number;

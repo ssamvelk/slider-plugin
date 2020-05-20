@@ -25,9 +25,7 @@ describe('Model', () => {
       step: 1,
       type: 'single',
       direction: 'horizontal',
-      sliderLength: 100,
-      value: 50,
-      selectedLength: 50,
+      value: 0,
       tooltip: false,
       scale: { init: false, num: 7, type: 'usual' },
     });
@@ -44,9 +42,7 @@ describe('Model', () => {
       step: 5,
       type: 'range',
       direction: 'vertical',
-      sliderLength: 20,
-      value: [60, 61],
-      selectedLength: 5,
+      value: [60, 65],
       tooltip: true,
       scale: { init: true, num: 7, type: 'numeric' },
     });
@@ -68,9 +64,7 @@ describe('Model', () => {
       step: 100,
       type: 'range',
       direction: 'horizontal',
-      sliderLength: 500,
       value: [200, 300],
-      selectedLength: 20,
       tooltip: true,
       scale: { init: false, num: 7, type: 'usual' },
     });
@@ -87,9 +81,7 @@ describe('Model', () => {
       step: 1,
       type: 'range',
       direction: 'horizontal',
-      sliderLength: 100,
       value: [0, 100],
-      selectedLength: 100,
       tooltip: false,
       scale: { init: false, num: 7, type: 'usual' },
     });
@@ -109,9 +101,7 @@ describe('Model', () => {
       step: 5,
       type: 'single',
       direction: 'vertical',
-      sliderLength: 5,
       value: 50,
-      selectedLength: 0,
       tooltip: false,
       scale: { init: false, num: 7, type: 'usual' },
     });
@@ -130,9 +120,7 @@ describe('Model', () => {
       step: 1,
       type: 'range',
       direction: 'horizontal',
-      sliderLength: 100,
-      value: [90, 90],
-      selectedLength: 0,
+      value: [99, 100],
       tooltip: false,
       scale: { init: true, num: 7, type: 'usual' },
     });
@@ -141,37 +129,36 @@ describe('Model', () => {
   test('Проверка метода setValue на пограничные значения', () => {
     const model5 = new Model({
       value: 15,
+      step: 1,
     });
-    // проверка значения по умолчанию
-    expect(model.value).toEqual(50);
-    
+
     expect(model5.value).toEqual(15);
 
-    model5.setValue(-1);
+    model5.setValue(-1, 'single');
     expect(model5.value).toEqual(0);
 
-    model5.setValue(150);
+    model5.setValue(150, 'single');
     expect(model5.value).toEqual(100);
 
-    model5.setValue(0.5);
-    expect(model5.value).toEqual(0.5);
+    model5.setValue(0.5, 'single');
+    expect(model5.value).toEqual(1);
 
     model5.type = 'range';
 
-    model5.setValue([80, 90]);
+    model5.setValue([80, 90], 'range');
     expect(model5.value).toEqual([80, 90]);
     
-    model5.setValue([500, 600]);
-    expect(model5.value).toEqual([100, 100]);
+    model5.setValue([500, 600], 'range');
+    expect(model5.value).toEqual([99, 100]);
 
-    model5.setValue([700, 600]);
-    expect(model5.value).toEqual([100, 100]);
+    model5.setValue([700, 600], 'range');
+    expect(model5.value).toEqual([99, 100]);
 
-    model5.setValue([-10, -9]);
-    expect(model5.value).toEqual([0, 0]);
+    model5.setValue([-10, -9], 'range');
+    expect(model5.value).toEqual([0, 1]);
 
-    model5.setValue([-10, -99]);
-    expect(model5.value).toEqual([0, 0]);
+    model5.setValue([-10, -99], 'range');
+    expect(model5.value).toEqual([0, 1]);
   });
 
   test('Проверка метода getType', () => {
@@ -185,7 +172,7 @@ describe('Model', () => {
   });
 
   test('Проверка метода getValue', () => {
-    expect(model.getValue()).toBe(50);
-    expect(model2.getValue()).toEqual([60, 61]);
+    expect(model.getValue()).toBe(0);
+    expect(model2.getValue()).toEqual([60, 65]);
   });
 });

@@ -4,7 +4,7 @@ import {
 import {
   sliderType, sliderDirection, sliderValueType, sliderRangeValueType,
 } from '../model/IModel';
-
+import { stepСheck, checkValue } from '../utils/Utils';
 /* eslint-disable @typescript-eslint/no-unused-vars */
 class View implements IView {
   root!: HTMLDivElement; // | HTMLBodyElement
@@ -238,59 +238,7 @@ class View implements IView {
     }
   }
 
-  private checkValue(value: sliderValueType, autoStepCheck: boolean = true) {
-    let newLocal: number = value as number;
-    
-    if (this.viewValues.type === 'single') {
-      if (newLocal <= this.viewValues.min) {
-        newLocal = this.viewValues.min;
-        console.log('value не может быть меньше минимального порога значений, меняем на минимальный');
-        return newLocal;
-      }
-      if (newLocal > this.viewValues.max) {
-        newLocal = this.viewValues.max;
-        console.log('value не может быть больше максимального порога значений, меняем на максимальный возможный');
-      }
-      // -------stepCheck
-      if (autoStepCheck) {
-        newLocal = this.stepСheck(newLocal);
-      }
-      return newLocal;
-    }
-    if (this.viewValues.type === 'range' && (value instanceof Array === true)) {
-      const newLocal2 = value as [number, number];
-      if (newLocal2[0] <= this.viewValues.min) {
-        newLocal2[0] = this.viewValues.min;
-        console.log('valueMin не может быть меньше минимального порога значений, меняем на минимальный');
-        if (newLocal2[1] <= this.viewValues.min) newLocal2[1] = newLocal2[0] + this.viewValues.step;
-      }
-      if (newLocal2[1] >= this.viewValues.max) {
-        newLocal2[1] = this.stepСheck(this.viewValues.max);
-        console.log('valueMax не может быть больше максимального порога значений, меняем на максимальный');
-        if (newLocal2[0] >= newLocal2[1]) newLocal2[0] = newLocal2[1] - this.viewValues.step;
-      }
-
-      newLocal2[0] = this.stepСheck(newLocal2[0]);
-      newLocal2[1] = this.stepСheck(newLocal2[1]);
-  
-      if (newLocal2[0] >= newLocal2[1]) {
-        if (newLocal2[1] === this.stepСheck(this.viewValues.max)) {
-          newLocal2[0] = newLocal2[1] - this.viewValues.step;
-          
-          console.log('valueMin не может быть больше либо равно valueMax, уменьшаем valueMin на step');
-        } else {
-          newLocal2[1] = (newLocal2[0] + this.viewValues.step);
-          console.log(' valueMax  не может быть меньше либо равно valueMin, увеличиваем на step');
-        }
-      }
-      
-      return newLocal2;
-    }
-  }
-
   private clearRoot() {
-    // this.sliderLine.remove();
-    // this.scale?.remove();
     this.wrap.remove();
   }
   
@@ -320,14 +268,11 @@ class View implements IView {
   }
 
   private stepСheck(value: number): number {
-    if (value <= this.viewValues.min) return this.viewValues.min;
-    if (value > this.viewValues.max) return this.stepСheck(this.viewValues.max);
-    if (((value - this.viewValues.min) % this.viewValues.step) !== 0) {
-      return ((this.viewValues.min + Number(((value - this.viewValues.min) / this.viewValues.step).toFixed()) * this.viewValues.step) <= this.viewValues.max)
-        ? (this.viewValues.min + Number(((value - this.viewValues.min) / this.viewValues.step).toFixed()) * this.viewValues.step)
-        : (this.viewValues.min + Number(((value - this.viewValues.min) / this.viewValues.step).toFixed()) * this.viewValues.step) - this.viewValues.step;
-    }
-    return value;
+    return stepСheck(value, this.viewValues.min, this.viewValues.max, this.viewValues.step);
+  }
+
+  private checkValue(value: sliderValueType, autoStepCheck: boolean = true) {
+    return checkValue(value, this.viewValues.min, this.viewValues.max, this.viewValues.step, this.viewValues.type);
   }
 
   private addMoveListener() {
@@ -607,16 +552,16 @@ const v1 = new View({
 
 const v2 = new View({
   root: 'mySliderRange',
-  direction: 'vertical',
+  direction: 'horizontal',
   type: 'range',
   tooltip: true,
   scale: { init: true, num: 5, type: 'numeric' },
-  min: 400,
-  max: 1000,
-  step: 50,
-  // value: [1, 500],
+  // min: 400,
+  // max: 1000,
+  step: 1,
+  value: [1001, 90],
 });
-
+console.log('v2', v2.getValues().value);
 
 // const v3 = new View({
 //   type: 'range',
@@ -627,7 +572,7 @@ const v2 = new View({
 //   step: 5, max: 1000, value: [2000, 5000], type: 'range', tooltip: true, scale: { init: true, type: 'numeric', num: 5 },
 // });
 // setInterval(() => {
-//   console.log(v1.getValues().value);
+// console.log(v2.getValues().value);
 // }, 3000);
 
 export default View;
