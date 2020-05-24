@@ -31,6 +31,8 @@ class View implements IView {
   scale?: HTMLDivElement;
 
   private viewValues: defaultViewOptions;
+  
+  private observebale: any;
 
   constructor(options: initViewOptions) {
     this.viewValues = {
@@ -271,7 +273,7 @@ class View implements IView {
     return stepСheck(value, this.viewValues.min, this.viewValues.max, this.viewValues.step);
   }
 
-  private checkValue(value: sliderValueType, autoStepCheck: boolean = true) {
+  private checkValue(value: sliderValueType) {
     return checkValue(value, this.viewValues.min, this.viewValues.max, this.viewValues.step, this.viewValues.type);
   }
 
@@ -476,6 +478,7 @@ class View implements IView {
     this.init(this.viewValues);
     this.initStyles(this.viewValues.type, this.viewValues.direction);
     this.setValue(this.viewValues.value, this.viewValues.type);
+    this.addMoveListener();
   }
   
   changeType(type: sliderType, value?: sliderValueType): boolean {
@@ -519,6 +522,7 @@ class View implements IView {
     this.init(this.viewValues);
     this.initStyles(this.viewValues.type, this.viewValues.direction);
     this.setValue(this.viewValues.value, this.viewValues.type);
+    this.addMoveListener();
     return true;
   }
 
@@ -537,31 +541,33 @@ class View implements IView {
   getValues() {
     return this.viewValues;
   }
+
+  /** Subject или Observable - когда, юзер двигает ползунок - тригерится событие и уведомляет presenter */
 }
 
-const v1 = new View({
-  min: 1,
-  max: 100,
-  step: 1,
-  // value: [961, 96],
-  tooltip: true,
-  root: 'mySlider',
-  scale: { init: true, type: 'usual', num: 15 },
-  type: 'range',
-});
+// const v1 = new View({
+//   min: 1,
+//   max: 100,
+//   step: 1,
+//   // value: [961, 96],
+//   tooltip: true,
+//   root: 'mySlider',
+//   scale: { init: true, type: 'usual', num: 15 },
+//   type: 'range',
+// });
 
-const v2 = new View({
-  root: 'mySliderRange',
-  direction: 'horizontal',
-  type: 'range',
-  tooltip: true,
-  scale: { init: true, num: 5, type: 'numeric' },
-  // min: 400,
-  // max: 1000,
-  step: 1,
-  value: [1001, 90],
-});
-console.log('v2', v2.getValues().value);
+// const v2 = new View({
+//   root: 'mySliderRange',
+//   direction: 'horizontal',
+//   type: 'range',
+//   tooltip: true,
+//   scale: { init: true, num: 5, type: 'numeric' },
+//   // min: 400,
+//   // max: 1000,
+//   step: 1,
+//   value: [1001, 90],
+// });
+// console.log('v2', v2.getValues().value);
 
 // const v3 = new View({
 //   type: 'range',

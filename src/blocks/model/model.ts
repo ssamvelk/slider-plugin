@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // eslint-disable-next-line object-curly-newline
 import { IModel, sliderType, sliderDirection, modelOptions, scaleType, sliderValueType, sliderRangeValueType } from './IModel';
-import { stepСheck, checkValue } from '../utils/Utils';
+import { checkValue } from '../utils/Utils';
 
 export default class Model implements IModel {
   min: number;
@@ -19,23 +19,19 @@ export default class Model implements IModel {
   scale: scaleType;
 
   value: number | sliderRangeValueType;
-  
-  // private sliderLength: number;
-  
-  // private selectedLength: number;
-
-  // setValue(value: number | [number, number]): object;
 
   constructor(options: modelOptions) {
     this.min = options.min || 0;
     this.max = options.max || 100;
+    
     this.step = options.step || 1;
-    // this.selectedLength = 0;
+
     if (this.min >= this.max) {
       this.max = this.min + this.step;
     }
-
+    
     this.type = options.type || 'single';
+    
     this.direction = options.direction || 'horizontal';
     
     this.value = options.value || ((this.type === 'range') ? [0, 100] : 0);
@@ -67,66 +63,75 @@ export default class Model implements IModel {
   }
 
   setValue(value: sliderValueType, type: sliderType) {
-    const localValue = this.checkValue(value);
+    const localValue = checkValue(value, this.min, this.max, this.step, this.type);
     if (type === 'single') {
       this.value = localValue as number;
     } else if (type === 'range') {
       this.value = localValue as sliderRangeValueType;
     }
   }
-  
-  private stepСheck(value: number): number {
-    return stepСheck(value, this.min, this.max, this.step);
+
+  changeDirection() {
+    if (this.direction === 'horizontal') this.direction = 'vertical';
+    else if (this.direction === 'vertical') this.direction = 'horizontal';
   }
 
-  private checkValue(value: sliderValueType) {
-    return checkValue(value, this.min, this.max, this.step, this.type);
+  changeType(type: sliderType, value?: sliderValueType): boolean {
+    if (type === this.type) {
+      console.log('Нельзя поменять тип слайдера на тот же самый, который установлен');
+      // throw new Error('Нельзя поменять тип слайдера на тот же самый, который установлен');
+      return false;
+    }
+    
+    this.type = type;
+    
+    let localValue: sliderValueType;
+
+    if (value) {
+      if (this.type === 'single') { // range -> single
+        if ((typeof value) === 'number') {
+          this.value = value;
+        } else {
+          console.log('Введенное значение должно быть числом');
+          return false;
+        }
+      } else if (this.type === 'range') { // single -> range
+        if (Array.isArray(value) && value.length === 2) {
+          this.value = value;
+        } else {
+          console.log('Введенное значение должно быть массивом из 2х чисел');
+          return false;
+        }
+      }
+    } else if (!value) {
+      if (this.type === 'single') { // range -> single
+        [localValue] = this.value as sliderRangeValueType;
+        (this.value as number) = localValue;
+      } else if (this.type === 'range') { // single -> range
+        localValue = [this.value, this.value] as sliderRangeValueType;
+        (this.value as sliderRangeValueType) = localValue;
+      }
+    }
+
+    this.setValue(this.value, this.type);
+    return true;
   }
+
+  // private checkValue(value: sliderValueType) {
+  //   return checkValue(value, this.min, this.max, this.step, this.type);
+  // }
 }
 
-const m2 = new Model({
-  step: 5, min: 0, max: 100, type: 'range', direction: 'horizontal', value: [-10, -99], scale: { init: true, type: 'numeric' },
-});
-console.log('m2 ====', m2.value);
+// const m2 = new Model({
+//   step: 5, min: 0, max: 100, type: 'range', direction: 'horizontal', value: [100, 1111], scale: { init: true, type: 'numeric' },
+// });
 
-// setValue(value?: number | [number, number]): object {
-//   let select = 0;
-//   let val: number | [number, number] = 0;
-    
-//   if (this.type === 'single') { // && typeof value === 'number'
-//     let singleVal = value ? value as number : this.max / 2; // let value: number = options.value;
+// console.log('m2=', m2.type, m2);
 
-//     if (singleVal < this.min) singleVal = this.min;
-//     if (singleVal > this.max) singleVal = this.max;
+// m2.changeType('single');
 
-//     val = singleVal as number;
-//     select = ((val - this.min) / this.sliderLength) * 100;
-//   }
-    
-//   if (this.type === 'range') { // && value instanceof Array && value[0] && value[1]
-//     // eslint-disable-next-line prefer-const
-//     let rangeVal = value
-//       ? value as [number, number]
-//       : [this.min, this.max];
+// console.log('m2=', m2.type, m2.getValue());
 
-//     if (rangeVal[0] < this.min) rangeVal[0] = this.min;
-//     else if (rangeVal[0] > this.max) rangeVal[0] = this.max;
-      
-//     if (rangeVal[1] > this.max) rangeVal[1] = this.max;
-//     else if (rangeVal[1] < this.min) rangeVal[1] = this.min;
+// m2.changeType('range');
 
-//     // eslint-disable-next-line prefer-destructuring
-//     if (rangeVal[0] > rangeVal[1]) rangeVal[0] = rangeVal[1];
-      
-//     val = rangeVal as [number, number];
-//     select = ((val[1] - val[0]) / this.sliderLength) * 100;
-//   }
-
-//   this.value = val;
-//   this.selectedLength = select;
-
-//   return {
-//     value,
-//     select,
-//   };
-// }
+// console.log('m2=', m2.type, m2.getValue());

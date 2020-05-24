@@ -94,7 +94,7 @@ describe('Model', () => {
       step: 5,
       direction: 'vertical',
     });
-      
+    expect(model5.max).toEqual(model5.min + model5.step);
     expect(model5).toEqual({
       min: 50,
       max: 55,
@@ -159,6 +159,8 @@ describe('Model', () => {
 
     model5.setValue([-10, -99], 'range');
     expect(model5.value).toEqual([0, 1]);
+
+    expect((Array.isArray(model5.value))).toEqual(true);
   });
 
   test('Проверка метода getType', () => {
@@ -175,4 +177,44 @@ describe('Model', () => {
     expect(model.getValue()).toBe(0);
     expect(model2.getValue()).toEqual([60, 65]);
   });
+
+  // --------------------
+  test('changeDirection', () => {
+    const localModel = new Model({});
+
+    expect(localModel.direction).toEqual('horizontal');
+    localModel.changeDirection();
+    expect(localModel.direction).toEqual('vertical');
+    localModel.changeDirection();
+    expect(localModel.direction).toEqual('horizontal');
+  });
+
+
+  test('changeType', () => {
+    const localModel = new Model({ value: 50, step: 10 });
+
+    expect(localModel.changeType('single')).toEqual(false);
+    
+    expect(localModel.changeType('range')).toEqual(true);
+    expect(localModel.type).toEqual('range');
+    expect(localModel.value).toEqual([50, 60]);
+    expect(localModel.changeType('range')).toEqual(false);
+
+    expect(localModel.changeType('single')).toEqual(true);
+    expect(localModel.type).toEqual('single');
+    expect(localModel.value).toEqual(50);
+    expect(localModel.changeType('single')).toEqual(false);
+
+    expect(localModel.changeType('range', [75, 100])).toEqual(true);
+    expect(localModel.type).toEqual('range');
+    expect(localModel.value).toEqual([80, 100]);
+    expect(localModel.changeType('range')).toEqual(false);
+
+    expect(localModel.changeType('single', 500)).toEqual(true);
+    expect(localModel.type).toEqual('single');
+    expect(localModel.value).toEqual(100);
+    expect(localModel.changeType('single', 75)).toEqual(false);
+  });
 });
+
+// expect().toEqual();

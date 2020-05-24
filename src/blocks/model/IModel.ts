@@ -31,23 +31,16 @@ interface IModel {
   tooltip: boolean;
   scale: scaleType;
   value: number | [ number, number];
-  // selectedLength: number;
+
   // ------------------------------ metods
-  getType(): sliderType;
-
   setValue(value: sliderValueType, type: sliderType): void;
-  // getValue(): number;
-  // getLimits(): object;
-  // getStep(): number;
-
-  // setType(newType: string): void;
-  // setLimits(): void;
-  // setStep(newStep: number): void;
-  // setAValueTo(newValue: number, mutable: boolean, isAuto: boolean): void;
-  // setSingleValue(newValue: number, isAuto: boolean): void;
-  // setRangeValue(newValues: number, isAuto: boolean): void;
-  // recalculateValue(): void;
-  // setNearestValue(value: number, viaPercents: boolean, isAuto: boolean): void;
+  changeDirection(): void;
+  changeType(type: sliderType, value?: sliderValueType): boolean;
+  
+  // ------------------------------ getters
+  getType(): sliderType;
+  getValue(): sliderValueType;
+  getStep(): number;
 }
 
 export {
