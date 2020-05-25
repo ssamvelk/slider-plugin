@@ -116,10 +116,6 @@ export default class Model implements IModel {
     this.setValue(this.value, this.type);
     return true;
   }
-
-  // private checkValue(value: sliderValueType) {
-  //   return checkValue(value, this.min, this.max, this.step, this.type);
-  // }
 }
 
 // const m2 = new Model({

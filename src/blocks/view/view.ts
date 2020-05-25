@@ -5,7 +5,10 @@ import {
   sliderType, sliderDirection, sliderValueType, sliderRangeValueType,
 } from '../model/IModel';
 import { stepСheck, checkValue } from '../utils/Utils';
+import Observable from '../utils/Observable';
+
 /* eslint-disable @typescript-eslint/no-unused-vars */
+
 class View implements IView {
   root!: HTMLDivElement; // | HTMLBodyElement
   // | HTMLBodyElement
@@ -32,7 +35,10 @@ class View implements IView {
 
   private viewValues: defaultViewOptions;
   
-  private observebale: any;
+  /** Объект наблюдения(observebale) - хранит в себе список всех наблюдателей
+   *  за событием пользователя(движение мыши)
+   * */
+  private observebale: Observable;
 
   constructor(options: initViewOptions) {
     this.viewValues = {
@@ -52,7 +58,8 @@ class View implements IView {
         type: (options.scale instanceof Object && options.scale.type) ? (options.scale as scaleType).type : 'usual',
       },
     };
-    
+    this.observebale = new Observable();
+
     this.init(options);
     this.initStyles(options.type, options.direction);
     this.setValue(this.viewValues.value, this.viewValues.type);
@@ -337,15 +344,18 @@ class View implements IView {
       document.removeEventListener('mousemove', onMouseMoveHandleMin);
       document.removeEventListener('mousemove', onMouseMoveHandleMax);
       console.log(this.viewValues.value);
+      this.observebale.trigger('userMoveSlider', this.viewValues.value);
     };
 
     const onFocusHandle = (e: KeyboardEvent) => {
       e.preventDefault();
       if ((e.code === 'ArrowLeft') || (e.code === 'ArrowDown')) {
         this.setValue(((this.viewValues.value as number) - this.viewValues.step), 'single');
+        this.observebale.trigger('userMoveSlider', this.viewValues.value);
       }
       if ((e.code === 'ArrowRight') || (e.code === 'ArrowUp')) {
         this.setValue(((this.viewValues.value as number) + this.viewValues.step), 'single');
+        this.observebale.trigger('userMoveSlider', this.viewValues.value);
       }
     };
 
@@ -356,12 +366,14 @@ class View implements IView {
           [((this.viewValues.value as sliderRangeValueType)[0] + this.viewValues.step), (this.viewValues.value as sliderRangeValueType)[1]],
           'range',
         );
+        this.observebale.trigger('userMoveSlider', this.viewValues.value);
       }
       if ((e.code === 'ArrowLeft') || (e.code === 'ArrowUp')) {
         this.setValue(
           [((this.viewValues.value as sliderRangeValueType)[0] - this.viewValues.step), (this.viewValues.value as sliderRangeValueType)[1]],
           'range',
         );
+        this.observebale.trigger('userMoveSlider', this.viewValues.value);
       }
     };
     const onFocusHandleMax = (e: KeyboardEvent) => {
@@ -371,6 +383,7 @@ class View implements IView {
           [(this.viewValues.value as sliderRangeValueType)[0], ((this.viewValues.value as sliderRangeValueType)[1] + this.viewValues.step)],
           'range',
         );
+        this.observebale.trigger('userMoveSlider', this.viewValues.value);
       }
       if ((e.code === 'ArrowLeft') || (e.code === 'ArrowUp')) {
         if (((this.viewValues.value as sliderRangeValueType)[1] - (this.viewValues.value as sliderRangeValueType)[0]) === this.viewValues.step) {
@@ -384,6 +397,7 @@ class View implements IView {
           [(this.viewValues.value as sliderRangeValueType)[0], ((this.viewValues.value as sliderRangeValueType)[1] - this.viewValues.step)],
           'range',
         );
+        this.observebale.trigger('userMoveSlider', this.viewValues.value);
       }
     };
 
@@ -465,6 +479,7 @@ class View implements IView {
               this.setValue([(this.viewValues.value as sliderRangeValueType)[0], (localValue! as number)], 'range');
             }
           }
+          this.observebale.trigger('userMoveSlider', this.viewValues.value);
         }
       });
     }
@@ -542,7 +557,10 @@ class View implements IView {
     return this.viewValues;
   }
 
-  /** Subject или Observable - когда, юзер двигает ползунок - тригерится событие и уведомляет presenter */
+  /** addObservers - добавляет подписчика на событие */
+  addObservers(observer: object) {
+    this.observebale.subscribe(observer);
+  }
 }
 
 // const v1 = new View({
