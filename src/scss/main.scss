@@ -2,7 +2,7 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    appearance: none;
+    // appearance: none;
 }
 html {
     font-size: 16px;
@@ -10,8 +10,17 @@ html {
     font-family: Helvetica, Arial, sans-serif;
 }
 body {
+    padding-top: 1em;
     background: darkgoldenrod;
+}
+
+h1 {
+    // font: 2em sans-serif;
+    margin-bottom: 1em;
+    text-align: center;
+    
 }
 
 @import "util/fonts.scss";
 @import "../blocks/view/view.scss";
+@import "../blocks/presentationPage/sliderWhithPanel.scss"

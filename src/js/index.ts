@@ -7,3 +7,5 @@ import '../blocks/view/View.ts';
 import '../blocks/presenter/Presenter.ts';
 
 import '../blocks/plugin/Plugin.ts';
+
+import '../blocks/presentationPage/sliderWhithPanel';

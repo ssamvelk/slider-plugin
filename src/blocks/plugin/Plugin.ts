@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/space-before-function-paren */
+/* eslint-disable func-names */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-new */
 import { initViewOptions } from '../view/IView';
@@ -6,18 +8,40 @@ import Presenter from '../presenter/Presenter';
 
 const jQuery = require('jquery');
 
-const $ = <any>jQuery;
+const $ = jQuery;
 
 // eslint-disable-next-line @typescript-eslint/space-before-function-paren
 // eslint-disable-next-line no-shadow
 (($) => {
   // eslint-disable-next-line no-param-reassign
-  $.fn.sliderPlugin = (options: initViewOptions) => {
-    new Presenter(options);
-    // console.log(presenter);
+  $.fn.sliderPlugin = function(options: initViewOptions) {
+    let localRoot;
+
+    if (this[0] && this[0].attributes.id) {
+      localRoot = this[0].attributes.getNamedItem('id').value;
+    }
+
+    const localOptions = $.extend(options, {
+      root: localRoot,
+    });
+
+    console.log('localOptions = ', localOptions);
+
+    const presenter = new Presenter(localOptions);
+
+    return {
+      getValue: presenter.getValue.bind(presenter),
+      setValue: presenter.onValueChange.bind(presenter),
+      changeType: presenter.onTypeChange.bind(presenter),
+      changeDirection: presenter.onDirectionChange.bind(presenter),
+    };
   };
 })(jQuery);
 
-const myPlugin = $('').sliderPlugin({
-  min: 1, max: 101, value: 67, step: 3, tooltip: true, root: 'mySlider', scale: true,
-});
+export default $;
+// console.log('myPluginRange.getValue()1', myPluginRange.getValue);
+// myPluginRange.getValue();
+// myPluginRange.setValue([10, 15]);
+// myPluginRange.getValue();
+// console.log('myPluginRange.getValue()2', myPluginRange.getValue);
+// console.log('myPluginRange === ', myPluginRange);

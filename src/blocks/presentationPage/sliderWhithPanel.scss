@@ -1,0 +1,32 @@
+.slider-whith-panel {
+  // min-height: 400px;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  border: indigo 1px solid;
+
+  &__slider {
+    width: 60%;
+    border: indigo 1px solid;
+  }
+
+  &__panel {
+    min-width: 100px;
+    width: 40%;
+    background-color: rgb(180, 177, 170);
+    border: indigo 1px solid;
+    
+    &-value,
+    &-step,
+    &-type,
+    &-direction,
+    &-tooltip,
+    &-scale {
+      margin-top: 5px;
+      display: flex;
+      border: indigo 1px solid;
+      // justify-content: space-between;
+    }
+  }
+}

@@ -38,7 +38,12 @@ class Presenter implements IPresenter {
     this.model.setValue(value, this.model.type);
     this.view.changeValue(value);
   }
-
+  
+  /** Получить значение слайдера */
+  getValue() {
+    // console.log(this.model.value, '===', this.view.getValues().value, 'return=>', this.model.value);
+    return this.model.value;
+  }
   // ----------------------СОБЫТИЯ
   
   /** В зависимости от action выполняет манипуляции над View и Model */

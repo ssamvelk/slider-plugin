@@ -1,3 +1,4 @@
+include ../blocks/presentationPage/sliderWhithPanel.pug
 <!DOCTYPE html>
 html(lang="en")
     head
@@ -6,8 +7,9 @@ html(lang="en")
         link(rel="icon", href="img/favicon.ico" type="image/ico")
         title MVP slider
     body
-        h1 slider presentation
-        #mySlider
-        br
-        #mySliderRange
-        br
+        h1 Slider presentation
+        +sliderWhithPanel('mySlider')
+        //- br
+        +sliderWhithPanel('mySliderRange')
+        +sliderWhithPanel('mySliderVertical')
+        +sliderWhithPanel('mySliderRangeVertical')
