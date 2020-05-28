@@ -17,42 +17,60 @@ class Presenter implements IPresenter {
     this.addDefaultEvents();
   }
   
-  /** Смена direction */
-  onDirectionChange() {
+  /** Сменить direction */
+  changeDirection() {
     this.model.changeDirection();
     this.view.changeDirection();
-    // if (this.model.direction === this.view.getValues().direction) {
-    //   console.log('direction currect!');
-    //   console.log(`${this.model.direction} === ${this.view.getValues().direction}`);
-    // } else throw new Error('direction non-currect');
   }
 
-  /** Смена type */
-  onTypeChange(type: sliderType) {
+  /** Сменить type */
+  changeType(type: sliderType) {
     this.model.changeType(type);
     this.view.changeType(type);
   }
 
-  /** Смена значения */
-  onValueChange(value: sliderValueType) {
+  /** Сменить значения */
+  changeValue(value: sliderValueType) {
     this.model.setValue(value, this.model.type);
     this.view.changeValue(value);
+  }
+
+  /** Меняет step и меняет value в соответсвии новому шагу */
+  changeStep(step: number) {
+    this.model.changeStep(step);
+    this.view.changeStep(step);
   }
   
   /** Получить значение слайдера */
   getValue() {
-    // console.log(this.model.value, '===', this.view.getValues().value, 'return=>', this.model.value);
     return this.model.value;
   }
+
+  /** Получить тип слайдера */
+  getType() {
+    return this.model.type;
+  }
+
+  /** Получить шаг слайдера */
+  getStep() {
+    return this.model.step;
+  }
+
   // ----------------------СОБЫТИЯ
   
   /** В зависимости от action выполняет манипуляции над View и Model */
   private update(action: string, parameters: sliderValueType) {
-    if (action === 'userMoveSlider') this.onValueChange(parameters);
+    if (action === 'userMoveSlider') this.changeValue(parameters);
   }
 
+  /** addDefaultEvents - добавляет Presenter  в список наблюдателей за измененинием значения слайдера */
   private addDefaultEvents() {
     this.view.addObservers(this);
+  }
+
+  /** addObserver - добавляет наблюдателя за измененинием значения слайдера */
+  addObserver(observer: object) {
+    this.view.addObservers(observer);
   }
 }
 

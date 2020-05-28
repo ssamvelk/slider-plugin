@@ -41,11 +41,11 @@ describe('Presenter', () => {
   });
 
   test('onDirectionChange - metod change direction', () => {
-    presenter.onDirectionChange();
+    presenter.changeDirection();
     expect(presenter.view.getValues().direction).toEqual('vertical');
     expect(presenter.model.direction).toEqual('vertical');
     
-    presenter2.onDirectionChange();
+    presenter2.changeDirection();
     expect(presenter2.view.getValues().direction).toEqual('horizontal');
     expect(presenter2.model.direction).toEqual('horizontal');
 
@@ -63,11 +63,11 @@ describe('Presenter', () => {
     expect(presenter2.model.type).toEqual('range');
     expect(presenter2.view.getValues().type).toEqual('range');
 
-    presenter.onTypeChange('range');
+    presenter.changeType('range');
     expect(presenter.model.type).toEqual('range');
     expect(presenter.view.getValues().type).toEqual('range');
 
-    presenter2.onTypeChange('single');
+    presenter2.changeType('single');
     expect(presenter2.model.type).toEqual('single');
     expect(presenter2.view.getValues().type).toEqual('single');
   });
@@ -75,13 +75,13 @@ describe('Presenter', () => {
   test('onValueChange - metod change slider value', () => {
     expect(presenter.model.value).toEqual(0);
     expect(presenter.view.getValues().value).toEqual(0);
-    presenter.onValueChange(75);
+    presenter.changeValue(75);
     expect(presenter.model.value).toEqual(75);
     expect(presenter.view.getValues().value).toEqual(75);
 
     expect(presenter2.model.value).toEqual([60, 65]);
     expect(presenter2.view.getValues().value).toEqual([60, 65]);
-    presenter2.onValueChange([10, 94]);
+    presenter2.changeValue([10, 94]);
     expect(presenter2.model.value).toEqual([50, 70]);
     expect(presenter2.view.getValues().value).toEqual([50, 70]);
   });

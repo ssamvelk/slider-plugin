@@ -1,24 +1,66 @@
 import $ from '../plugin/Plugin';
-// require('jquery');
+import Panel from '../panel/Panel';
 
+// const event111 = new Event('changeValue');
+// require('jquery');
 // const $ = jQuery;
 
 const pluginSlider1 = $('').sliderPlugin({
-  min: 1, max: 101, value: 67, step: 3, tooltip: true, root: 'mySlider', scale: true,
+  type: 'range', value: [55, 78], min: 1, max: 101, step: 3, tooltip: true, root: 'mySlider', scale: true,
 });
-const slider1 = document.getElementById('slider-whith-panel-0');
-// let slider1Value: HTMLInputElement;
-if (slider1) {
-  const slider1Value = slider1!.querySelector('#value1');
-  (slider1Value as HTMLInputElement)!.value = pluginSlider1.getValue();
 
-  
-  // setInterval(() => {
-  //   console.log('slider1Value! =====> ', (slider1Value as HTMLInputElement)!.value);
-  // }, 5000);
+// console.log('pluginSlider1', pluginSlider1.getValue());
+
+const wrapForSlider1 = document.getElementById('slider-whith-panel-0');
+const wrapForPanel1 = wrapForSlider1!.querySelector('.slider-whith-panel__panel');
+// console.log('wrapForPanel1 ', wrapForPanel1);
+
+const panel = new Panel({
+  root: (wrapForPanel1 as HTMLDivElement),
+  value: pluginSlider1.getValue(),
+  step: pluginSlider1.getStep(),
+});
+// console.log('panel = ', panel);
+
+/** Добавляем  panel в список наблюдателей */
+pluginSlider1.addObserver(panel);
+
+/** Добавляем обработчики на нажатие Enter */
+if (wrapForSlider1) {
+  panel.valueInput1.addEventListener('keydown', (e) => {
+    if (e.keyCode === 13) {
+      if (pluginSlider1.getType() === 'single') {
+        pluginSlider1.setValue(Number(panel.valueInput1.value));
+      } else if (pluginSlider1.getType() === 'range') {
+        const localRangeValue = [Number(panel.valueInput1.value), Number(panel.valueInput2.value)];
+        pluginSlider1.setValue(localRangeValue);
+      }
+      panel.setValue(pluginSlider1.getValue());
+    }
+  });
+
+  panel.valueInput2.addEventListener('keydown', (e) => {
+    if (e.keyCode === 13) {
+      if (pluginSlider1.getType() === 'single') {
+        pluginSlider1.setValue(Number(panel.valueInput1.value));
+      } else if (pluginSlider1.getType() === 'range') {
+        const localRangeValue = [Number(panel.valueInput1.value), Number(panel.valueInput2.value)];
+        pluginSlider1.setValue(localRangeValue);
+      }
+      panel.setValue(pluginSlider1.getValue());
+    }
+  });
+
+  panel.stepInput.addEventListener('keydown', (e) => {
+    if (e.keyCode === 13) {
+      pluginSlider1.changeStep(Number(panel.stepInput.value));
+      // console.log(pluginSlider1.getStep());
+      panel.stepInput.value = pluginSlider1.getStep();
+    }
+  });
 }
-// slider1Value!.innerHTML = '111';
 
+// --------------------------------------------------------------------
 $('#mySliderRange').sliderPlugin({
   root: 'xxx', min: 1, max: 101, value: [70, 78], step: 3, tooltip: true, type: 'range', scale: { init: true, type: 'numeric', num: 9 },
 });

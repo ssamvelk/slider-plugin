@@ -25,15 +25,20 @@ const $ = jQuery;
       root: localRoot,
     });
 
-    console.log('localOptions = ', localOptions);
+    // console.log('localOptions = ', localOptions);
 
     const presenter = new Presenter(localOptions);
+    // const event = new Event('changeValue');
 
     return {
       getValue: presenter.getValue.bind(presenter),
-      setValue: presenter.onValueChange.bind(presenter),
-      changeType: presenter.onTypeChange.bind(presenter),
-      changeDirection: presenter.onDirectionChange.bind(presenter),
+      getType: presenter.getType.bind(presenter),
+      getStep: presenter.getStep.bind(presenter),
+      setValue: presenter.changeValue.bind(presenter),
+      changeType: presenter.changeType.bind(presenter),
+      changeDirection: presenter.changeDirection.bind(presenter),
+      changeStep: presenter.changeStep.bind(presenter),
+      addObserver: presenter.addObserver.bind(presenter),
     };
   };
 })(jQuery);

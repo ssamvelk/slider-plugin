@@ -116,6 +116,12 @@ export default class Model implements IModel {
     this.setValue(this.value, this.type);
     return true;
   }
+
+  /** Меняет step и меняет value в соответсвии новому шагу */
+  changeStep(step: number) {
+    this.step = step;
+    this.setValue(this.value, this.type);
+  }
 }
 
 // const m2 = new Model({

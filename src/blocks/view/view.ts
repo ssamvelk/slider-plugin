@@ -553,6 +553,12 @@ class View implements IView {
     return this.viewValues.value;
   }
 
+  /** Меняет step и меняет value в соответсвии новому шагу */
+  changeStep(step: number) {
+    this.viewValues.step = step;
+    this.setValue(this.viewValues.value, this.viewValues.type);
+  }
+
   getValues() {
     return this.viewValues;
   }
