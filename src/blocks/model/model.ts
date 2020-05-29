@@ -119,8 +119,18 @@ export default class Model implements IModel {
 
   /** Меняет step и меняет value в соответсвии новому шагу */
   changeStep(step: number) {
-    this.step = step;
+    let localStep: number = step;
+    if (localStep < 0.01) localStep = 0.01;
+    if (localStep > (this.max - this.min)) localStep = (this.max - this.min);
+    this.step = localStep;
     this.setValue(this.value, this.type);
+  }
+
+  /** Меняет scale  */
+  changeScale(options: scaleType) {
+    this.scale.init = options.init;
+    this.scale.type = options.type;
+    this.scale.num = options.num;
   }
 }
 

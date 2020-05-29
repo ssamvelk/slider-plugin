@@ -6,27 +6,37 @@ import Panel from '../panel/Panel';
 // const $ = jQuery;
 
 const pluginSlider1 = $('').sliderPlugin({
-  type: 'range', value: [55, 78], min: 1, max: 101, step: 3, tooltip: true, root: 'mySlider', scale: true,
+  type: 'range',
+  value: [55, 78],
+  min: 1,
+  max: 101,
+  step: 3,
+  tooltip: true,
+  root: 'mySlider',
+  scale: { init: true, type: 'usual', num: 11 },
+  // direction: 'vertical',
 });
-
-// console.log('pluginSlider1', pluginSlider1.getValue());
 
 const wrapForSlider1 = document.getElementById('slider-whith-panel-0');
 const wrapForPanel1 = wrapForSlider1!.querySelector('.slider-whith-panel__panel');
-// console.log('wrapForPanel1 ', wrapForPanel1);
 
 const panel = new Panel({
   root: (wrapForPanel1 as HTMLDivElement),
   value: pluginSlider1.getValue(),
+  type: pluginSlider1.getType(),
+  direction: pluginSlider1.getDirection(),
+  tooltip: pluginSlider1.getTooltip(),
   step: pluginSlider1.getStep(),
+  scale: pluginSlider1.getScale(),
 });
-// console.log('panel = ', panel);
 
-/** Добавляем  panel в список наблюдателей */
+/** Добавляем  panel в список наблюдателей за слайдером */
 pluginSlider1.addObserver(panel);
 
-/** Добавляем обработчики на нажатие Enter */
+
 if (wrapForSlider1) {
+  /** Добавляем обработчики на нажатие Enter для инпутов */
+  /** Value inputs */
   panel.valueInput1.addEventListener('keydown', (e) => {
     if (e.keyCode === 13) {
       if (pluginSlider1.getType() === 'single') {
@@ -38,7 +48,7 @@ if (wrapForSlider1) {
       panel.setValue(pluginSlider1.getValue());
     }
   });
-
+  
   panel.valueInput2.addEventListener('keydown', (e) => {
     if (e.keyCode === 13) {
       if (pluginSlider1.getType() === 'single') {
@@ -51,11 +61,53 @@ if (wrapForSlider1) {
     }
   });
 
+  /** Step input */
   panel.stepInput.addEventListener('keydown', (e) => {
     if (e.keyCode === 13) {
       pluginSlider1.changeStep(Number(panel.stepInput.value));
       // console.log(pluginSlider1.getStep());
       panel.stepInput.value = pluginSlider1.getStep();
+      panel.setValue(pluginSlider1.getValue());
+    }
+  });
+
+  /** Scale num input */
+  panel.scaleNumInput.addEventListener('keydown', (e) => {
+    if (e.keyCode === 13) {
+      const localScale = pluginSlider1.getScale();
+      pluginSlider1.changeScale({ init: localScale.init, type: localScale.type, num: panel.scaleNumInput.value });
+    }
+  });
+
+  /** Добавляем обработчики на событие клик для радио кнопок */
+  panel.root.addEventListener('click', (e) => {
+    if (e.target === panel.typeRadio1) {
+      pluginSlider1.changeType(panel.typeRadio1.value);
+      panel.valueInput2.value = '';
+      panel.valueInput2.disabled = true;
+    }
+    if (e.target === panel.typeRadio2) {
+      pluginSlider1.changeType(panel.typeRadio2.value);
+      panel.valueInput2.disabled = false;
+      panel.valueInput2.value = pluginSlider1.getValue()[1];
+    }
+    if (e.target === panel.directionRadio1) {
+      if (pluginSlider1.getDirection() === 'vertical') {
+        pluginSlider1.changeDirection();
+      }
+    }
+    if (e.target === panel.directionRadio2) {
+      if (pluginSlider1.getDirection() === 'horizontal') {
+        pluginSlider1.changeDirection();
+      }
+    }
+    if (e.target === panel.tooltipRadio1) {
+      pluginSlider1.too;
+    }
+    if (e.target === panel.directionRadio2) {
+      if (pluginSlider1.getDirection() === 'horizontal') {
+        pluginSlider1.changeDirection();
+      }
     }
   });
 }

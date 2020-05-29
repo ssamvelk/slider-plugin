@@ -34,10 +34,14 @@ const $ = jQuery;
       getValue: presenter.getValue.bind(presenter),
       getType: presenter.getType.bind(presenter),
       getStep: presenter.getStep.bind(presenter),
+      getScale: presenter.getScale.bind(presenter),
+      getDirection: presenter.getDirection.bind(presenter),
+      getTooltip: presenter.getTooltip.bind(presenter),
       setValue: presenter.changeValue.bind(presenter),
       changeType: presenter.changeType.bind(presenter),
       changeDirection: presenter.changeDirection.bind(presenter),
       changeStep: presenter.changeStep.bind(presenter),
+      changeScale: presenter.changeScale.bind(presenter),
       addObserver: presenter.addObserver.bind(presenter),
     };
   };

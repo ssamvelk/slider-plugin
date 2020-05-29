@@ -3,7 +3,7 @@ import View from '../view/View';
 import Model from '../model/Model';
 // import { modelOptions } from '../model/IModel';
 import { initViewOptions } from '../view/IView';
-import { sliderType, sliderValueType } from '../model/IModel';
+import { sliderType, sliderValueType, scaleType } from '../model/IModel';
 
 class Presenter implements IPresenter {
   view: View;
@@ -40,6 +40,18 @@ class Presenter implements IPresenter {
     this.model.changeStep(step);
     this.view.changeStep(step);
   }
+
+  /** Меняет scale  */
+  changeScale(options: scaleType) {
+    this.model.changeScale(options);
+    this.view.changeScale(options);
+  }
+
+  /** Меняет scale  */
+  changeTooltip(options: scaleType) {
+    this.model.tooltip = !this.model.tooltip;
+    this.view.changeTooltip(this.model.tooltip);
+  }
   
   /** Получить значение слайдера */
   getValue() {
@@ -54,6 +66,21 @@ class Presenter implements IPresenter {
   /** Получить шаг слайдера */
   getStep() {
     return this.model.step;
+  }
+
+  /** Получить шкалу слайдера */
+  getScale() {
+    return this.model.scale;
+  }
+
+  /** Получить ориентацию(вертикальный\горизонтальный) слайдера */
+  getDirection() {
+    return this.model.direction;
+  }
+
+  /** Получить тултип слайдера */
+  getTooltip() {
+    return this.model.tooltip;
   }
 
   // ----------------------СОБЫТИЯ

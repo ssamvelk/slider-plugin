@@ -1,4 +1,6 @@
-import { sliderValueType } from '../model/IModel';
+import {
+  sliderValueType, scaleType, sliderType, sliderDirection,
+} from '../model/IModel';
 import { panelOptions, IPanel } from './IPanel';
 
 class Panel implements IPanel { // implements IPanel
@@ -54,12 +56,20 @@ class Panel implements IPanel { // implements IPanel
 
   constructor(options: panelOptions) {
     const localValue = options.value || 0;
+    const localType = options.type || 'single';
+    const localDirection = options.direction || 'horizontal';
+    const localTooltip = options.tooltip || false;
     const localStep = options.step || 1;
+    const localScale = options.scale || { init: true, type: 'usual', num: 7 };
     this.root = options.root;
     
     this.init();
     this.setValue(localValue);
+    this.setType(localType);
+    this.setDirection(localDirection);
+    this.setTooltip(localTooltip);
     this.setStep(localStep);
+    this.setScale(localScale);
   }
 
   /** Инициализация панели и отрисовка DOM */
@@ -77,9 +87,11 @@ class Panel implements IPanel { // implements IPanel
     /**  valueWrap - div для value */
     this.valueInput1 = document.createElement('input');
     this.valueInput1.setAttribute('type', 'number');
+    this.valueInput1.setAttribute('step', 'any');
     this.valueInput1.classList.add('panel__value');
     this.valueInput2 = document.createElement('input');
     this.valueInput2.setAttribute('type', 'number');
+    this.valueInput2.setAttribute('step', 'any');
     this.valueInput2.classList.add('panel__value');
     valueWrap.textContent = 'Value: ';
     valueWrap.appendChild(this.valueInput1);
@@ -144,6 +156,7 @@ class Panel implements IPanel { // implements IPanel
     
     this.stepInput = document.createElement('input');
     this.stepInput.setAttribute('type', 'number');
+    this.stepInput.setAttribute('step', 'any');
     this.stepInput.classList.add('panel__step');
     stepWrap.textContent = 'Step: ';
     stepWrap.appendChild(this.stepInput);
@@ -181,6 +194,7 @@ class Panel implements IPanel { // implements IPanel
     scaleNumWrap.classList.add('panel__scale-num-wrap');
     this.scaleNumInput = document.createElement('input');
     this.scaleNumInput.setAttribute('type', 'number');
+    
     scaleNumWrap.appendChild(this.scaleNumInput);
     scaleWrap.appendChild(scaleOnOffWrap);
     scaleWrap.appendChild(scaleTypeWrap);
@@ -206,8 +220,65 @@ class Panel implements IPanel { // implements IPanel
     }
   }
 
+  setType(type: sliderType) {
+    if (type === 'single') {
+      this.typeRadio1.setAttribute('checked', 'checked');
+      this.typeRadio2.removeAttribute('checked');
+      this.valueInput2.disabled = true;
+      this.valueInput2.value = '';
+    } else if (type === 'range') {
+      this.typeRadio1.removeAttribute('checked');
+      this.typeRadio2.setAttribute('checked', 'checked');
+      this.valueInput2.disabled = false;
+    }
+  }
+
+  setDirection(direction: sliderDirection) {
+    if (direction === 'horizontal') {
+      this.directionRadio1.setAttribute('checked', 'checked');
+      this.directionRadio2.removeAttribute('checked');
+    } else if (direction === 'vertical') {
+      this.directionRadio1.removeAttribute('checked');
+      this.directionRadio2.setAttribute('checked', 'checked');
+    }
+  }
+
+  setTooltip(tooltip: boolean) {
+    if (tooltip) {
+      this.tooltipRadio1.setAttribute('checked', 'checked');
+      this.tooltipRadio2.removeAttribute('checked');
+    } else if (tooltip === false) {
+      this.tooltipRadio1.removeAttribute('checked');
+      this.tooltipRadio2.setAttribute('checked', 'checked');
+    }
+  }
+
   setStep(value: number) {
     this.stepInput.value = value.toString();
+  }
+
+  setScale(scale: scaleType) {
+    if (scale.init === true) {
+      this.scaleOnRadio.setAttribute('checked', 'checked');
+      this.scaleTypeRadio1.disabled = false;
+      this.scaleTypeRadio2.disabled = false;
+      this.scaleNumInput.disabled = false;
+      this.scaleNumInput.value = (scale.num)!.toString();
+    } else if (scale.init === false) {
+      this.scaleOnRadio.removeAttribute('checked');
+      this.scaleOffRadio.setAttribute('checked', 'checked');
+      this.scaleTypeRadio1.disabled = true;
+      this.scaleTypeRadio2.disabled = true;
+      this.scaleNumInput.value = '';
+      this.scaleNumInput.disabled = true;
+    }
+    if (scale.type === 'usual') {
+      this.scaleTypeRadio1.setAttribute('checked', 'checked');
+      this.scaleTypeRadio2.removeAttribute('checked');
+    } else if (scale.type === 'numeric') {
+      this.scaleTypeRadio1.removeAttribute('checked');
+      this.scaleTypeRadio2.setAttribute('checked', 'checked');
+    }
   }
 
   /** Добавляет обработчики на события радиокнопок */

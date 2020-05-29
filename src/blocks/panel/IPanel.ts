@@ -1,5 +1,5 @@
 import {
-  sliderValueType,
+  sliderValueType, scaleType, sliderType, sliderDirection,
 } from '../model/IModel';
 
 interface IPanel {
@@ -41,10 +41,10 @@ interface IPanel {
 
 type panelOptions = {
   step: number;
-  // type?: sliderType;
-  // direction?: sliderDirection;
-  // tooltip?: boolean;
-  // scale?: scaleType;
+  type: sliderType;
+  direction: sliderDirection;
+  tooltip: boolean;
+  scale: scaleType;
   root: HTMLDivElement;
   value: sliderValueType;
 };

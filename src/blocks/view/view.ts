@@ -118,7 +118,7 @@ class View implements IView {
     }
 
     if (this.viewValues.scale.init) {
-      this.initScale(opt.direction, this.viewValues.scale);
+      this.initScale(this.viewValues.scale); // opt.direction,
     }
   }
 
@@ -147,7 +147,7 @@ class View implements IView {
         if (this.tooltipMax) this.tooltipMax.classList.add('slider__tooltip_horizontal');
       }
       
-      if (this.scale) this.scale.classList.add('slider__scale_horizontal');
+      // if (this.scale) this.scale.classList.add('slider__scale_horizontal');
     } else if (direction === 'vertical') {
       this.wrap.classList.add('slider__wrp_vertical');
       this.sliderLine.classList.add('slider__line_vertical');
@@ -171,33 +171,74 @@ class View implements IView {
         if (this.tooltipMin) this.tooltipMin.classList.add('slider__tooltip_vertical');
         if (this.tooltipMax) this.tooltipMax.classList.add('slider__tooltip_vertical');
       }
-      if (this.scale) this.scale.classList.add('slider__scale_vertical');
+      // if (this.scale) this.scale.classList.add('slider__scale_vertical');
     }
   }
 
-  private initScale(direction?: sliderDirection, opt?: scaleType) {
+  /** Создает scale + стили + обработчик на нажатие пользователем */
+  private initScale(opt?: scaleType) { // direction?: sliderDirection,
     (this.scale = document.createElement('div')).classList.add('slider__scale');
     const ul = document.createElement('ul');
     ul.classList.add('slider__scale-list');
-    const dirLocalValue = direction || 'horizontal';
+    const dirLocalValue = this.viewValues.direction; // direction || 'horizontal';
     if (dirLocalValue === 'horizontal') ul.classList.add('slider__scale-list_horizontal');
     else if (dirLocalValue === 'vertical') ul.classList.add('slider__scale-list_vertical');
 
-    const localValue = (opt!.num || 7);
-    for (let i = 0; i < localValue; i += 1) {
+    const localNumValue = (opt!.num || 7);
+    for (let i = 0; i < localNumValue; i += 1) {
       const li = document.createElement('li');
       li.classList.add('slider__scale-item');
       li.classList.add(`slider__scale-item_${dirLocalValue}`);
       if (this.viewValues.scale.type === 'numeric') {
         li.classList.add('slider__scale-item_numeric');
-        li.innerHTML = ((((this.viewValues.max - this.viewValues.min) / (localValue - 1)) * i) + this.viewValues.min).toFixed().toString();
+        li.innerHTML = ((((this.viewValues.max - this.viewValues.min) / (localNumValue - 1)) * i) + this.viewValues.min).toFixed().toString();
       }
       li.id = `slider__scale-item${i + 1}`;
       
       ul.appendChild(li);
     }
+    this.initScaleStyles();
     this.scale.appendChild(ul);
     this.wrap.appendChild(this.scale);
+
+    if (this.viewValues.scale.init) {
+      this.scale!.addEventListener('mousedown', (e: MouseEvent) => {
+        if ((e.target as HTMLLIElement).classList.contains('slider__scale-item')) {
+          let localValue: sliderValueType;
+          
+          if (this.viewValues.type === 'single') {
+            if (this.viewValues.direction === 'horizontal') {
+              (localValue! as number) = this.invertCoordinate(e.clientX).inValue;
+            } else if (this.viewValues.direction === 'vertical') {
+              (localValue! as number) = this.invertCoordinate(e.clientY).inValue;
+            }
+            
+            this.setValue(localValue!, 'single');
+          } else if (this.viewValues.type === 'range') {
+            if (this.viewValues.direction === 'horizontal') {
+              (localValue! as number) = this.invertCoordinate(e.clientX).inValue;
+            } else if (this.viewValues.direction === 'vertical') {
+              (localValue! as number) = this.invertCoordinate(e.clientY).inValue;
+            }
+            
+            if (localValue! <= (this.viewValues.value as sliderRangeValueType)[1]) {
+              this.setValue([(localValue! as number), (this.viewValues.value as sliderRangeValueType)[1]], 'range');
+            } else {
+              this.setValue([(this.viewValues.value as sliderRangeValueType)[0], (localValue! as number)], 'range');
+            }
+          }
+          this.observebale.trigger('userMoveSlider', this.viewValues.value);
+        }
+      });
+    }
+  }
+
+  /** Добавляем стили scale */
+  private initScaleStyles() {
+    if (this.scale) {
+      if (this.viewValues.direction === 'horizontal') this.scale.classList.add('slider__scale_horizontal');
+      if (this.viewValues.direction === 'vertical') this.scale.classList.add('slider__scale_vertical');
+    }
   }
 
   private setValue(value: sliderValueType, type: sliderType) {
@@ -249,6 +290,11 @@ class View implements IView {
 
   private clearRoot() {
     this.wrap.remove();
+  }
+
+  /** Удаляет scale из DOM */
+  private clearScale() {
+    this.scale?.remove();
   }
   
   private invertToPersent(value: number) { // перевод из значения в % от длины.ширины
@@ -452,37 +498,6 @@ class View implements IView {
       this.handleMax!.addEventListener('blur', onBlurHandle);
       // --onFocusHandleMax
     }
-
-    if (this.viewValues.scale.init) {
-      this.scale!.addEventListener('mousedown', (e: MouseEvent) => {
-        if ((e.target as HTMLLIElement).classList.contains('slider__scale-item')) {
-          let localValue: sliderValueType;
-          
-          if (this.viewValues.type === 'single') {
-            if (this.viewValues.direction === 'horizontal') {
-              (localValue! as number) = this.invertCoordinate(e.clientX).inValue;
-            } else if (this.viewValues.direction === 'vertical') {
-              (localValue! as number) = this.invertCoordinate(e.clientY).inValue;
-            }
-            
-            this.setValue(localValue!, 'single');
-          } else if (this.viewValues.type === 'range') {
-            if (this.viewValues.direction === 'horizontal') {
-              (localValue! as number) = this.invertCoordinate(e.clientX).inValue;
-            } else if (this.viewValues.direction === 'vertical') {
-              (localValue! as number) = this.invertCoordinate(e.clientY).inValue;
-            }
-            
-            if (localValue! <= (this.viewValues.value as sliderRangeValueType)[1]) {
-              this.setValue([(localValue! as number), (this.viewValues.value as sliderRangeValueType)[1]], 'range');
-            } else {
-              this.setValue([(this.viewValues.value as sliderRangeValueType)[0], (localValue! as number)], 'range');
-            }
-          }
-          this.observebale.trigger('userMoveSlider', this.viewValues.value);
-        }
-      });
-    }
   }
 
   changeDirection() {
@@ -555,9 +570,30 @@ class View implements IView {
 
   /** Меняет step и меняет value в соответсвии новому шагу */
   changeStep(step: number) {
+    let localStep: number = step;
+    if (localStep < 0.01) localStep = 0.01;
+    if (localStep > (this.viewValues.max - this.viewValues.min)) localStep = (this.viewValues.max - this.viewValues.min);
     this.viewValues.step = step;
     this.setValue(this.viewValues.value, this.viewValues.type);
   }
+
+  /** Меняет scale  */
+  changeScale(options: scaleType) {
+    this.viewValues.scale.init = options.init;
+    this.viewValues.scale.type = options.type;
+    this.viewValues.scale.num = options.num;
+
+    this.clearScale();
+    this.initScale(options); // (this.viewValues.direction),
+  }
+
+  // changeTooltip(tooltip: boolean) {
+  //   if (this.viewValues.tooltip === tooltip) return
+  //   if (tooltip = false) {
+  //     this.viewValues.tooltip = tooltip;
+  //     this.tooltip.set
+  //   }
+  // }
 
   getValues() {
     return this.viewValues;
