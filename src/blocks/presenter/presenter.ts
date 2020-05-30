@@ -45,11 +45,12 @@ class Presenter implements IPresenter {
   changeScale(options: scaleType) {
     this.model.changeScale(options);
     this.view.changeScale(options);
+    // console.log('modelScale:', this.model.scale, 'viewscale:', this.view.getValues().scale);
   }
 
-  /** Меняет scale  */
-  changeTooltip(options: scaleType) {
-    this.model.tooltip = !this.model.tooltip;
+  /** Меняет tooltip  */
+  changeTooltip(tooltip: boolean) {
+    this.model.tooltip = tooltip;
     this.view.changeTooltip(this.model.tooltip);
   }
   

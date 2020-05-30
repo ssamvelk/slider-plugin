@@ -13,7 +13,7 @@ const pluginSlider1 = $('').sliderPlugin({
   step: 3,
   tooltip: true,
   root: 'mySlider',
-  scale: { init: true, type: 'usual', num: 11 },
+  scale: { init: true, type: 'numeric', num: 11 },
   // direction: 'vertical',
 });
 
@@ -38,6 +38,7 @@ if (wrapForSlider1) {
   /** Добавляем обработчики на нажатие Enter для инпутов */
   /** Value inputs */
   panel.valueInput1.addEventListener('keydown', (e) => {
+    console.log('e.target ', e.target);
     if (e.keyCode === 13) {
       if (pluginSlider1.getType() === 'single') {
         pluginSlider1.setValue(Number(panel.valueInput1.value));
@@ -75,7 +76,8 @@ if (wrapForSlider1) {
   panel.scaleNumInput.addEventListener('keydown', (e) => {
     if (e.keyCode === 13) {
       const localScale = pluginSlider1.getScale();
-      pluginSlider1.changeScale({ init: localScale.init, type: localScale.type, num: panel.scaleNumInput.value });
+      pluginSlider1.changeScale({ init: localScale.init, type: localScale.type, num: Number(panel.scaleNumInput.value) });
+      // console.log('panel types', panel.scaleTypeRadio1.value, panel.scaleTypeRadio2.value);
     }
   });
 
@@ -102,25 +104,41 @@ if (wrapForSlider1) {
       }
     }
     if (e.target === panel.tooltipRadio1) {
-      pluginSlider1.too;
+      pluginSlider1.changeTooltip(true);
     }
-    if (e.target === panel.directionRadio2) {
-      if (pluginSlider1.getDirection() === 'horizontal') {
-        pluginSlider1.changeDirection();
-      }
+    if (e.target === panel.tooltipRadio2) {
+      pluginSlider1.changeTooltip(false);
+    }
+    if (e.target === panel.scaleOnRadio) {
+      pluginSlider1.changeScale({ init: true });
+      panel.scaleTypeRadio1.disabled = false;
+      panel.scaleTypeRadio2.disabled = false;
+      panel.scaleNumInput.disabled = false;
+    }
+    if (e.target === panel.scaleOffRadio) {
+      pluginSlider1.changeScale({ init: false });
+      panel.scaleTypeRadio1.disabled = true;
+      panel.scaleTypeRadio2.disabled = true;
+      panel.scaleNumInput.disabled = true;
+    }
+    if (e.target === panel.scaleTypeRadio1) {
+      pluginSlider1.changeScale({ init: pluginSlider1.getScale().init, type: panel.scaleTypeRadio1.value });
+    }
+    if (e.target === panel.scaleTypeRadio2) {
+      pluginSlider1.changeScale({ init: pluginSlider1.getScale().init, type: panel.scaleTypeRadio2.value });
     }
   });
 }
 
 // --------------------------------------------------------------------
-$('#mySliderRange').sliderPlugin({
-  root: 'xxx', min: 1, max: 101, value: [70, 78], step: 3, tooltip: true, type: 'range', scale: { init: true, type: 'numeric', num: 9 },
-});
+// $('#mySliderRange').sliderPlugin({
+//   root: 'xxx', min: 1, max: 101, value: [70, 78], step: 3, tooltip: true, type: 'range', scale: { init: true, type: 'numeric', num: 9 },
+// });
 
-$('').sliderPlugin({
-  min: 0, max: 500, value: 250, step: 10, tooltip: true, root: 'mySliderVertical', scale: true, direction: 'vertical',
-});
+// $('').sliderPlugin({
+//   min: 0, max: 500, value: 250, step: 10, tooltip: true, root: 'mySliderVertical', scale: true, direction: 'vertical',
+// });
 
-$('#mySliderRangeVertical').sliderPlugin({
-  root: 'xxx', min: -100, max: 100, value: [-200, 50], step: 50, tooltip: true, type: 'range', direction: 'vertical', scale: { init: true, type: 'numeric', num: 5 },
-});
+// $('#mySliderRangeVertical').sliderPlugin({
+//   root: 'xxx', min: -100, max: 100, value: [-200, 50], step: 50, tooltip: true, type: 'range', direction: 'vertical', scale: { init: true, type: 'numeric', num: 5 },
+// });

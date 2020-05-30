@@ -129,8 +129,9 @@ export default class Model implements IModel {
   /** Меняет scale  */
   changeScale(options: scaleType) {
     this.scale.init = options.init;
-    this.scale.type = options.type;
-    this.scale.num = options.num;
+    if (options.type) this.scale.type = options.type;
+    if (options.num) this.scale.num = options.num;
+    // console.log('modelScale:', this.scale);
   }
 }
 

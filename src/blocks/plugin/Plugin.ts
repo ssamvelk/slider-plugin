@@ -39,6 +39,7 @@ const $ = jQuery;
       getTooltip: presenter.getTooltip.bind(presenter),
       setValue: presenter.changeValue.bind(presenter),
       changeType: presenter.changeType.bind(presenter),
+      changeTooltip: presenter.changeTooltip.bind(presenter),
       changeDirection: presenter.changeDirection.bind(presenter),
       changeStep: presenter.changeStep.bind(presenter),
       changeScale: presenter.changeScale.bind(presenter),
