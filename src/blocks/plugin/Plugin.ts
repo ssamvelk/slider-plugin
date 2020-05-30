@@ -49,9 +49,3 @@ const $ = jQuery;
 })(jQuery);
 
 export default $;
-// console.log('myPluginRange.getValue()1', myPluginRange.getValue);
-// myPluginRange.getValue();
-// myPluginRange.setValue([10, 15]);
-// myPluginRange.getValue();
-// console.log('myPluginRange.getValue()2', myPluginRange.getValue);
-// console.log('myPluginRange === ', myPluginRange);

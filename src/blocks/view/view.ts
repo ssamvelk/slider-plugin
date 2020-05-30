@@ -193,7 +193,9 @@ class View implements IView {
       li.classList.add(`slider__scale-item_${dirLocalValue}`);
       if (this.viewValues.scale.type === 'numeric') {
         li.classList.add('slider__scale-item_numeric');
-        li.innerHTML = ((((this.viewValues.max - this.viewValues.min) / (localNumValue - 1)) * i) + this.viewValues.min).toFixed().toString();
+        if ((this.viewValues.step < 1) || ((this.viewValues.step % 1) !== 0)) {
+          li.innerHTML = ((((this.viewValues.max - this.viewValues.min) / (localNumValue - 1)) * i) + this.viewValues.min).toFixed(2).toString();
+        } else li.innerHTML = ((((this.viewValues.max - this.viewValues.min) / (localNumValue - 1)) * i) + this.viewValues.min).toFixed().toString();
       }
       li.id = `slider__scale-item${i + 1}`;
       

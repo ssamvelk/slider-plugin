@@ -16,18 +16,18 @@ const stepСheck = (value: number, min: number, max: number, step: number): numb
 
 // checkValue - функция, которая проверяет значение на правильность(на граничные значения и соблюдение шага)
 // в случае несоответствия, корректирует его в большую или меньшую сторону(в зависимости от округления)
-const checkValue = (value: sliderValueType, min: number, max: number, step: number, type: sliderType) => { // , autoStepCheck: boolean = true
+const checkValue = (value: sliderValueType, min: number, max: number, step: number, type: sliderType) => {
   let newLocal: number = value as number;
   
   if (type === 'single') {
     if (newLocal <= min) {
       newLocal = min;
-      console.log('value не может быть меньше минимального порога значений, меняем на минимальный');
+      // console.log('value не может быть меньше минимального порога значений, меняем на минимальный');
       return newLocal;
     }
     if (newLocal > max) {
       newLocal = max;
-      console.log('value не может быть больше максимального порога значений, меняем на максимальный возможный');
+      // console.log('value не может быть больше максимального порога значений, меняем на максимальный возможный');
     }
     // -------stepCheck
     // if (autoStepCheck) {
