@@ -1,21 +1,43 @@
 import { sliderValueType, sliderType, sliderRangeValueType } from '../model/IModel';
 
-// stepСheck - функции, которая проверяет значение на соответствие установленному шагу,
-// в случае несоответствия, корректирует его в большую или меньшую сторону(в зависимости от округления)
+/**
+ * roundValue - округляет значение слайдера в случаях когда оно не целое до 2знаков после запятой, чтобы исключить погрешность.
+ */
+const roundValue = (value: number): number => {
+  const localValue = value.toString().includes('.')
+    ? +value.toFixed(2)
+    : value;
+  return localValue;
+};
 
+/**
+ * stepСheck - функции, которая проверяет значение на соответствие установленному шагу,
+ * в случае несоответствия, корректирует его в большую или меньшую сторону(в зависимости от округления)
+ * @param value Значение, которое нужно проверить
+ * @param min MINIMUM
+ * @param max MAXIMUM
+ * @param step Шаг
+ */
 const stepСheck = (value: number, min: number, max: number, step: number): number => {
   if (value <= min) return min;
   if (value > max) return stepСheck(max, min, max, step);
   if (((value - min) % step) !== 0) {
     return ((min + Number(((value - min) / step).toFixed()) * step) <= max)
-      ? (min + Number(((value - min) / step).toFixed()) * step)
-      : (min + Number(((value - min) / step).toFixed()) * step) - step;
+      ? roundValue(min + Number(((value - min) / step).toFixed()) * step)
+      : roundValue((min + Number(((value - min) / step).toFixed()) * step) - step);
   }
-  return value;
+  return roundValue(value);
 };
 
-// checkValue - функция, которая проверяет значение на правильность(на граничные значения и соблюдение шага)
-// в случае несоответствия, корректирует его в большую или меньшую сторону(в зависимости от округления)
+/**
+ * checkValue - функция, которая проверяет значение на правильность(на граничные значения и соблюдение шага)
+ * в случае несоответствия, корректирует его в большую или меньшую сторону(в зависимости от округления)
+ * @param value Значение, которое нужно проверить
+ * @param min MINIMUM
+ * @param max MAXIMUM
+ * @param step Шаг
+ * @param type Тип значения number или [number, number]
+ */
 const checkValue = (value: sliderValueType, min: number, max: number, step: number, type: sliderType) => {
   let newLocal: number = value as number;
   
@@ -29,22 +51,19 @@ const checkValue = (value: sliderValueType, min: number, max: number, step: numb
       newLocal = max;
       // console.log('value не может быть больше максимального порога значений, меняем на максимальный возможный');
     }
-    // -------stepCheck
-    // if (autoStepCheck) {
     newLocal = stepСheck(newLocal, min, max, step);
-    // }
     return newLocal;
   }
   if (type === 'range' && (value instanceof Array === true)) {
     const newLocal2 = value as sliderRangeValueType;
     if (newLocal2[0] <= min) {
       newLocal2[0] = min;
-      console.log('valueMin не может быть меньше минимального порога значений, меняем на минимальный');
+      // console.log('valueMin не может быть меньше минимального порога значений, меняем на минимальный');
       if (newLocal2[1] <= min) newLocal2[1] = newLocal2[0] + step;
     }
     if (newLocal2[1] >= max) {
       newLocal2[1] = stepСheck(max, min, max, step);
-      console.log('valueMax не может быть больше максимального порога значений, меняем на максимальный');
+      // console.log('valueMax не может быть больше максимального порога значений, меняем на максимальный');
       if (newLocal2[0] >= newLocal2[1]) newLocal2[0] = newLocal2[1] - step;
     }
 
@@ -54,16 +73,15 @@ const checkValue = (value: sliderValueType, min: number, max: number, step: numb
     if (newLocal2[0] >= newLocal2[1]) {
       if (newLocal2[0] <= stepСheck(max, min, max, step) - step) {
         newLocal2[1] = newLocal2[0] + step;
-        console.log(' valueMax  не может быть меньше либо равно valueMin, увеличиваем на step');
+        // console.log(' valueMax  не может быть меньше либо равно valueMin, увеличиваем на step');
       } else if (newLocal2[0] > stepСheck(max, min, max, step) - step) {
         newLocal2[0] = stepСheck(max, min, max, step) - step;
         newLocal2[1] = stepСheck(max, min, max, step);
-        console.log('valueMin не может быть больше либо равно valueMax = max, уменьшаем valueMin на step');
+        // console.log('valueMin не может быть больше либо равно valueMax = max, уменьшаем valueMin на step');
       }
     }
     return newLocal2;
   }
 };
 
-// eslint-disable-next-line import/prefer-default-export
-export { stepСheck, checkValue };
+export { stepСheck, checkValue, roundValue };

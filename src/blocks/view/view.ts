@@ -193,7 +193,8 @@ class View implements IView {
       li.classList.add(`slider__scale-item_${dirLocalValue}`);
       if (this.viewValues.scale.type === 'numeric') {
         li.classList.add('slider__scale-item_numeric');
-        if ((this.viewValues.step < 1) || ((this.viewValues.step % 1) !== 0)) {
+        // li.innerHTML = ((((this.viewValues.max - this.viewValues.min) / (localNumValue - 1)) * i) + this.viewValues.min).toFixed().toString();
+        if ((this.viewValues.step < 1) && ((this.viewValues.max - this.viewValues.min) <= 1)) {
           li.innerHTML = ((((this.viewValues.max - this.viewValues.min) / (localNumValue - 1)) * i) + this.viewValues.min).toFixed(2).toString();
         } else li.innerHTML = ((((this.viewValues.max - this.viewValues.min) / (localNumValue - 1)) * i) + this.viewValues.min).toFixed().toString();
       }
@@ -283,6 +284,7 @@ class View implements IView {
 
   private setValue(value: sliderValueType, type: sliderType) {
     const localValue = this.checkValue(value);
+  
     if (this.viewValues.direction === 'horizontal') {
       if (type === 'single') {
         this.viewValues.value = localValue as number;
@@ -348,15 +350,17 @@ class View implements IView {
     return ((value - this.viewValues.min) / (this.viewValues.max - this.viewValues.min)) * 100;
   }
 
-  private invertCoordinate(value: number) { // перевод координаты мыши в % (длины\ширины)
+  /**
+   * Переводит координаты мыши в % - .inPersent или в корректное значение .inValue
+   * @param value Значение
+   */
+  private invertCoordinate(value: number) {
     let localPersentValue: number = 0;
 
     if (this.viewValues.direction === 'horizontal') {
-      localPersentValue = Number((((value - this.sliderLine.getBoundingClientRect().left)
-                              / this.sliderLine.getBoundingClientRect().width) * 100).toFixed(2));
+      localPersentValue = Number((((value - this.sliderLine.getBoundingClientRect().left) / this.sliderLine.getBoundingClientRect().width) * 100).toFixed(2));
     } else if (this.viewValues.direction === 'vertical') {
-      localPersentValue = Number((((value - this.sliderLine.getBoundingClientRect().top)
-                              / this.sliderLine.getBoundingClientRect().height) * 100).toFixed(2));
+      localPersentValue = Number((((value - this.sliderLine.getBoundingClientRect().top) / this.sliderLine.getBoundingClientRect().height) * 100).toFixed(2));
     }
 
     if (localPersentValue < 0) localPersentValue = 0;
@@ -365,7 +369,7 @@ class View implements IView {
 
     return {
       inPersent: Number(localPersentValue.toFixed()),
-      inValue: Number(localValue.toFixed()),
+      inValue: Number(localValue.toFixed(2)),
     };
   }
 

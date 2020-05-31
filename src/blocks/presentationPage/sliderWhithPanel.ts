@@ -177,7 +177,7 @@ factory(
     min: 0,
     max: 1,
     step: 0.25,
-    scale: { init: true, type: 'numeric', num: 3 },
+    scale: { init: true, type: 'numeric', num: 5 },
   },
   3,
 );
