@@ -7,11 +7,8 @@ import {
 import { stepСheck, checkValue } from '../utils/Utils';
 import Observable from '../utils/Observable';
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
 class View implements IView {
-  root!: HTMLDivElement; // | HTMLBodyElement
-  // | HTMLBodyElement
+  root!: HTMLDivElement;
 
   wrap!: HTMLDivElement;
 
@@ -33,9 +30,10 @@ class View implements IView {
 
   scale?: HTMLDivElement;
 
+  /** viewValues - все параметры слайдера */
   private viewValues: defaultViewOptions;
   
-  /** Объект наблюдения(observebale) - хранит в себе список всех наблюдателей
+  /** observebale - объект наблюдения(observebale) - хранит в себе список всех наблюдателей
    *  за событием пользователя(движение мыши)
    * */
   private observebale: Observable;
@@ -66,6 +64,7 @@ class View implements IView {
     this.addMoveListener();
   }
 
+  /** Первоначальная инициализация слайдера */
   private init(opt: initViewOptions) {
     if (!this.root) {
       this.root = document
@@ -124,6 +123,7 @@ class View implements IView {
     }
   }
 
+  /** Добавляет стили */
   private initStyles(type: sliderType = 'single', direction: sliderDirection = 'horizontal') {
     if (direction === 'horizontal') {
       this.wrap.classList.add('slider__wrp_horizontal');
@@ -178,7 +178,7 @@ class View implements IView {
   }
 
   /** Создает scale + стили + обработчик на нажатие пользователем */
-  private initScale(opt?: scaleType) { // direction?: sliderDirection,
+  private initScale(opt?: scaleType) {
     (this.scale = document.createElement('div')).classList.add('slider__scale');
     const ul = document.createElement('ul');
     ul.classList.add('slider__scale-list');
@@ -193,7 +193,6 @@ class View implements IView {
       li.classList.add(`slider__scale-item_${dirLocalValue}`);
       if (this.viewValues.scale.type === 'numeric') {
         li.classList.add('slider__scale-item_numeric');
-        // li.innerHTML = ((((this.viewValues.max - this.viewValues.min) / (localNumValue - 1)) * i) + this.viewValues.min).toFixed().toString();
         if ((this.viewValues.step < 1) && ((this.viewValues.max - this.viewValues.min) <= 1)) {
           li.innerHTML = ((((this.viewValues.max - this.viewValues.min) / (localNumValue - 1)) * i) + this.viewValues.min).toFixed(2).toString();
         } else li.innerHTML = ((((this.viewValues.max - this.viewValues.min) / (localNumValue - 1)) * i) + this.viewValues.min).toFixed().toString();
@@ -282,6 +281,7 @@ class View implements IView {
     }
   }
 
+  /** setValue - устанавливает заданное значение, в соответствии типу слайдера */
   private setValue(value: sliderValueType, type: sliderType) {
     const localValue = this.checkValue(value);
   
@@ -330,6 +330,7 @@ class View implements IView {
     }
   }
 
+  /** Удаляет слайдер из DOM */
   private clearRoot() {
     this.wrap.remove();
   }
@@ -339,21 +340,19 @@ class View implements IView {
     this.scale?.remove();
   }
 
-  /** Удаляет tooltip из DOM */
+  /** clearTooltip удаляет tooltip из DOM */
   private clearTooltip() {
     this.tooltip?.remove();
     this.tooltipMin?.remove();
     this.tooltipMax?.remove();
   }
   
-  private invertToPersent(value: number) { // перевод из значения в % от длины.ширины
+  /** invertToPersent переводит значения в % от длины/ширины */
+  private invertToPersent(value: number) {
     return ((value - this.viewValues.min) / (this.viewValues.max - this.viewValues.min)) * 100;
   }
 
-  /**
-   * Переводит координаты мыши в % - .inPersent или в корректное значение .inValue
-   * @param value Значение
-   */
+  /** invertCoordinate - переводит координаты мыши в % - .inPersent или в корректное значение .inValue */
   private invertCoordinate(value: number) {
     let localPersentValue: number = 0;
 
@@ -373,14 +372,17 @@ class View implements IView {
     };
   }
 
+  /** checkValue - футкция проверки значения на шаг */
   private stepСheck(value: number): number {
     return stepСheck(value, this.viewValues.min, this.viewValues.max, this.viewValues.step);
   }
 
+  /** checkValue - футкция проверки значения */
   private checkValue(value: sliderValueType) {
     return checkValue(value, this.viewValues.min, this.viewValues.max, this.viewValues.step, this.viewValues.type);
   }
 
+  /** addMoveListener - добавляет обработчики событий для изменения значений слайдера ( перемещение ползунка мышью и нажатием клавиш стрелок) */
   private addMoveListener() {
     let MousePositionOnSlider: number = 0;
 
@@ -397,6 +399,8 @@ class View implements IView {
       this.setValue(MousePositionOnSlider, 'single');
       
       this.viewValues.value = MousePositionOnSlider;
+
+      this.observebale.trigger('userMoveSlider', this.viewValues.value);
     };
 
     const onMouseMoveHandleMin = (e: MouseEvent) => {
@@ -415,6 +419,7 @@ class View implements IView {
       }
 
       this.setValue([MousePositionOnSlider, localMax], 'range');
+      this.observebale.trigger('userMoveSlider', this.viewValues.value);
     };
 
     const onMouseMoveHandleMax = (e: MouseEvent) => {
@@ -433,6 +438,7 @@ class View implements IView {
       if (MousePositionOnSlider <= localMin) {
         this.setValue([localMin - this.viewValues.step, MousePositionOnSlider], 'range');
       } else this.setValue([localMin, MousePositionOnSlider], 'range');
+      this.observebale.trigger('userMoveSlider', this.viewValues.value);
     };
     
     const onMouseUp = () => {
@@ -440,8 +446,8 @@ class View implements IView {
       document.removeEventListener('mousemove', onMouseMoveHandle);
       document.removeEventListener('mousemove', onMouseMoveHandleMin);
       document.removeEventListener('mousemove', onMouseMoveHandleMax);
-      console.log(this.viewValues.value);
-      this.observebale.trigger('userMoveSlider', this.viewValues.value);
+      // console.log(this.viewValues.value);
+      // this.observebale.trigger('userMoveSlider', this.viewValues.value);
     };
 
     const onFocusHandle = (e: KeyboardEvent) => {
@@ -547,10 +553,10 @@ class View implements IView {
       });
 
       this.handleMax!.addEventListener('blur', onBlurHandle);
-      // --onFocusHandleMax
     }
   }
 
+  /** changeDirection - меняет вид слайдера(вертикальный, горизонтальный) */
   changeDirection() {
     if (this.viewValues.direction === 'horizontal') this.viewValues.direction = 'vertical';
     else if (this.viewValues.direction === 'vertical') this.viewValues.direction = 'horizontal';
@@ -561,7 +567,8 @@ class View implements IView {
     this.setValue(this.viewValues.value, this.viewValues.type);
     this.addMoveListener();
   }
-  
+
+  /** changeType - меняет тип слайдера */
   changeType(type: sliderType, value?: sliderValueType): boolean {
     if (type === this.viewValues.type) {
       console.log('Нельзя поменять тип слайдера на тот же самый, который установлен');
@@ -666,41 +673,5 @@ class View implements IView {
     this.observebale.subscribe(observer);
   }
 }
-
-// const v1 = new View({
-//   min: 1,
-//   max: 100,
-//   step: 1,
-//   // value: [961, 96],
-//   tooltip: true,
-//   root: 'mySlider',
-//   scale: { init: true, type: 'usual', num: 15 },
-//   type: 'range',
-// });
-
-// const v2 = new View({
-//   root: 'mySliderRange',
-//   direction: 'horizontal',
-//   type: 'range',
-//   tooltip: true,
-//   scale: { init: true, num: 5, type: 'numeric' },
-//   // min: 400,
-//   // max: 1000,
-//   step: 1,
-//   value: [1001, 90],
-// });
-// console.log('v2', v2.getValues().value);
-
-// const v3 = new View({
-//   type: 'range',
-//   step: 3,
-// });
-
-// const v4 = new View({
-//   step: 5, max: 1000, value: [2000, 5000], type: 'range', tooltip: true, scale: { init: true, type: 'numeric', num: 5 },
-// });
-// setInterval(() => {
-// console.log(v2.getValues().value);
-// }, 3000);
 
 export default View;

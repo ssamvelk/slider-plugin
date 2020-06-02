@@ -1,6 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-// eslint-disable-next-line object-curly-newline
-import { IModel, sliderType, sliderDirection, modelOptions, scaleType, sliderValueType, sliderRangeValueType } from './IModel';
+import {
+  IModel, sliderType, sliderDirection, modelOptions, scaleType, sliderValueType, sliderRangeValueType,
+} from './IModel';
 import { checkValue } from '../utils/Utils';
 
 export default class Model implements IModel {
@@ -134,17 +134,3 @@ export default class Model implements IModel {
     // console.log('modelScale:', this.scale);
   }
 }
-
-// const m2 = new Model({
-//   step: 5, min: 0, max: 100, type: 'range', direction: 'horizontal', value: [100, 1111], scale: { init: true, type: 'numeric' },
-// });
-
-// console.log('m2=', m2.type, m2);
-
-// m2.changeType('single');
-
-// console.log('m2=', m2.type, m2.getValue());
-
-// m2.changeType('range');
-
-// console.log('m2=', m2.type, m2.getValue());

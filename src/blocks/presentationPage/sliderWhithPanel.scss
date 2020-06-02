@@ -2,6 +2,7 @@
   // min-height: 400px;
   padding: 10px;
   display: flex;
+  justify-content: space-between;
   position: relative;
   align-items: center;
 
@@ -17,6 +18,15 @@
     background-color: rgb(180, 177, 170);
     border: indigo 3px solid;
     border-radius: 10px;
+    user-select: none;
+  }
+  &-2 {
+    width: 50%;
+  }
+  &-3 {
+    width: 50%;
+    flex-direction: row-reverse;
+    justify-content: space-between;
   }
 }
 

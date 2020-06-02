@@ -15,10 +15,16 @@ body {
 }
 
 h1 {
-    // font: 2em sans-serif;
-    margin-bottom: 1em;
     text-align: center;
-    
+    letter-spacing: 3px;   
+}
+.wpar-for-vertical-sliders {
+    display: flex;
+    justify-content: space-around;
+    & .slider-whith-panel__slider {
+        width: auto;
+        height: 500px;
+    }
 }
 
 @import "util/fonts.scss";
