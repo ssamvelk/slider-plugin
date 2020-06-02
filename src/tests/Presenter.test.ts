@@ -35,28 +35,39 @@ describe('Presenter', () => {
     expect(presenter2 instanceof Presenter).toBeTruthy();
   });
   
-  test('should check all the properties', () => {
+  test('should check all the properties of the Presenter', () => {
     expect(presenter).toHaveProperty('model');
     expect(presenter).toHaveProperty('view');
   });
 
-  test('onDirectionChange - metod change direction', () => {
+  test('changeDirection - method changes orientation of the slider', () => {
     presenter.changeDirection();
     expect(presenter.view.getValues().direction).toEqual('vertical');
     expect(presenter.model.direction).toEqual('vertical');
     
+    presenter.model.changeDirection = jest.fn();
+    presenter.view.changeDirection = jest.fn();
+    presenter.changeDirection();
+    expect(presenter.model.changeDirection).toHaveBeenCalled();
+    expect(presenter.view.changeDirection).toBeCalled();
+
     presenter2.changeDirection();
     expect(presenter2.view.getValues().direction).toEqual('horizontal');
     expect(presenter2.model.direction).toEqual('horizontal');
 
-    // presenter.model.changeDirection = jest.fn();
-    // presenter.view.changeDirection = jest.fn();
-    // presenter.onDirectionChange();
-    // expect(presenter.model.changeDirection).toBeCalled();
-    // expect(presenter.view.changeDirection).toBeCalled();
+    
+    const spy = jest.spyOn(presenter2.model, 'changeDirection');
+    const spy2 = jest.spyOn(presenter2.view, 'changeDirection');
+    
+    presenter2.changeDirection();
+
+    expect(spy).toHaveBeenCalled();
+    expect(spy2).toHaveBeenCalled();
+    spy.mockRestore();
+    spy2.mockRestore();
   });
 
-  test('onTypeChange - metod change slider type', () => {
+  test('changeType - method changes type of the slider', () => {
     expect(presenter.model.type).toEqual('single');
     expect(presenter.view.getValues().type).toEqual('single');
 
@@ -72,7 +83,7 @@ describe('Presenter', () => {
     expect(presenter2.view.getValues().type).toEqual('single');
   });
 
-  test('onValueChange - metod change slider value', () => {
+  test('changeValue - method changes value of the slider', () => {
     expect(presenter.model.value).toEqual(0);
     expect(presenter.view.getValues().value).toEqual(0);
     presenter.changeValue(75);
@@ -84,5 +95,65 @@ describe('Presenter', () => {
     presenter2.changeValue([10, 94]);
     expect(presenter2.model.value).toEqual([50, 70]);
     expect(presenter2.view.getValues().value).toEqual([50, 70]);
+  });
+
+  test('changeStep - mothod changes step of the slider', () => {
+    const step = presenter.getStep.bind(presenter);
+    expect(step()).toEqual(1);
+    presenter.changeStep(5);
+    expect(step()).toEqual(5);
+  });
+
+  test('changeScale - mothod changes scale of the slider', () => {
+    const scale = presenter.getScale.bind(presenter);
+
+    expect(scale()).toEqual({ init: false, type: 'usual', num: 7 });
+
+    presenter.changeScale({ init: true });
+    expect(scale()).toEqual({ init: true, type: 'usual', num: 7 });
+
+    presenter.changeScale({ init: true, type: 'numeric' });
+    expect(scale()).toEqual({ init: true, type: 'numeric', num: 7 });
+
+    presenter.changeScale({ init: true, type: 'numeric', num: 70 });
+    expect(scale()).toEqual({ init: true, type: 'numeric', num: 70 });
+  });
+
+  test('changeTooltip - mothod changes tooltip of the slider', () => {
+    const tooltip = presenter.getTooltip.bind(presenter);
+    expect(tooltip()).toEqual(false);
+
+    presenter.changeTooltip(true);
+    expect(tooltip()).toEqual(true);
+
+    presenter.changeTooltip(true);
+    expect(tooltip()).toEqual(true);
+  });
+
+  test('getters must return appropriate values', () => {
+    expect(presenter.getValue()).toEqual(0);
+    expect(presenter.getType()).toEqual('single');
+    expect(presenter.getStep()).toEqual(1);
+    expect(presenter.getScale()).toEqual({ init: false, type: 'usual', num: 7 });
+    expect(presenter.getDirection()).toEqual('horizontal');
+    expect(presenter.getTooltip()).toEqual(false);
+
+    expect(presenter2.getValue()).toEqual([60, 65]);
+    expect(presenter2.getType()).toEqual('range');
+    expect(presenter2.getStep()).toEqual(5);
+    expect(presenter2.getScale()).toEqual({ init: true, type: 'numeric', num: 7 });
+    expect(presenter2.getDirection()).toEqual('vertical');
+    expect(presenter2.getTooltip()).toEqual(true);
+  });
+
+  test('addObservers', () => {
+    const x = {
+      name: 'x',
+      update: () => { console.log('update'); },
+    };
+    const spy = jest.spyOn(presenter.view, 'addObservers');
+    presenter.addObserver(x);
+    expect(spy).toBeCalled();
+    // const spyUpdate = jest.spyOn(presenter, 'update');
   });
 });

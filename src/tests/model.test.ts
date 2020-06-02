@@ -204,16 +204,38 @@ describe('Model', () => {
     expect(localModel.type).toEqual('single');
     expect(localModel.value).toEqual(50);
     expect(localModel.changeType('single')).toEqual(false);
+  });
 
-    expect(localModel.changeType('range', [75, 100])).toEqual(true);
-    expect(localModel.type).toEqual('range');
-    expect(localModel.value).toEqual([80, 100]);
-    expect(localModel.changeType('range')).toEqual(false);
+  test('changeStep', () => {
+    model.changeStep(10);
+    expect(model.step).toEqual(10);
+    model.changeStep(-10);
+    expect(model.step).toEqual(0.01);
+    model.changeStep(2.5);
+    expect(model.step).toEqual(2.5);
+    model.changeStep(10000);
+    expect(model.step).toEqual(100);
+    model2.changeStep(5);
+    expect(model2.step).toEqual(5);
+  });
 
-    expect(localModel.changeType('single', 500)).toEqual(true);
-    expect(localModel.type).toEqual('single');
-    expect(localModel.value).toEqual(100);
-    expect(localModel.changeType('single', 75)).toEqual(false);
+  test('changeScale', () => {
+    model.changeScale({ init: false });
+    expect(model.scale.init).toEqual(false);
+    expect(model.scale.num).toEqual(7);
+    expect(model.scale.type).toEqual('usual');
+
+    model.changeScale({ init: true });
+    expect(model.scale.init).toEqual(true);
+
+    model.changeScale({ init: true, num: 15 });
+    expect(model.scale.init).toEqual(true);
+    expect(model.scale.num).toEqual(15);
+
+    model.changeScale({ init: true, num: 22, type: 'numeric' });
+    expect(model.scale.init).toEqual(true);
+    expect(model.scale.num).toEqual(22);
+    expect(model.scale.type).toEqual('numeric');
   });
 });
 

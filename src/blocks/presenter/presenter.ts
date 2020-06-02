@@ -14,9 +14,14 @@ class Presenter implements IPresenter {
     this.view = new View(options);
     this.model = new Model(options);
 
-    this.addDefaultEvents();
+    this.addObserver(this);
   }
   
+  /** В зависимости от action выполняет манипуляции над View и Model */
+  private update(action: string, parameters?: sliderValueType) {
+    if (action === 'userMoveSlider') this.changeValue(parameters!);
+  }
+
   /** Сменить direction */
   changeDirection() {
     this.model.changeDirection();
@@ -35,7 +40,7 @@ class Presenter implements IPresenter {
     this.view.changeValue(value);
   }
 
-  /** Меняет step и меняет value в соответсвии новому шагу */
+  /** Меняет step и меняет value в соответствии новому шагу */
   changeStep(step: number) {
     this.model.changeStep(step);
     this.view.changeStep(step);
@@ -54,7 +59,7 @@ class Presenter implements IPresenter {
     this.view.changeTooltip(this.model.tooltip);
   }
   
-  /** Получить значение слайдера */
+  /** Получить текущее значение слайдера. */
   getValue() {
     return this.model.value;
   }
@@ -84,43 +89,10 @@ class Presenter implements IPresenter {
     return this.model.tooltip;
   }
 
-  // ----------------------СОБЫТИЯ
-  
-  /** В зависимости от action выполняет манипуляции над View и Model */
-  private update(action: string, parameters: sliderValueType) {
-    if (action === 'userMoveSlider') this.changeValue(parameters);
-  }
-
-  /** addDefaultEvents - добавляет Presenter  в список наблюдателей за измененинием значения слайдера */
-  private addDefaultEvents() {
-    this.view.addObservers(this);
-  }
-
   /** addObserver - добавляет наблюдателя за измененинием значения слайдера */
   addObserver(observer: object) {
     this.view.addObservers(observer);
   }
 }
-
-// const p = new Presenter({
-//   min: 1, max: 101, value: 67, step: 3, tooltip: true, root: 'mySlider', scale: true,
-// });
-// console.log('p.model = ', p.model, '\np.view.getValues() = ', p.view);
-
-// setInterval(() => {
-//   console.log('p.model = ', p.model.value, '\np.view.getValues() = ', p.view.getValues().value);
-// }, 5000);
-
-
-// const p2 = new Presenter({
-//   root: 'mySliderRange', min: 0, max: 300, value: [30, 75], step: 30, type: 'range', direction: 'vertical', tooltip: true, scale: { init: true, type: 'numeric', num: 9 },
-// });
-// console.log('p2 ', p2);
-
-// p.onValueChange(15);
-
-// p2.onValueChange([25, 150]);
-// p2.onDirectionChange();
-// // p2.onTypeChange('single');
 
 export default Presenter;

@@ -91,11 +91,6 @@ class View implements IView {
       (this.handle = document.createElement('div')).classList.add('slider__handle');
 
       this.sliderLine.appendChild(this.handle);
-
-      // if (this.viewValues.tooltip) {
-      //   (this.tooltip = document.createElement('div')).classList.add('slider__tooltip');
-      //   this.handle.appendChild(this.tooltip);
-      // }
     } else if (this.viewValues.type === 'range') {
       (this.handleMin = document.createElement('div')).classList.add('slider__handle');
       
@@ -106,20 +101,12 @@ class View implements IView {
       (this.handleMax = document.createElement('div')).classList.add('slider__handle');
       
       this.sliderLine.appendChild(this.handleMax);
-
-      // if (this.viewValues.tooltip) {
-      //   (this.tooltipMin = document.createElement('div')).classList.add('slider__tooltip');
-      //   this.handleMin.appendChild(this.tooltipMin);
-
-      //   (this.tooltipMax = document.createElement('div')).classList.add('slider__tooltip');
-      //   this.handleMax.appendChild(this.tooltipMax);
-      // }
     }
     if (this.viewValues.tooltip) {
       this.initTooltip();
     }
     if (this.viewValues.scale.init) {
-      this.initScale(this.viewValues.scale); // opt.direction,
+      this.initScale(this.viewValues.scale);
     }
   }
 
@@ -135,7 +122,6 @@ class View implements IView {
           this.handle.classList.add('slider__handle_horizontal');
           this.handle.tabIndex = 1;
         }
-        // if (this.tooltip) this.tooltip.classList.add('slider__tooltip_horizontal');
       } else if (type === 'range') {
         if (this.handleMin) {
           this.handleMin.classList.add('slider__handle_horizontal');
@@ -145,11 +131,7 @@ class View implements IView {
           this.handleMax.classList.add('slider__handle_horizontal');
           this.handleMax.tabIndex = 1;
         }
-        // if (this.tooltipMin) this.tooltipMin.classList.add('slider__tooltip_horizontal');
-        // if (this.tooltipMax) this.tooltipMax.classList.add('slider__tooltip_horizontal');
       }
-      
-      // if (this.scale) this.scale.classList.add('slider__scale_horizontal');
     } else if (direction === 'vertical') {
       this.wrap.classList.add('slider__wrp_vertical');
       this.sliderLine.classList.add('slider__line_vertical');
@@ -160,7 +142,6 @@ class View implements IView {
           this.handle.classList.add('slider__handle_vertical');
           this.handle.tabIndex = 1;
         }
-        // if (this.tooltip) this.tooltip.classList.add('slider__tooltip_vertical');
       } else if (type === 'range') {
         if (this.handleMin) {
           this.handleMin.classList.add('slider__handle_vertical');
@@ -170,10 +151,7 @@ class View implements IView {
           this.handleMax.classList.add('slider__handle_vertical');
           this.handleMax.tabIndex = 1;
         }
-        // if (this.tooltipMin) this.tooltipMin.classList.add('slider__tooltip_vertical');
-        // if (this.tooltipMax) this.tooltipMax.classList.add('slider__tooltip_vertical');
       }
-      // if (this.scale) this.scale.classList.add('slider__scale_vertical');
     }
   }
 
@@ -182,7 +160,7 @@ class View implements IView {
     (this.scale = document.createElement('div')).classList.add('slider__scale');
     const ul = document.createElement('ul');
     ul.classList.add('slider__scale-list');
-    const dirLocalValue = this.viewValues.direction; // direction || 'horizontal';
+    const dirLocalValue = this.viewValues.direction;
     if (dirLocalValue === 'horizontal') ul.classList.add('slider__scale-list_horizontal');
     else if (dirLocalValue === 'vertical') ul.classList.add('slider__scale-list_vertical');
 
@@ -310,7 +288,7 @@ class View implements IView {
       if (type === 'single') {
         this.viewValues.value = localValue as number;
 
-        this.selectSegment.style.height = `calc(${this.invertToPersent(this.viewValues.value)}%)`; // `calc(${this.viewValues.value}%)`;
+        this.selectSegment.style.height = `calc(${this.invertToPersent(this.viewValues.value)}%)`;
         this.handle!.style.top = `calc(${this.invertToPersent(this.viewValues.value)}% - 15px)`;
         
         if (this.tooltip) this.tooltip.innerHTML = (this.viewValues.value).toString();
@@ -372,12 +350,12 @@ class View implements IView {
     };
   }
 
-  /** checkValue - футкция проверки значения на шаг */
+  /** stepСheck - функция проверки значения на шаг */
   private stepСheck(value: number): number {
     return stepСheck(value, this.viewValues.min, this.viewValues.max, this.viewValues.step);
   }
 
-  /** checkValue - футкция проверки значения */
+  /** checkValue - функция проверки значения */
   private checkValue(value: sliderValueType) {
     return checkValue(value, this.viewValues.min, this.viewValues.max, this.viewValues.step, this.viewValues.type);
   }
@@ -614,6 +592,7 @@ class View implements IView {
     return true;
   }
 
+  /** changeValue - меняет значение слайдера */
   changeValue(value: sliderValueType) {
     if (this.viewValues.type === 'single' && (typeof value) !== 'number') {
       return new Error('введите корректное значение, а именно number');
@@ -626,7 +605,7 @@ class View implements IView {
     return this.viewValues.value;
   }
 
-  /** Меняет step и меняет value в соответсвии новому шагу */
+  /** Меняет шаг слайдера */
   changeStep(step: number) {
     let localStep: number = step;
     if (localStep < 0.01) localStep = 0.01;
@@ -635,7 +614,7 @@ class View implements IView {
     this.setValue(this.viewValues.value, this.viewValues.type);
   }
 
-  /** Меняет scale  */
+  /** Меняет шкалу  */
   changeScale(options: scaleType) {
     // if (this.viewValues.scale.init === options.init) return;
 
@@ -656,14 +635,13 @@ class View implements IView {
     if (tooltip === false) {
       this.viewValues.tooltip = false;
       this.clearTooltip();
-      // this.viewValues.tooltip = tooltip;
-      // this.tooltip?.setAttribute('display', 'none');
     } else if (tooltip === true) {
       this.viewValues.tooltip = true;
       this.initTooltip();
     }
   }
 
+  /** Возвращает все параметры слайдера */
   getValues() {
     return this.viewValues;
   }

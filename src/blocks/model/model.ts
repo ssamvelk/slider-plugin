@@ -18,7 +18,7 @@ export default class Model implements IModel {
 
   scale: scaleType;
 
-  value: number | sliderRangeValueType;
+  value: sliderValueType;
 
   constructor(options: modelOptions) {
     this.min = options.min || 0;
@@ -50,18 +50,22 @@ export default class Model implements IModel {
     this.setValue(this.value, this.type);
   }
 
+  /** Получить тип слайдера */
   getType(): sliderType {
     return this.type;
   }
 
+  /** Получить шаг слайдера */
   getStep(): number {
     return this.step;
   }
 
+  /** Получить текущее значение слайдера.  */
   getValue(): sliderValueType {
     return this.value;
   }
 
+  /** Установить текущее значение слайдера.  */
   setValue(value: sliderValueType, type: sliderType) {
     const localValue = checkValue(value, this.min, this.max, this.step, this.type);
     if (type === 'single') {
@@ -71,14 +75,16 @@ export default class Model implements IModel {
     }
   }
 
+  /** Сменить ориентацию слайдера */
   changeDirection() {
     if (this.direction === 'horizontal') this.direction = 'vertical';
     else if (this.direction === 'vertical') this.direction = 'horizontal';
   }
 
-  changeType(type: sliderType, value?: sliderValueType): boolean {
+  /** Сменить type */
+  changeType(type: sliderType): boolean {
     if (type === this.type) {
-      console.log('Нельзя поменять тип слайдера на тот же самый, который установлен');
+      // console.log('Нельзя поменять тип слайдера на тот же самый, который установлен');
       // throw new Error('Нельзя поменять тип слайдера на тот же самый, который установлен');
       return false;
     }
@@ -87,30 +93,12 @@ export default class Model implements IModel {
     
     let localValue: sliderValueType;
 
-    if (value) {
-      if (this.type === 'single') { // range -> single
-        if ((typeof value) === 'number') {
-          this.value = value;
-        } else {
-          console.log('Введенное значение должно быть числом');
-          return false;
-        }
-      } else if (this.type === 'range') { // single -> range
-        if (Array.isArray(value) && value.length === 2) {
-          this.value = value;
-        } else {
-          console.log('Введенное значение должно быть массивом из 2х чисел');
-          return false;
-        }
-      }
-    } else if (!value) {
-      if (this.type === 'single') { // range -> single
-        [localValue] = this.value as sliderRangeValueType;
-        (this.value as number) = localValue;
-      } else if (this.type === 'range') { // single -> range
-        localValue = [this.value, this.value] as sliderRangeValueType;
-        (this.value as sliderRangeValueType) = localValue;
-      }
+    if (this.type === 'single') { // range -> single
+      [localValue] = this.value as sliderRangeValueType;
+      (this.value as number) = localValue;
+    } else if (this.type === 'range') { // single -> range
+      localValue = [this.value, this.value] as sliderRangeValueType;
+      (this.value as sliderRangeValueType) = localValue;
     }
 
     this.setValue(this.value, this.type);
