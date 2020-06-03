@@ -3,7 +3,7 @@ import View from '../view/View';
 
 interface IPresenter {
   view: View;
-  model: Model
+  model: Model;
 }
 
 export default IPresenter;

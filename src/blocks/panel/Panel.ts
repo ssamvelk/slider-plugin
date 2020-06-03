@@ -3,54 +3,37 @@ import {
 } from '../model/IModel';
 import { panelOptions, IPanel } from './IPanel';
 
-class Panel implements IPanel { // implements IPanel
+class Panel implements IPanel {
   // value: sliderValueType;
   
   root: HTMLDivElement;
   
-  // private valueWrap!: HTMLDivElement;
 
   valueInput1!: HTMLInputElement;
 
   valueInput2!: HTMLInputElement;
 
-  // private typeWrap!: HTMLDivElement;
-
   typeRadio1!: HTMLInputElement;
 
   typeRadio2!: HTMLInputElement;
-
-  // private directionWrap!: HTMLDivElement;
 
   directionRadio1!: HTMLInputElement;
 
   directionRadio2!: HTMLInputElement;
 
-  // private tooltipWrap!: HTMLDivElement;
-
   tooltipRadio1!: HTMLInputElement;
 
   tooltipRadio2!: HTMLInputElement;
-
-  // private scaleWrap!: HTMLDivElement;
-
-  // private scaleOnOffWrap!: HTMLDivElement;
 
   scaleOnRadio!: HTMLInputElement;
 
   scaleOffRadio!: HTMLInputElement;
 
-  // private scaleTypeWrap!: HTMLDivElement;
-
   scaleTypeRadio1!: HTMLInputElement;
 
   scaleTypeRadio2!: HTMLInputElement;
 
-  // private scaleNumWrap!: HTMLDivElement;
-
   scaleNumInput!: HTMLInputElement;
-
-  // private stepWrap!: HTMLDivElement;
 
   stepInput!: HTMLInputElement;
 
@@ -332,11 +315,6 @@ class Panel implements IPanel { // implements IPanel
     }
   }
 
-  /** Добавляет обработчики на события радиокнопок */
-  addControlsEvents() {
-
-  }
-
   /** update обработчик событий от observable */
   update(action: string, parameters: sliderValueType) {
     if (action === 'userMoveSlider') {
@@ -346,17 +324,3 @@ class Panel implements IPanel { // implements IPanel
 }
 
 export default Panel;
-
-// this.type = options.type || 'single';
-// this.direction = options.direction || 'horizontal';
-// this.step = options.step || 1;
-// this.tooltip = options.tooltip || false;
-// this.scale = {
-//   init: options.scale?.init || false,
-//   num: options.scale?.num || 7,
-//   type: options.scale?.type || 'usual',
-// };
-// DOM
-// this.inputValue1
-// this.inputValue2
-//
