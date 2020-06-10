@@ -68,7 +68,7 @@ class View implements IView {
   private init(opt: initViewOptions) {
     if (!this.root) {
       this.root = document
-        .getElementById(opt.root as string) as HTMLDivElement || document.body;
+        .getElementById(opt.root as string) as HTMLDivElement || document.body as HTMLDivElement;
     }
 
     (this.wrap = document.createElement('div')).classList.add('slider__wrp');

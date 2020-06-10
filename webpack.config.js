@@ -85,7 +85,8 @@ module.exports = {
     context: path.resolve(__dirname, 'src'),
 
     entry: {
-        app: ['@babel/polyfill', './js/index.ts']
+        app: ['@babel/polyfill', './js/index.ts'],
+        plugin: ['@babel/polyfill', './blocks/plugin/Plugin.ts']
     },
 
     output: {

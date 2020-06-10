@@ -32,49 +32,39 @@ const factory = (root: string, options: initViewOptions, serialNumber: number) =
   sliderPlugin.addObserver(panel);
   
   if (rootWrap) {
-    /** Добавляем обработчики на нажатие Enter для инпутов */
+    /** Добавляем обработчики на change для инпутов */
     /** Value inputs */
-    panel.valueInput1.addEventListener('keydown', (e) => {
-      console.log('e.target ', e.target);
-      if (e.keyCode === 13) {
-        if (sliderPlugin.getType() === 'single') {
-          sliderPlugin.setValue(Number(panel.valueInput1.value));
-        } else if (sliderPlugin.getType() === 'range') {
-          const localRangeValue = [Number(panel.valueInput1.value), Number(panel.valueInput2.value)];
-          sliderPlugin.setValue(localRangeValue);
-        }
-        panel.setValue(sliderPlugin.getValue());
+    panel.valueInput1.addEventListener('change', () => {
+      if (sliderPlugin.getType() === 'single') {
+        sliderPlugin.setValue(Number(panel.valueInput1.value));
+      } else if (sliderPlugin.getType() === 'range') {
+        const localRangeValue = [Number(panel.valueInput1.value), Number(panel.valueInput2.value)];
+        sliderPlugin.setValue(localRangeValue);
       }
+      panel.setValue(sliderPlugin.getValue());
     });
     
-    panel.valueInput2.addEventListener('keydown', (e) => {
-      if (e.keyCode === 13) {
-        if (sliderPlugin.getType() === 'single') {
-          sliderPlugin.setValue(Number(panel.valueInput1.value));
-        } else if (sliderPlugin.getType() === 'range') {
-          const localRangeValue = [Number(panel.valueInput1.value), Number(panel.valueInput2.value)];
-          sliderPlugin.setValue(localRangeValue);
-        }
-        panel.setValue(sliderPlugin.getValue());
+    panel.valueInput2.addEventListener('change', () => {
+      if (sliderPlugin.getType() === 'single') {
+        sliderPlugin.setValue(Number(panel.valueInput1.value));
+      } else if (sliderPlugin.getType() === 'range') {
+        const localRangeValue = [Number(panel.valueInput1.value), Number(panel.valueInput2.value)];
+        sliderPlugin.setValue(localRangeValue);
       }
+      panel.setValue(sliderPlugin.getValue());
     });
   
     /** Step input */
-    panel.stepInput.addEventListener('keydown', (e) => {
-      if (e.keyCode === 13) {
-        sliderPlugin.changeStep(Number(panel.stepInput.value));
-        // console.log(sliderPlugin.getStep());
-        panel.stepInput.value = sliderPlugin.getStep();
-        panel.setValue(sliderPlugin.getValue());
-      }
+    panel.stepInput.addEventListener('change', () => {
+      sliderPlugin.changeStep(Number(panel.stepInput.value));
+      panel.stepInput.value = sliderPlugin.getStep();
+      panel.setValue(sliderPlugin.getValue());
     });
   
     /** Scale num input */
-    panel.scaleNumInput.addEventListener('keydown', (e) => {
-      if (e.keyCode === 13) {
-        const localScale = sliderPlugin.getScale();
-        sliderPlugin.changeScale({ init: localScale.init, type: localScale.type, num: Number(panel.scaleNumInput.value) });
-      }
+    panel.scaleNumInput.addEventListener('change', () => {
+      const localScale = sliderPlugin.getScale();
+      sliderPlugin.changeScale({ init: localScale.init, type: localScale.type, num: Number(panel.scaleNumInput.value) });
     });
   
     /** Добавляем обработчики на событие клик для радио кнопок */
