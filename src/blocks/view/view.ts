@@ -4,7 +4,7 @@ import {
 import {
   sliderType, sliderDirection, sliderValueType, sliderRangeValueType,
 } from '../model/IModel';
-import { stepСheck, checkValue } from '../utils/Utils';
+import { stepСheck, checkValue, chechScaleInit } from '../utils/Utils';
 import Observable from '../utils/Observable';
 
 class View implements IView {
@@ -41,17 +41,21 @@ class View implements IView {
   constructor(options: initViewOptions) {
     this.viewValues = {
       min: options.min || 0,
+
       max: options.max || 100,
+
       step: options.step || 1,
+
       type: options.type || 'single',
+
       value: options.value || ((options.type === 'range') ? [0, 100] : 0),
+
       direction: options.direction || 'horizontal',
+
       tooltip: options.tooltip || false,
+      
       scale: {
-        // eslint-disable-next-line no-nested-ternary
-        init: ((typeof options.scale) === 'boolean')
-          ? (options.scale as boolean)
-          : (((options.scale instanceof Object) && options.scale !== undefined) ? options.scale.init : false),
+        init: chechScaleInit(options.scale),
         num: ((options.scale instanceof Object) && options.scale.num) ? (options.scale as scaleType).num : 7,
         type: (options.scale instanceof Object && options.scale.type) ? (options.scale as scaleType).type : 'usual',
       },
@@ -61,7 +65,7 @@ class View implements IView {
     this.init(options);
     this.initStyles(options.type, options.direction);
     this.setValue(this.viewValues.value, this.viewValues.type);
-    this.addMoveListener();
+    this.bindEventListeners();
   }
 
   /** Первоначальная инициализация слайдера */
@@ -360,8 +364,8 @@ class View implements IView {
     return checkValue(value, this.viewValues.min, this.viewValues.max, this.viewValues.step, this.viewValues.type);
   }
 
-  /** addMoveListener - добавляет обработчики событий для изменения значений слайдера ( перемещение ползунка мышью и нажатием клавиш стрелок) */
-  private addMoveListener() {
+  /** bindEventListeners - добавляет обработчики событий для изменения значений слайдера ( перемещение ползунка мышью и нажатием клавиш стрелок) */
+  private bindEventListeners() {
     let MousePositionOnSlider: number = 0;
 
     const onMouseMoveHandle = (e: MouseEvent) => {
@@ -424,8 +428,6 @@ class View implements IView {
       document.removeEventListener('mousemove', onMouseMoveHandle);
       document.removeEventListener('mousemove', onMouseMoveHandleMin);
       document.removeEventListener('mousemove', onMouseMoveHandleMax);
-      // console.log(this.viewValues.value);
-      // this.observebale.trigger('userMoveSlider', this.viewValues.value);
     };
 
     const onFocusHandle = (e: KeyboardEvent) => {
@@ -457,6 +459,7 @@ class View implements IView {
         this.observebale.trigger('userMoveSlider', this.viewValues.value);
       }
     };
+
     const onFocusHandleMax = (e: KeyboardEvent) => {
       e.preventDefault();
       if ((e.code === 'ArrowRight') || (e.code === 'ArrowDown')) {
@@ -543,7 +546,7 @@ class View implements IView {
     this.init(this.viewValues);
     this.initStyles(this.viewValues.type, this.viewValues.direction);
     this.setValue(this.viewValues.value, this.viewValues.type);
-    this.addMoveListener();
+    this.bindEventListeners();
   }
 
   /** changeType - меняет тип слайдера */
@@ -588,7 +591,7 @@ class View implements IView {
     this.init(this.viewValues);
     this.initStyles(this.viewValues.type, this.viewValues.direction);
     this.setValue(this.viewValues.value, this.viewValues.type);
-    this.addMoveListener();
+    this.bindEventListeners();
     return true;
   }
 
@@ -597,7 +600,7 @@ class View implements IView {
     if (this.viewValues.type === 'single' && (typeof value) !== 'number') {
       return new Error('введите корректное значение, а именно number');
     }
-    // eslint-disable-next-line no-mixed-operators
+
     if ((this.viewValues.type === 'range' && !Array.isArray(value)) || ((this.viewValues.type === 'range' && Array.isArray(value) && (value.length !== 2)))) {
       return new Error('введите корректное значение, а именно [number, number]');
     }
@@ -616,8 +619,6 @@ class View implements IView {
 
   /** Меняет шкалу  */
   changeScale(options: scaleType) {
-    // if (this.viewValues.scale.init === options.init) return;
-
     this.viewValues.scale.init = options.init;
     if (options.type) this.viewValues.scale.type = options.type;
     if (options.num) this.viewValues.scale.num = options.num;

@@ -1,16 +1,14 @@
-import $ from '../plugin/Plugin';
 import Panel from '../panel/Panel';
 import { initViewOptions } from '../view/IView';
 
-// require('jquery');
-// const $ = jQuery;
-
-/** factory - функция создает слайдер и панель управления для него, а также штампует им серийный номер и расставляет по своим местам */
+/** factory - функция создает слайдер и панель управления для него,
+ * а также штампует им серийный номер и расставляет по своим местам.
+ */
 const factory = (root: string, options: initViewOptions, serialNumber: number) => {
   const rootWrap = document.getElementById(root);
   
   const wrapForSliderPlugin = rootWrap!.querySelector('.slider-whith-panel__slider');
-  wrapForSliderPlugin?.setAttribute('id', `mySlider${serialNumber}`);
+  wrapForSliderPlugin?.setAttribute('id', `slider-plugin-${serialNumber}`);
   
   const wrapForPanel = rootWrap!.querySelector('.slider-whith-panel__panel');
 
@@ -117,55 +115,4 @@ const factory = (root: string, options: initViewOptions, serialNumber: number) =
   }
 };
 
-factory(
-  'slider-whith-panel-0',
-  {
-    value: 50,
-    scale: true,
-  },
-  0,
-);
-
-factory(
-  'slider-whith-panel-1',
-  {
-    type: 'range',
-    value: [250, 750],
-    tooltip: true,
-    min: 0,
-    max: 1000,
-    step: 100,
-    scale: { init: true, type: 'numeric', num: 11 },
-  },
-  1,
-);
-
-factory(
-  'slider-whith-panel-2',
-  {
-    min: -100,
-    max: 100,
-    value: 0,
-    step: 10,
-    tooltip: true,
-    root: 'mySliderVertical',
-    scale: { init: true, type: 'numeric', num: 11 },
-    direction: 'vertical',
-  },
-  2,
-);
-
-factory(
-  'slider-whith-panel-3',
-  {
-    type: 'range',
-    direction: 'vertical',
-    value: [0.25, 0.75],
-    tooltip: true,
-    min: 0,
-    max: 1,
-    step: 0.25,
-    scale: { init: true, type: 'usual', num: 5 },
-  },
-  3,
-);
+export default factory;

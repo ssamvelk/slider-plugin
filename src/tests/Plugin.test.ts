@@ -11,10 +11,10 @@ describe('Plugin', () => {
   const sliderSelect = document.querySelector('.slider__select');
   const sliderHandle = document.querySelector('.slider__handle');
   test('should to be in the DOM', () => {
-    expect(sliderWrap).toBeInTheDOM();
-    expect(sliderBaseLine).toBeInTheDOM();
-    expect(sliderSelect).toBeInTheDOM();
-    expect(sliderHandle).toBeInTheDOM();
+    expect(sliderWrap).toBeInTheDocument();
+    expect(sliderBaseLine).toBeInTheDocument();
+    expect(sliderSelect).toBeInTheDocument();
+    expect(sliderHandle).toBeInTheDocument();
   });
 
   test('Plugin API', () => {

@@ -1,4 +1,6 @@
-import { sliderValueType, sliderType, sliderRangeValueType } from '../model/IModel';
+import {
+  sliderValueType, sliderType, sliderRangeValueType, scaleType,
+} from '../model/IModel';
 
 /**
  * roundValue - округляет значение слайдера в случаях когда оно не целое до 2знаков после запятой, чтобы исключить погрешность.
@@ -84,4 +86,22 @@ const checkValue = (value: sliderValueType, min: number, max: number, step: numb
   }
 };
 
-export { stepСheck, checkValue, roundValue };
+/** chechScaleInit - функция, которая проверяет и преобразует входящий параметр для scale.init,
+ *  т.к. параметр scale можно задать по разному (как boolean либо {init:boolean})
+ * */
+const chechScaleInit = (scale: (boolean | scaleType | undefined)): boolean => {
+  if (scale && (typeof scale) === 'boolean') {
+    return scale as boolean;
+  }
+  if (scale && (scale instanceof Object)) {
+    if (scale.init) {
+      return scale.init;
+    }
+    return false;
+  }
+  return false;
+};
+
+export {
+  stepСheck, checkValue, roundValue, chechScaleInit,
+};

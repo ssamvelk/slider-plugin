@@ -1,11 +1,13 @@
 import '../scss/main.scss';
 
-import '../blocks/model/Model.ts';
+// import '../blocks/model/Model.ts';
 
-import '../blocks/view/View.ts';
+// import '../blocks/view/View.ts';
 
-import '../blocks/presenter/Presenter.ts';
+// import '../blocks/presenter/Presenter.ts';
 
-import '../blocks/plugin/Plugin.ts';
+// import '../blocks/plugin/Plugin.ts';
 
-import '../blocks/presentationPage/sliderWhithPanel';
+import './slider-plugin';
+
+import '../blocks/sliderWhithPanel/sliderWhithPanel';

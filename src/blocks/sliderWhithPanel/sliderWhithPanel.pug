@@ -1,0 +1,7 @@
+-var _num= -1
+mixin sliderWhithPanel(id)
+  -var _id = id ? id : 'js-mySlider'+_num
+  -_num += 1 
+  .slider-whith-panel(id='slider-whith-panel-'+_num class='slider-whith-panel-'+_num)
+    .slider-whith-panel__slider(id=_id)
+    .slider-whith-panel__panel

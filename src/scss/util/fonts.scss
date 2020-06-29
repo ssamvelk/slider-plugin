@@ -1,9 +1,7 @@
 @font-face{
   font-family: 'Helvetica';
-  src: url('../fonts/HelveticaRegular.woff'),
-    url('../fonts/HelveticaRegular.otf');
-  // src: url('../../fonts/Helvetica.eot?#iefix') format('embedded-opentype');
-  //url('../fonts/Montserrat-Regular.woff2') format('woff2');
+  src: url('../fonts/HelveticaRegular.woff2'),
+  url('../fonts/HelveticaRegular.woff');
   font-weight: 400;
   font-style: normal;
 };

@@ -1,0 +1,31 @@
+.slider-whith-panel {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 500px;
+  margin: 10px auto;
+  padding: 10px;
+}
+
+.slider-whith-panel__slider {
+  flex-grow: 1;
+  height: 100%;
+
+  .slider__wrp_vertical {
+    margin: 0 auto;
+  }
+}
+
+.slider-whith-panel__panel {
+  width: 350px;
+  min-width: 350px;
+  min-height: 300px;
+  margin: auto auto;
+  padding: 10px;
+  background-color: rgb(180, 177, 170);
+  border: indigo 3px solid;
+  border-radius: 10px;
+  user-select: none;
+}

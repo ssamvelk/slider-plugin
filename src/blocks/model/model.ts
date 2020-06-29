@@ -1,7 +1,7 @@
 import {
   IModel, sliderType, sliderDirection, modelOptions, scaleType, sliderValueType, sliderRangeValueType,
 } from './IModel';
-import { checkValue } from '../utils/Utils';
+import { checkValue, chechScaleInit } from '../utils/Utils';
 
 export default class Model implements IModel {
   min: number;
@@ -37,12 +37,9 @@ export default class Model implements IModel {
     this.value = options.value || ((this.type === 'range') ? [0, 100] : 0);
     
     this.tooltip = options.tooltip || false;
-    
+
     this.scale = {
-      // eslint-disable-next-line no-nested-ternary
-      init: ((typeof options.scale) === 'boolean')
-        ? (options.scale as boolean)
-        : (((options.scale instanceof Object) && options.scale !== undefined) ? options.scale.init : false),
+      init: chechScaleInit(options.scale),
       num: ((options.scale instanceof Object) && options.scale.num) ? (options.scale as scaleType).num : 7,
       type: (options.scale instanceof Object && options.scale.type) ? (options.scale as scaleType).type : 'usual',
     };
@@ -90,7 +87,6 @@ export default class Model implements IModel {
     }
     
     this.type = type;
-    
     let localValue: sliderValueType;
 
     if (this.type === 'single') { // range -> single
@@ -119,6 +115,5 @@ export default class Model implements IModel {
     this.scale.init = options.init;
     if (options.type) this.scale.type = options.type;
     if (options.num) this.scale.num = options.num;
-    // console.log('modelScale:', this.scale);
   }
 }

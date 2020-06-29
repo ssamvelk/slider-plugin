@@ -4,11 +4,8 @@ import {
 import { panelOptions, IPanel } from './IPanel';
 
 class Panel implements IPanel {
-  // value: sliderValueType;
-  
   root: HTMLDivElement;
   
-
   valueInput1!: HTMLInputElement;
 
   valueInput2!: HTMLInputElement;
@@ -39,19 +36,31 @@ class Panel implements IPanel {
 
   constructor(options: panelOptions, serialNumber: number) {
     const localValue = options.value || 0;
+    
     const localType = options.type || 'single';
+    
     const localDirection = options.direction || 'horizontal';
+    
     const localTooltip = options.tooltip || false;
+    
     const localStep = options.step || 1;
+    
     const localScale = options.scale || { init: true, type: 'usual', num: 7 };
+    
     this.root = options.root;
     
     this.init(serialNumber);
+    
     this.setValue(localValue);
+    
     this.setType(localType);
+    
     this.setDirection(localDirection);
+    
     this.setTooltip(localTooltip);
+    
     this.setStep(localStep);
+    
     this.setScale(localScale);
   }
 
@@ -82,7 +91,6 @@ class Panel implements IPanel {
     valueWrap.classList.add('panel__value-wrap');
 
     /**  typeWrap - div для type */
-    
     this.typeRadio1 = document.createElement('input');
     this.typeRadio1.setAttribute('type', 'radio');
     this.typeRadio1.setAttribute('name', `sliderType${serialNumber}`);
@@ -110,7 +118,6 @@ class Panel implements IPanel {
     typeWrap.classList.add('panel__type-wrap');
 
     /**  directionWrap - div для direction */
-    
     this.directionRadio1 = document.createElement('input');
     this.directionRadio1.setAttribute('type', 'radio');
     this.directionRadio1.setAttribute('name', `sliderDirection${serialNumber}`);
@@ -138,7 +145,6 @@ class Panel implements IPanel {
     directionWrap.classList.add('panel__direction-wrap');
 
     /**  tooltipWrap - div для tooltip */
-    
     this.tooltipRadio1 = document.createElement('input');
     this.tooltipRadio1.setAttribute('type', 'radio');
     this.tooltipRadio1.setAttribute('name', `sliderTooltip${serialNumber}`);
@@ -166,7 +172,6 @@ class Panel implements IPanel {
     tooltipWrap.classList.add('panel__tooltip-wrap');
 
     /** stepWrap - div для step */
-    
     this.stepInput = document.createElement('input');
     this.stepInput.setAttribute('type', 'number');
     this.stepInput.setAttribute('step', 'any');
@@ -176,7 +181,6 @@ class Panel implements IPanel {
     stepWrap.classList.add('panel__step-wrap');
 
     /** scaleWrap - div для scale */
-    
     scaleOnOffWrap.textContent = 'Scale: ';
     scaleOnOffWrap.classList.add('panel__scale-init-wrap');
     this.scaleOnRadio = document.createElement('input');

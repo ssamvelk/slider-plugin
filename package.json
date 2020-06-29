@@ -9,7 +9,9 @@
     "test": "jest ./src/tests",
     "test:coverage": "jest --coverage",
     "lint": "eslint ./src",
-    "lint:fix": "eslint ./src --fix"
+    "lint:fix": "eslint ./src --fix",
+    "scss": "node-sass -o ./dist/plugin ./src/blocks/plugin",
+    "plugin": "webpack --mode development ./src/blocks/plugin/plugin.ts --output ./dist/plugin/plugin.js"
   },
   "jest": {
     "roots": [
@@ -53,6 +55,7 @@
     "@babel/preset-typescript": "^7.9.0",
     "@testing-library/jest-dom": "^5.8.0",
     "@types/jest": "^25.2.3",
+    "@types/jquery": "^3.5.0",
     "@typescript-eslint/eslint-plugin": "^2.34.0",
     "@typescript-eslint/parser": "^2.34.0",
     "autoprefixer": "^9.8.0",
@@ -96,7 +99,6 @@
     "webpack-dev-server": "^3.11.0"
   },
   "dependencies": {
-    "@types/jquery": "^3.3.38",
     "jquery": "^3.5.1"
   }
 }
