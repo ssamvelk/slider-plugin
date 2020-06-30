@@ -189,7 +189,6 @@ describe('Model', () => {
     expect(localModel.direction).toEqual('horizontal');
   });
 
-
   test('changeType', () => {
     const localModel = new Model({ value: 50, step: 10 });
 
@@ -238,5 +237,3 @@ describe('Model', () => {
     expect(model.scale.type).toEqual('numeric');
   });
 });
-
-// expect().toEqual();

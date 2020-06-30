@@ -218,12 +218,18 @@ module.exports = {
         
         new CleanWebpackPlugin(),
 
-        new CopyWebpackPlugin([
-            {
-                from: 'assets/favicon.ico',//path.resolve(__dirname, 'src/assets/favicon.ico'),
-                to: path.resolve(__dirname, 'dist/img')
-            }
-        ]),
+        new CopyWebpackPlugin({
+            patterns: [
+                {
+                    from: 'assets/favicon.ico',
+                    to: path.resolve(__dirname, 'dist/img')
+                },
+                {
+                    from: 'assets/MVP.jpg',
+                    to: path.resolve(__dirname, 'dist/img')
+                },
+            ],
+          }),
 
         new webpack.ProvidePlugin({
             $: "jquery",

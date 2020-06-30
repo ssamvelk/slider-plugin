@@ -54,7 +54,6 @@ describe('Presenter', () => {
     presenter2.changeDirection();
     expect(presenter2.view.getValues().direction).toEqual('horizontal');
     expect(presenter2.model.direction).toEqual('horizontal');
-
     
     const spy = jest.spyOn(presenter2.model, 'changeDirection');
     const spy2 = jest.spyOn(presenter2.view, 'changeDirection');

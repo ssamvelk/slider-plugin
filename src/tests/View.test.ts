@@ -21,7 +21,6 @@ describe('Тестирование View', () => {
     min: 100,
     max: 200,
   });
-  
 
   test('Создание эксземпляра класса View без параметров', () => {
     expect(v).not.toBeUndefined();
@@ -296,10 +295,6 @@ describe('Тестирование View', () => {
     localValue = v.changeType('range', 55);
     expect(localValue).toEqual(false);
     
-    // проверки ниже не работают, т.к. TS самостоятельно не пропускает)))
-    // localValue = v.changeType('range', 'afdasf');
-    // localValue = v.changeType('single', [551, 78, 788]);
-    // localValue = v.changeType('range', true);
     expect(localValue).toEqual(false);
 
     localValue = v.changeType('single', 50); // возврат в исходное состояние

@@ -24,6 +24,7 @@
   ],
 
   "rules": {
+    "@typescript-eslint/naming-convention": [ "off" ],
     "func-names": "off",
     // "no-unused-vars": "warn",
     "@typescript-eslint/explicit-function-return-type": "off",
