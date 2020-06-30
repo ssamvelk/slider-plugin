@@ -10,7 +10,7 @@
     "test:coverage": "jest --coverage",
     "lint": "eslint ./src",
     "lint:fix": "eslint ./src --fix",
-    "deploy": "npm run build && gh-pages -d dist",
+    "deploy": "npm run build && npm run plugin && gh-pages -d dist",
     "scss": "node-sass -o ./dist/plugin ./src/blocks/plugin && postcss ./dist/plugin/plugin.css -o ./dist/plugin/plugin.min/plugin.min.css",
     "plugin": "webpack --mode development ./src/blocks/plugin/Plugin.ts --output ./dist/plugin/plugin.js && npm run scss && npm run terser",
     "terser": "terser -c toplevel,sequences=false --mangle -- ./dist/plugin/plugin.js > ./dist/plugin/plugin.min/plugin.min.js"
