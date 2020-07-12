@@ -1,4 +1,4 @@
-import Model from '../model/_Model';
+import Model from '../model/Model';
 import View from '../view/View';
 
 interface IPresenter {
