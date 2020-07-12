@@ -200,7 +200,9 @@ module.exports = {
     },
 
     devtool: isDev ? 'source-map' : '',
-
+    
+    watch: true,
+    
     plugins: [
         new HtmlWebpackPlugin({
             template: "pug/index.pug",
