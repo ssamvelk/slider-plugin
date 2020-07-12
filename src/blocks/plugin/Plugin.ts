@@ -42,4 +42,4 @@ $.fn.sliderPlugin = function (options: initViewOptions) {
   };
 };
 
-export default $;
+export default $.fn.sliderPlugin;
