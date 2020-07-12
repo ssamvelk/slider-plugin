@@ -1,4 +1,4 @@
-import Model from '../blocks/model/Model';
+import Model from '../blocks/model/_Model';
 
 describe('Model', () => {
   const model = new Model({});

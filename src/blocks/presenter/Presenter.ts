@@ -1,6 +1,6 @@
 import IPresenter from './IPresenter';
 import View from '../view/View';
-import Model from '../model/Model';
+import Model from '../model/_Model';
 import { initViewOptions } from '../view/IView';
 import { sliderType, sliderValueType, scaleType } from '../model/IModel';
 
