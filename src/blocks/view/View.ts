@@ -4,7 +4,7 @@ import {
 import {
   sliderType, sliderDirection, sliderValueType, sliderRangeValueType,
 } from '../model/IModel';
-import { stepСheck, checkValue, chechScaleInit } from '../utils/Utils';
+import { stepСheck, checkValue, checkScaleInit } from '../utils/Utils';
 import Observable from '../utils/Observable';
 
 class View implements IView {
@@ -55,7 +55,7 @@ class View implements IView {
       tooltip: options.tooltip || false,
       
       scale: {
-        init: chechScaleInit(options.scale),
+        init: checkScaleInit(options.scale),
         num: ((options.scale instanceof Object) && options.scale.num) ? (options.scale as scaleType).num : 7,
         type: (options.scale instanceof Object && options.scale.type) ? (options.scale as scaleType).type : 'usual',
       },

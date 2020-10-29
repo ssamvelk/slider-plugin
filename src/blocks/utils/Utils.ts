@@ -86,10 +86,10 @@ const checkValue = (value: sliderValueType, min: number, max: number, step: numb
   }
 };
 
-/** chechScaleInit - функция, которая проверяет и преобразует входящий параметр для scale.init,
+/** checkScaleInit - функция, которая проверяет и преобразует входящий параметр для scale.init,
  *  т.к. параметр scale можно задать по разному (как boolean либо {init:boolean})
  * */
-const chechScaleInit = (scale: (boolean | scaleType | undefined)): boolean => {
+const checkScaleInit = (scale: (boolean | scaleType | undefined)): boolean => {
   if (scale && (typeof scale) === 'boolean') {
     return scale as boolean;
   }
@@ -103,5 +103,5 @@ const chechScaleInit = (scale: (boolean | scaleType | undefined)): boolean => {
 };
 
 export {
-  stepСheck, checkValue, roundValue, chechScaleInit,
+  stepСheck, checkValue, roundValue, checkScaleInit,
 };

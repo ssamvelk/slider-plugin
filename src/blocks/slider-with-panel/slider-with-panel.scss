@@ -1,4 +1,4 @@
-.slider-whith-panel {
+.slider-with-panel {
   position: relative;
   display: flex;
   flex-wrap: wrap;
@@ -9,7 +9,7 @@
   padding: 10px;
 }
 
-.slider-whith-panel__slider {
+.slider-with-panel__slider {
   flex-grow: 1;
   height: 100%;
 
@@ -18,7 +18,7 @@
   }
 }
 
-.slider-whith-panel__panel {
+.slider-with-panel__panel {
   width: 350px;
   min-width: 350px;
   min-height: 300px;

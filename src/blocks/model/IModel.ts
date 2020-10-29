@@ -32,7 +32,7 @@ interface IModel {
   scale: scaleType;
   value: number | [ number, number];
 
-  // ------------------------------ metods
+  // ------------------------------ methods
   setValue(value: sliderValueType, type: sliderType): void;
   changeDirection(): void;
   changeType(type: sliderType, value?: sliderValueType): boolean;

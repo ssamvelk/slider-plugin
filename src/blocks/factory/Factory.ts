@@ -7,10 +7,10 @@ import { initViewOptions } from '../view/IView';
 const factory = (root: string, options: initViewOptions, serialNumber: number) => {
   const rootWrap = document.getElementById(root);
   
-  const wrapForSliderPlugin = rootWrap!.querySelector('.slider-whith-panel__slider');
+  const wrapForSliderPlugin = rootWrap!.querySelector('.slider-with-panel__slider');
   wrapForSliderPlugin?.setAttribute('id', `slider-plugin-${serialNumber}`);
   
-  const wrapForPanel = rootWrap!.querySelector('.slider-whith-panel__panel');
+  const wrapForPanel = rootWrap!.querySelector('.slider-with-panel__panel');
 
   const sliderPluginId = wrapForSliderPlugin?.getAttribute('id');
 

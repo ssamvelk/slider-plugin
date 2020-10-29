@@ -1,7 +1,7 @@
 import {
   IModel, sliderType, sliderDirection, modelOptions, scaleType, sliderValueType, sliderRangeValueType,
 } from './IModel';
-import { checkValue, chechScaleInit } from '../utils/Utils';
+import { checkValue, checkScaleInit } from '../utils/Utils';
 
 export default class Model implements IModel {
   min: number;
@@ -39,7 +39,7 @@ export default class Model implements IModel {
     this.tooltip = options.tooltip || false;
 
     this.scale = {
-      init: chechScaleInit(options.scale),
+      init: checkScaleInit(options.scale),
       num: ((options.scale instanceof Object) && options.scale.num) ? (options.scale as scaleType).num : 7,
       type: (options.scale instanceof Object && options.scale.type) ? (options.scale as scaleType).type : 'usual',
     };
@@ -101,7 +101,7 @@ export default class Model implements IModel {
     return true;
   }
 
-  /** Меняет step и меняет value в соответсвии новому шагу */
+  /** Меняет step и меняет value в соответствии новому шагу */
   changeStep(step: number) {
     let localStep: number = step;
     if (localStep < 0.01) localStep = 0.01;

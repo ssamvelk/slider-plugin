@@ -1,7 +1,7 @@
 import factory from '../factory/Factory';
 
 factory(
-  'slider-whith-panel-0',
+  'slider-with-panel-0',
   {
     value: 50,
   },
@@ -9,7 +9,7 @@ factory(
 );
 
 factory(
-  'slider-whith-panel-1',
+  'slider-with-panel-1',
   {
     type: 'range',
     value: [250, 750],
@@ -23,7 +23,7 @@ factory(
 );
 
 factory(
-  'slider-whith-panel-2',
+  'slider-with-panel-2',
   {
     min: -100,
     max: 100,
@@ -38,7 +38,7 @@ factory(
 );
 
 factory(
-  'slider-whith-panel-3',
+  'slider-with-panel-3',
   {
     type: 'range',
     direction: 'vertical',

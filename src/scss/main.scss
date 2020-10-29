@@ -1,7 +1,7 @@
 @import "util/reset.scss";
 @import "util/fonts.scss";
 // @import "../blocks/plugin/plugin.scss";
-@import "../blocks/sliderWhithPanel/sliderWhithPanel.scss";
+@import "../blocks/slider-with-panel/slider-with-panel.scss";
 @import "../blocks/panel/panel.scss";
 
 
@@ -14,17 +14,17 @@ address {
   margin: 20px auto 0;
 }
 
-.slider-whith-panel-0 {
+.slider-with-panel-0 {
   max-width: 1240px;
 }
 
-.slider-whith-panel-2 {
+.slider-with-panel-2 {
   .slider__wrp_vertical {
     height: 500px;
   }
 }
 
-.slider-whith-panel-3 {
+.slider-with-panel-3 {
   .slider__wrp_vertical {
     height: 600px;
   }
