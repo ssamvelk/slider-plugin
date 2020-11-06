@@ -1,13 +1,6 @@
 import { initViewOptions } from '../view/IView';
 import Presenter from '../presenter/Presenter';
 
-declare global {
-  interface JQuery {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    sliderPlugin: (options: initViewOptions) => any;
-  }
-}
-
 const jQuery = require('jquery');
 
 const $ = jQuery;

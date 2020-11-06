@@ -1,7 +1,21 @@
 import {
-  IModel, sliderType, sliderDirection, modelOptions, scaleType, sliderValueType, sliderRangeValueType,
+  IModel,
+  sliderType,
+  sliderDirection,
+  modelOptions,
+  scaleType,
+  sliderValueType,
+  sliderRangeValueType,
 } from './IModel';
-import { checkValue, checkScaleInit } from '../utils/Utils';
+
+import {
+  checkValue,
+  checkScaleInit,
+  VERTICAL_DIRECTION,
+  HORIZONTAL_DIRECTION,
+  SINGLE_TYPE,
+  RANGE_TYPE,
+} from '../utils/Utils';
 
 export default class Model implements IModel {
   min: number;
@@ -22,6 +36,7 @@ export default class Model implements IModel {
 
   constructor(options: modelOptions) {
     this.min = options.min || 0;
+
     this.max = options.max || 100;
     
     this.step = options.step || 1;
@@ -30,11 +45,11 @@ export default class Model implements IModel {
       this.max = this.min + this.step;
     }
     
-    this.type = options.type || 'single';
+    this.type = options.type || SINGLE_TYPE;
     
-    this.direction = options.direction || 'horizontal';
+    this.direction = options.direction || HORIZONTAL_DIRECTION;
     
-    this.value = options.value || ((this.type === 'range') ? [0, 100] : 0);
+    this.value = options.value || ((this.type === RANGE_TYPE) ? [0, 100] : 0);
     
     this.tooltip = options.tooltip || false;
 
@@ -47,52 +62,44 @@ export default class Model implements IModel {
     this.setValue(this.value, this.type);
   }
 
-  /** Получить тип слайдера */
   getType(): sliderType {
     return this.type;
   }
 
-  /** Получить шаг слайдера */
   getStep(): number {
     return this.step;
   }
 
-  /** Получить текущее значение слайдера.  */
   getValue(): sliderValueType {
     return this.value;
   }
 
-  /** Установить текущее значение слайдера.  */
   setValue(value: sliderValueType, type: sliderType) {
     const localValue = checkValue(value, this.min, this.max, this.step, this.type);
-    if (type === 'single') {
+    if (type === SINGLE_TYPE) {
       this.value = localValue as number;
-    } else if (type === 'range') {
+    } else if (type === RANGE_TYPE) {
       this.value = localValue as sliderRangeValueType;
     }
   }
 
-  /** Сменить ориентацию слайдера */
   changeDirection() {
-    if (this.direction === 'horizontal') this.direction = 'vertical';
-    else if (this.direction === 'vertical') this.direction = 'horizontal';
+    if (this.direction === HORIZONTAL_DIRECTION) this.direction = VERTICAL_DIRECTION;
+    else if (this.direction === VERTICAL_DIRECTION) this.direction = HORIZONTAL_DIRECTION;
   }
 
-  /** Сменить type */
   changeType(type: sliderType): boolean {
     if (type === this.type) {
-      // console.log('Нельзя поменять тип слайдера на тот же самый, который установлен');
-      // throw new Error('Нельзя поменять тип слайдера на тот же самый, который установлен');
       return false;
     }
     
     this.type = type;
     let localValue: sliderValueType;
 
-    if (this.type === 'single') { // range -> single
+    if (this.type === SINGLE_TYPE) {
       [localValue] = this.value as sliderRangeValueType;
       (this.value as number) = localValue;
-    } else if (this.type === 'range') { // single -> range
+    } else if (this.type === RANGE_TYPE) {
       localValue = [this.value, this.value] as sliderRangeValueType;
       (this.value as sliderRangeValueType) = localValue;
     }
@@ -101,7 +108,6 @@ export default class Model implements IModel {
     return true;
   }
 
-  /** Меняет step и меняет value в соответствии новому шагу */
   changeStep(step: number) {
     let localStep: number = step;
     if (localStep < 0.01) localStep = 0.01;
@@ -110,7 +116,6 @@ export default class Model implements IModel {
     this.setValue(this.value, this.type);
   }
 
-  /** Меняет scale  */
   changeScale(options: scaleType) {
     this.scale.init = options.init;
     if (options.type) this.scale.type = options.type;

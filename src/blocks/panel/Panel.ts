@@ -1,7 +1,17 @@
 import {
-  sliderValueType, scaleType, sliderType, sliderDirection,
+  sliderValueType,
+  scaleType,
+  sliderType,
+  sliderDirection,
 } from '../model/IModel';
+
 import { panelOptions, IPanel } from './IPanel';
+import {
+  VERTICAL_DIRECTION,
+  HORIZONTAL_DIRECTION,
+  SINGLE_TYPE,
+  RANGE_TYPE,
+} from '../utils/Utils';
 
 class Panel implements IPanel {
   root: HTMLDivElement;
@@ -37,9 +47,9 @@ class Panel implements IPanel {
   constructor(options: panelOptions, serialNumber: number) {
     const localValue = options.value || 0;
     
-    const localType = options.type || 'single';
+    const localType = options.type || SINGLE_TYPE;
     
-    const localDirection = options.direction || 'horizontal';
+    const localDirection = options.direction || HORIZONTAL_DIRECTION;
     
     const localTooltip = options.tooltip || false;
     
@@ -64,7 +74,6 @@ class Panel implements IPanel {
     this.setScale(localScale);
   }
 
-  /** Инициализация панели и отрисовка DOM */
   init(serialNumber: number) {
     const valueWrap = document.createElement('div');
     const typeWrap = document.createElement('div');
@@ -76,7 +85,6 @@ class Panel implements IPanel {
     const scaleTypeWrap = document.createElement('div');
     const scaleNumWrap = document.createElement('div');
 
-    /**  valueWrap - div для value */
     this.valueInput1 = document.createElement('input');
     this.valueInput1.setAttribute('type', 'number');
     this.valueInput1.setAttribute('step', 'any');
@@ -90,61 +98,58 @@ class Panel implements IPanel {
     valueWrap.appendChild(this.valueInput2);
     valueWrap.classList.add('panel__value-wrap');
 
-    /**  typeWrap - div для type */
     this.typeRadio1 = document.createElement('input');
     this.typeRadio1.setAttribute('type', 'radio');
     this.typeRadio1.setAttribute('name', `sliderType${serialNumber}`);
     this.typeRadio1.setAttribute('id', `sliderType1${serialNumber}`);
     this.typeRadio1.setAttribute('checked', 'checked');
-    this.typeRadio1.setAttribute('value', 'single');
+    this.typeRadio1.setAttribute('value', SINGLE_TYPE);
     this.typeRadio1.classList.add('panel__type');
     this.typeRadio2 = document.createElement('input');
     this.typeRadio2.setAttribute('type', 'radio');
     this.typeRadio2.setAttribute('name', `sliderType${serialNumber}`);
     this.typeRadio2.setAttribute('id', `sliderType2${serialNumber}`);
-    this.typeRadio2.setAttribute('value', 'range');
+    this.typeRadio2.setAttribute('value', RANGE_TYPE);
     this.typeRadio2.classList.add('panel__type');
     typeWrap.textContent = 'Type: ';
     let label = document.createElement('label');
     label.setAttribute('for', `sliderType1${serialNumber}`);
-    label.textContent = 'SINGLE';
+    label.textContent = SINGLE_TYPE;
     typeWrap.appendChild(label);
     typeWrap.appendChild(this.typeRadio1);
     label = document.createElement('label');
     label.setAttribute('for', `sliderType2${serialNumber}`);
-    label.textContent = 'RANGE';
+    label.textContent = RANGE_TYPE;
     typeWrap.appendChild(label);
     typeWrap.appendChild(this.typeRadio2);
     typeWrap.classList.add('panel__type-wrap');
 
-    /**  directionWrap - div для direction */
     this.directionRadio1 = document.createElement('input');
     this.directionRadio1.setAttribute('type', 'radio');
     this.directionRadio1.setAttribute('name', `sliderDirection${serialNumber}`);
     this.directionRadio1.setAttribute('id', `sliderDirectionHor${serialNumber}`);
     this.directionRadio1.setAttribute('checked', 'checked');
-    this.directionRadio1.setAttribute('value', 'horizontal');
+    this.directionRadio1.setAttribute('value', HORIZONTAL_DIRECTION);
     this.directionRadio1.classList.add('panel__direction');
     this.directionRadio2 = document.createElement('input');
     this.directionRadio2.setAttribute('type', 'radio');
     this.directionRadio2.setAttribute('name', `sliderDirection${serialNumber}`);
     this.directionRadio2.setAttribute('id', `sliderDirectionVer${serialNumber}`);
-    this.directionRadio2.setAttribute('value', 'vertical');
+    this.directionRadio2.setAttribute('value', VERTICAL_DIRECTION);
     this.directionRadio2.classList.add('panel__direction');
     directionWrap.textContent = 'Direction: ';
     label = document.createElement('label');
     label.setAttribute('for', `sliderDirectionHor${serialNumber}`);
-    label.textContent = 'HORIZONTAL';
+    label.textContent = HORIZONTAL_DIRECTION;
     directionWrap.appendChild(label);
     directionWrap.appendChild(this.directionRadio1);
     label = document.createElement('label');
     label.setAttribute('for', `sliderDirectionVer${serialNumber}`);
-    label.textContent = 'VERTICAL';
+    label.textContent = VERTICAL_DIRECTION;
     directionWrap.appendChild(label);
     directionWrap.appendChild(this.directionRadio2);
     directionWrap.classList.add('panel__direction-wrap');
 
-    /**  tooltipWrap - div для tooltip */
     this.tooltipRadio1 = document.createElement('input');
     this.tooltipRadio1.setAttribute('type', 'radio');
     this.tooltipRadio1.setAttribute('name', `sliderTooltip${serialNumber}`);
@@ -171,7 +176,6 @@ class Panel implements IPanel {
     tooltipWrap.appendChild(this.tooltipRadio2);
     tooltipWrap.classList.add('panel__tooltip-wrap');
 
-    /** stepWrap - div для step */
     this.stepInput = document.createElement('input');
     this.stepInput.setAttribute('type', 'number');
     this.stepInput.setAttribute('step', 'any');
@@ -180,7 +184,6 @@ class Panel implements IPanel {
     stepWrap.appendChild(this.stepInput);
     stepWrap.classList.add('panel__step-wrap');
 
-    /** scaleWrap - div для scale */
     scaleOnOffWrap.textContent = 'Scale: ';
     scaleOnOffWrap.classList.add('panel__scale-init-wrap');
     this.scaleOnRadio = document.createElement('input');
@@ -246,7 +249,6 @@ class Panel implements IPanel {
     this.root.appendChild(scaleWrap);
   }
 
-  /** setValue - установка значений в инпуты value */
   setValue(value: sliderValueType) {
     if (typeof value === 'number') {
       this.valueInput1.value = value.toString();
@@ -258,12 +260,12 @@ class Panel implements IPanel {
   }
 
   setType(type: sliderType) {
-    if (type === 'single') {
+    if (type === SINGLE_TYPE) {
       this.typeRadio1.setAttribute('checked', 'checked');
       this.typeRadio2.removeAttribute('checked');
       this.valueInput2.disabled = true;
       this.valueInput2.value = '';
-    } else if (type === 'range') {
+    } else if (type === RANGE_TYPE) {
       this.typeRadio1.removeAttribute('checked');
       this.typeRadio2.setAttribute('checked', 'checked');
       this.valueInput2.disabled = false;
@@ -271,10 +273,10 @@ class Panel implements IPanel {
   }
 
   setDirection(direction: sliderDirection) {
-    if (direction === 'horizontal') {
+    if (direction === HORIZONTAL_DIRECTION) {
       this.directionRadio1.setAttribute('checked', 'checked');
       this.directionRadio2.removeAttribute('checked');
-    } else if (direction === 'vertical') {
+    } else if (direction === VERTICAL_DIRECTION) {
       this.directionRadio1.removeAttribute('checked');
       this.directionRadio2.setAttribute('checked', 'checked');
     }
@@ -319,7 +321,6 @@ class Panel implements IPanel {
     }
   }
 
-  /** update обработчик событий от observable */
   update(action: string, parameters: sliderValueType) {
     if (action === 'userMoveSlider') {
       this.setValue(parameters);

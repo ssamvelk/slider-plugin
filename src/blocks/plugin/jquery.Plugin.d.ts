@@ -5,5 +5,5 @@ interface Window {
 }
 
 interface JQuery {
-  sliderPlugin: (options: initViewOptions) => object;
+  sliderPlugin: (options: initViewOptions) => JQuery;
 }

@@ -1,6 +1,6 @@
-import factory from '../factory/Factory';
+import Factory from '../utils/Factory';
 
-factory(
+Factory(
   'slider-with-panel-0',
   {
     value: 50,
@@ -8,7 +8,7 @@ factory(
   0,
 );
 
-factory(
+Factory(
   'slider-with-panel-1',
   {
     type: 'range',
@@ -22,7 +22,7 @@ factory(
   1,
 );
 
-factory(
+Factory(
   'slider-with-panel-2',
   {
     min: -100,
@@ -37,7 +37,7 @@ factory(
   2,
 );
 
-factory(
+Factory(
   'slider-with-panel-3',
   {
     type: 'range',

@@ -1,32 +1,19 @@
-/**
- * Observable - объект наблюдения, за которым наблюдают подписчики
- */
+import { sliderValueType } from '../model/IModel';
+import Observer from './IObserver';
+
 class Observable {
-  /**
-   * observers - массив подписчиков
-   */
-  observers: object[];
+  observers: Observer[];
 
   constructor() {
     this.observers = [];
   }
 
-  /**
- * subscribe - метод класса Observable, который добавляет посписчика observer в массив подписчиков observers
- * @param observer - подписчик
- */
-  subscribe(observer: object) {
+  subscribe(observer: Observer) {
     this.observers.push(observer);
   }
 
-  /**
-   * trigger<T> - метод класса Observable, который уведомляет всех подписчиков о том, что произошло событие action, и передает парметры parameters
-   * @param action событие
-   * @param parameters пареметры
-   */
-  trigger<T>(action: string, parameters: T) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    this.observers.forEach((observer: any) => observer.update(action, parameters));
+  trigger(action: string, parameters: sliderValueType) {
+    this.observers.forEach((observer: Observer) => observer.update(action, parameters));
   }
 }
 

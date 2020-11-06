@@ -4,9 +4,7 @@
     "project": "./tsconfig.json"
   },
   "extends": [
-    // "airbnb/base",
     "airbnb-typescript/base",
-    // "eslint:recommended",
     "plugin:jest/recommended"
   ],
   "env": {
@@ -26,7 +24,6 @@
   "rules": {
     "@typescript-eslint/naming-convention": [ "off" ],
     "func-names": "off",
-    // "no-unused-vars": "warn",
     "@typescript-eslint/explicit-function-return-type": "off",
     "@typescript-eslint/no-explicit-any": "warn",
     "@typescript-eslint/indent": [
@@ -35,12 +32,9 @@
     ],
     "@typescript-eslint/no-var-requires": "off",
     "linebreak-style": "off",
-    // "no-underscore-dangle": "off",
     "consistent-return": "off",
-    // "no-alert": "off",
     "no-console": 0,
     "no-return-await": "off",
-    // "no-await-in-loop": "off",
     "no-unused-vars": [
       "warn",
       {
@@ -68,7 +62,7 @@
       "warn",
       "single"
     ],
-    "no-trailing-spaces": ["error", { "skipBlankLines": true }], //disallow trailing whitespace at the end of lines
+    "no-trailing-spaces": ["error", { "skipBlankLines": true }],
     "no-prototype-builtins": "error",
     "no-mixed-spaces-and-tabs": [
       "error",

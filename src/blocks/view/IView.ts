@@ -1,18 +1,17 @@
 import { sliderType, sliderDirection, sliderValueType } from '../model/IModel';
 
 interface IView {
-  root: HTMLDivElement, // | HTMLBodyElement
-  wrap: HTMLDivElement, // базовый див
-  sliderLine: HTMLDivElement, // линия слайдера
-  selectSegment?: HTMLDivElement, // выделенное расстояние
-  // handle при сингле, handleMin и handleMax при рандже
+  root: HTMLDivElement,
+  wrap: HTMLDivElement,
+  sliderLine: HTMLDivElement,
+  selectSegment?: HTMLDivElement,
   handle?: HTMLDivElement;
   handleMin?: HTMLDivElement;
   handleMax?: HTMLDivElement;
-  tooltip?: HTMLDivElement; // подсказка со значением
+  tooltip?: HTMLDivElement;
   tooltipMin?: HTMLDivElement;
   tooltipMax?: HTMLDivElement;
-  scale?: HTMLDivElement; // шкала
+  scale?: HTMLDivElement;
 }
 
 type initViewOptions = {

@@ -1,9 +1,7 @@
 @import "util/reset.scss";
 @import "util/fonts.scss";
-// @import "../blocks/plugin/plugin.scss";
 @import "../blocks/slider-with-panel/slider-with-panel.scss";
 @import "../blocks/panel/panel.scss";
-
 
 footer {
   width: 100%;
@@ -13,6 +11,7 @@ address {
   width: max-content;
   margin: 20px auto 0;
 }
+
 
 .slider-with-panel-0 {
   max-width: 1240px;

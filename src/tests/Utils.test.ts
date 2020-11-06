@@ -1,35 +1,35 @@
-import { stepСheck, checkValue, roundValue } from '../blocks/utils/Utils';
+import { checkStep, checkValue, roundValue } from '../blocks/utils/Utils';
 
-describe('Проверка функции stepСheck, которая проверяет на соответствие значения установленному шагу', () => {
-  test('stepСheck с корректными значениеми', () => {
-    expect(stepСheck(10, 0, 100, 1)).toEqual(10);
-    expect(stepСheck(10, 10, 20, 1)).toEqual(10);
-    expect(stepСheck(10, 0, 100, 2)).toEqual(10);
-    expect(stepСheck(33, 0, 100, 3)).toEqual(33);
-    expect(stepСheck(45, 0, 100, 15)).toEqual(45);
-    expect(stepСheck(100, 0, 100, 50)).toEqual(100);
+describe('Проверка функции checkStep, которая проверяет на соответствие значения установленному шагу', () => {
+  test('checkStep с корректными значениеми', () => {
+    expect(checkStep(10, 0, 100, 1)).toEqual(10);
+    expect(checkStep(10, 10, 20, 1)).toEqual(10);
+    expect(checkStep(10, 0, 100, 2)).toEqual(10);
+    expect(checkStep(33, 0, 100, 3)).toEqual(33);
+    expect(checkStep(45, 0, 100, 15)).toEqual(45);
+    expect(checkStep(100, 0, 100, 50)).toEqual(100);
   });
 
-  test('stepСheck с некорректными значениеми', () => {
-    expect(stepСheck(10, 0, 100, 3)).toEqual(9);
-    expect(stepСheck(99, 0, 99, 3)).toEqual(99);
-    expect(stepСheck(11, 0, 500, 3)).toEqual(12);
-    expect(stepСheck(3, 4, 100, 2)).toEqual(4);
-    expect(stepСheck(120, 0, 100, 3)).toEqual(99);
-    expect(stepСheck(53, 0, 100, 15)).toEqual(60);
-    expect(stepСheck(89, 0, 100, 50)).toEqual(100);
-    expect(stepСheck(101, 0, 101, 50)).toEqual(100);
+  test('checkStep с некорректными значениеми', () => {
+    expect(checkStep(10, 0, 100, 3)).toEqual(9);
+    expect(checkStep(99, 0, 99, 3)).toEqual(99);
+    expect(checkStep(11, 0, 500, 3)).toEqual(12);
+    expect(checkStep(3, 4, 100, 2)).toEqual(4);
+    expect(checkStep(120, 0, 100, 3)).toEqual(99);
+    expect(checkStep(53, 0, 100, 15)).toEqual(60);
+    expect(checkStep(89, 0, 100, 50)).toEqual(100);
+    expect(checkStep(101, 0, 101, 50)).toEqual(100);
   });
 
-  test('stepСheck для вещественных чисел при (max - min) <= 1', () => {
-    expect(stepСheck(0.33, 0, 1, 0.25)).toEqual(0.25);
-    expect(stepСheck(0.45, 0, 1, 0.25)).toEqual(0.5);
-    expect(stepСheck(1.45, 0, 1, 0.25)).toEqual(1);
-    expect(stepСheck(0.0001, 0, 1, 0.25)).toEqual(0);
-    expect(stepСheck(-0.25, 0, 1, 0.25)).toEqual(0);
-    expect(stepСheck(0.77, 0, 1, 0.25)).toEqual(0.75);
-    expect(stepСheck(1, 0, 1, 0.33)).toEqual(0.99);
-    expect(stepСheck(20, 0, 100, 1.33)).toEqual(19.95);
+  test('checkStep для вещественных чисел при (max - min) <= 1', () => {
+    expect(checkStep(0.33, 0, 1, 0.25)).toEqual(0.25);
+    expect(checkStep(0.45, 0, 1, 0.25)).toEqual(0.5);
+    expect(checkStep(1.45, 0, 1, 0.25)).toEqual(1);
+    expect(checkStep(0.0001, 0, 1, 0.25)).toEqual(0);
+    expect(checkStep(-0.25, 0, 1, 0.25)).toEqual(0);
+    expect(checkStep(0.77, 0, 1, 0.25)).toEqual(0.75);
+    expect(checkStep(1, 0, 1, 0.33)).toEqual(0.99);
+    expect(checkStep(20, 0, 100, 1.33)).toEqual(19.95);
   });
 });
 

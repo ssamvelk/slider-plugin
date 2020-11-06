@@ -31,14 +31,11 @@ interface IModel {
   tooltip: boolean;
   scale: scaleType;
   value: number | [ number, number];
-
-  // ------------------------------ methods
   setValue(value: sliderValueType, type: sliderType): void;
   changeDirection(): void;
   changeType(type: sliderType, value?: sliderValueType): boolean;
   changeStep(step: number): void;
   changeScale(options: scaleType): void;
-  // ------------------------------ getters
   getType(): sliderType;
   getValue(): sliderValueType;
   getStep(): number;
