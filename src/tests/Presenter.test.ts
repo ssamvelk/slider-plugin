@@ -7,7 +7,6 @@ describe('Presenter', () => {
 
   beforeEach(() => {
     presenter = new Presenter({});
-    // presenter.model.changeDirection = jest.fn();
 
     presenter2 = new Presenter({
       root: 'boxForSlider',
@@ -20,11 +19,7 @@ describe('Presenter', () => {
       tooltip: true,
       scale: { init: true, num: 7, type: 'numeric' },
     });
-    
-    // fn = jest.fn(x => x ** 2)// fn - мок функция возв. в квадрат
   });
-
-  // jest.mock('Presenter'); // происходит автоматически при авто-мокинге
 
   test('should create a new instance of the Presenter', () => {
     expect(presenter).toBeTruthy();
@@ -96,14 +91,14 @@ describe('Presenter', () => {
     expect(presenter2.view.getValues().value).toEqual([50, 70]);
   });
 
-  test('changeStep - mothod changes step of the slider', () => {
+  test('changeStep - method changes step of the slider', () => {
     const step = presenter.getStep.bind(presenter);
     expect(step()).toEqual(1);
     presenter.changeStep(5);
     expect(step()).toEqual(5);
   });
 
-  test('changeScale - mothod changes scale of the slider', () => {
+  test('changeScale - method changes scale of the slider', () => {
     const scale = presenter.getScale.bind(presenter);
 
     expect(scale()).toEqual({ init: false, type: 'usual', num: 7 });
@@ -118,7 +113,7 @@ describe('Presenter', () => {
     expect(scale()).toEqual({ init: true, type: 'numeric', num: 70 });
   });
 
-  test('changeTooltip - mothod changes tooltip of the slider', () => {
+  test('changeTooltip - method changes tooltip of the slider', () => {
     const tooltip = presenter.getTooltip.bind(presenter);
     expect(tooltip()).toEqual(false);
 
@@ -146,13 +141,20 @@ describe('Presenter', () => {
   });
 
   test('addObservers', () => {
-    const x = {
-      name: 'x',
+    const fakeObj = {
+      name: 'fakeObj',
       update: () => { console.log('update'); },
     };
     const spy = jest.spyOn(presenter.view, 'addObservers');
-    presenter.addObserver(x);
+    presenter.addObserver(fakeObj);
     expect(spy).toBeCalled();
-    // const spyUpdate = jest.spyOn(presenter, 'update');
+  });
+
+  test('update should trigger changeValue', () => {
+    const spy = jest.spyOn(presenter, 'update');
+    const spyValue = jest.spyOn(presenter, 'changeValue');
+    presenter.update('userMoveSlider', 100);
+    expect(spy).toBeCalled();
+    expect(spyValue).toBeCalled();
   });
 });

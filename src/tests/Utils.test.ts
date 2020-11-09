@@ -1,7 +1,7 @@
 import { checkStep, checkValue, roundValue } from '../blocks/utils/Utils';
 
 describe('Проверка функции checkStep, которая проверяет на соответствие значения установленному шагу', () => {
-  test('checkStep с корректными значениеми', () => {
+  test('checkStep с корректными значениями', () => {
     expect(checkStep(10, 0, 100, 1)).toEqual(10);
     expect(checkStep(10, 10, 20, 1)).toEqual(10);
     expect(checkStep(10, 0, 100, 2)).toEqual(10);
@@ -10,7 +10,7 @@ describe('Проверка функции checkStep, которая провер
     expect(checkStep(100, 0, 100, 50)).toEqual(100);
   });
 
-  test('checkStep с некорректными значениеми', () => {
+  test('checkStep с некорректными значениями', () => {
     expect(checkStep(10, 0, 100, 3)).toEqual(9);
     expect(checkStep(99, 0, 99, 3)).toEqual(99);
     expect(checkStep(11, 0, 500, 3)).toEqual(12);
@@ -34,7 +34,7 @@ describe('Проверка функции checkStep, которая провер
 });
 
 describe('Проверка функции checkValue, которая проверяет значение на правильность(на граничные значения и соблюдение шага)', () => {
-  test('checkValue с корректными значениеми', () => {
+  test('checkValue с корректными значениями', () => {
     expect(checkValue(10, 0, 100, 1, 'single')).toEqual(10);
     expect(checkValue(10, 10, 20, 1, 'single')).toEqual(10);
     expect(checkValue(10, 0, 100, 2, 'single')).toEqual(10);
@@ -51,7 +51,7 @@ describe('Проверка функции checkValue, которая прове�
     expect(checkValue([99, 90], 0, 100, 1, 'range')).toEqual([99, 100]);
   });
 
-  test('checkValue с некорректными значениеми', () => {
+  test('checkValue с некорректными значениями', () => {
     expect(checkValue(10, 0, 100, 3, 'single')).toEqual(9);
     expect(checkValue(99, 0, 99, 3, 'single')).toEqual(99);
     expect(checkValue(11, 0, 500, 3, 'single')).toEqual(12);
@@ -93,7 +93,6 @@ describe('Проверка функции checkValue, которая прове�
     expect(checkValue([46, 90], 0, 100, 15.33, 'range')).toEqual([45.99, 91.98]);
     expect(checkValue([20, 100], 0, 100, 0.25, 'range')).toEqual([20, 100]);
     expect(checkValue([20, 19], 0, 100, 0.2545, 'range')).toEqual([20.11, 20.3645]);
-    // expect(checkValue([100, 90], 0, 100, 0.471, 'range')).toEqual([99, 45]);
   });
 
   test('checkValue', () => {

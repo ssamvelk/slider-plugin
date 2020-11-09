@@ -43,7 +43,6 @@ describe('Plugin', () => {
     sliderPlugin.changeScale({ init: true, num: 19, type: 'numeric' });
     expect(sliderPlugin.getScale()).toEqual({ init: true, num: 19, type: 'numeric' });
 
-    // const spy = jest.spyOn(sliderPlugin.presenter, 'addObserver');
     sliderPlugin.addObserver = jest.fn();
     sliderPlugin.addObserver({ name: 'objName' });
 

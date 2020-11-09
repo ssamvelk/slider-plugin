@@ -50,7 +50,7 @@ class View implements IView {
 
   private viewValues: defaultViewOptions;
   
-  private observebale: Observable;
+  private observable: Observable;
 
   constructor(options: initViewOptions) {
     this.viewValues = {
@@ -74,7 +74,7 @@ class View implements IView {
         type: (options.scale instanceof Object && options.scale.type) ? (options.scale as scaleType).type : 'usual',
       },
     };
-    this.observebale = new Observable();
+    this.observable = new Observable();
 
     this.init(options);
     this.initStyles(options.type, options.direction);
@@ -178,7 +178,7 @@ class View implements IView {
   }
 
   addObservers(observer: Observer) {
-    this.observebale.subscribe(observer);
+    this.observable.subscribe(observer);
   }
 
   private init(opt: initViewOptions) {
@@ -312,7 +312,7 @@ class View implements IView {
           this.setValue([(this.viewValues.value as sliderRangeValueType)[0], (localValue! as number)], RANGE_TYPE);
         }
       }
-      this.observebale.trigger('userMoveSlider', this.viewValues.value);
+      this.observable.trigger('userMoveSlider', this.viewValues.value);
     }
   };
   
@@ -467,7 +467,7 @@ class View implements IView {
     
     this.viewValues.value = MousePositionOnSlider;
 
-    this.observebale.trigger('userMoveSlider', this.viewValues.value);
+    this.observable.trigger('userMoveSlider', this.viewValues.value);
   };
 
   private handleBlur = () => {
@@ -501,11 +501,11 @@ class View implements IView {
     e.preventDefault();
     if ((e.code === 'ArrowLeft') || (e.code === 'ArrowDown')) {
       this.setValue(((this.viewValues.value as number) - this.viewValues.step), SINGLE_TYPE);
-      this.observebale.trigger('userMoveSlider', this.viewValues.value);
+      this.observable.trigger('userMoveSlider', this.viewValues.value);
     }
     if ((e.code === 'ArrowRight') || (e.code === 'ArrowUp')) {
       this.setValue(((this.viewValues.value as number) + this.viewValues.step), SINGLE_TYPE);
-      this.observebale.trigger('userMoveSlider', this.viewValues.value);
+      this.observable.trigger('userMoveSlider', this.viewValues.value);
     }
   };
 
@@ -526,7 +526,7 @@ class View implements IView {
     }
 
     this.setValue([MousePositionOnSlider, localMax], RANGE_TYPE);
-    this.observebale.trigger('userMoveSlider', this.viewValues.value);
+    this.observable.trigger('userMoveSlider', this.viewValues.value);
   };
 
   private handleMinMouseDown = (e: MouseEvent) => {
@@ -543,14 +543,14 @@ class View implements IView {
         [((this.viewValues.value as sliderRangeValueType)[0] + this.viewValues.step), (this.viewValues.value as sliderRangeValueType)[1]],
         RANGE_TYPE,
       );
-      this.observebale.trigger('userMoveSlider', this.viewValues.value);
+      this.observable.trigger('userMoveSlider', this.viewValues.value);
     }
     if ((e.code === 'ArrowLeft') || (e.code === 'ArrowUp')) {
       this.setValue(
         [((this.viewValues.value as sliderRangeValueType)[0] - this.viewValues.step), (this.viewValues.value as sliderRangeValueType)[1]],
         RANGE_TYPE,
       );
-      this.observebale.trigger('userMoveSlider', this.viewValues.value);
+      this.observable.trigger('userMoveSlider', this.viewValues.value);
     }
   };
 
@@ -575,7 +575,7 @@ class View implements IView {
     if (MousePositionOnSlider <= localMin) {
       this.setValue([localMin - this.viewValues.step, MousePositionOnSlider], RANGE_TYPE);
     } else this.setValue([localMin, MousePositionOnSlider], RANGE_TYPE);
-    this.observebale.trigger('userMoveSlider', this.viewValues.value);
+    this.observable.trigger('userMoveSlider', this.viewValues.value);
   };
 
   private handleMaxKeyDown = (e: KeyboardEvent) => {
@@ -585,7 +585,7 @@ class View implements IView {
         [(this.viewValues.value as sliderRangeValueType)[0], ((this.viewValues.value as sliderRangeValueType)[1] + this.viewValues.step)],
         RANGE_TYPE,
       );
-      this.observebale.trigger('userMoveSlider', this.viewValues.value);
+      this.observable.trigger('userMoveSlider', this.viewValues.value);
     }
     if ((e.code === 'ArrowLeft') || (e.code === 'ArrowUp')) {
       if (((this.viewValues.value as sliderRangeValueType)[1] - (this.viewValues.value as sliderRangeValueType)[0]) === this.viewValues.step) {
@@ -599,7 +599,7 @@ class View implements IView {
         [(this.viewValues.value as sliderRangeValueType)[0], ((this.viewValues.value as sliderRangeValueType)[1] - this.viewValues.step)],
         RANGE_TYPE,
       );
-      this.observebale.trigger('userMoveSlider', this.viewValues.value);
+      this.observable.trigger('userMoveSlider', this.viewValues.value);
     }
   };
 

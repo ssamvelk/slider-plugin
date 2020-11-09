@@ -178,7 +178,6 @@ describe('Model', () => {
     expect(model2.getValue()).toEqual([60, 65]);
   });
 
-  // --------------------
   test('changeDirection', () => {
     const localModel = new Model({});
 

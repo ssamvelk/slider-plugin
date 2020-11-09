@@ -1,7 +1,6 @@
 // eslint-disable-next-line import/no-named-as-default-member
 import View from '../blocks/view/View';
 import '@testing-library/jest-dom';
-// import 'jest-dom/extend-expect';
 
 describe('Тестирование View', () => {
   const v = new View({});
@@ -22,7 +21,7 @@ describe('Тестирование View', () => {
     max: 200,
   });
 
-  test('Создание эксземпляра класса View без параметров', () => {
+  test('Создание экземпляра класса View без параметров', () => {
     expect(v).not.toBeUndefined();
 
     expect(v).toHaveProperty('root');
@@ -33,7 +32,7 @@ describe('Тестирование View', () => {
     expect(v).toHaveProperty('viewValues');
   });
 
-  test('Создание эксземпляра класса View с параметром root', () => {
+  test('Создание экземпляра класса View с параметром root', () => {
     expect(v2).not.toBeUndefined();
 
     expect(v2).toHaveProperty('root');
@@ -48,7 +47,7 @@ describe('Тестирование View', () => {
     expect(v2).toHaveProperty('viewValues');
   });
 
-  test('Проверка DOM элементов эксземпляров класса View', () => {
+  test('Проверка DOM элементов экземпляров класса View', () => {
     expect(v2).not.toBeUndefined();
     
     expect(document.body).toContainElement(divForSlider);
@@ -87,7 +86,7 @@ describe('Тестирование View', () => {
     expect(v2.wrap).toContainElement(v2.scale as HTMLDivElement);
   });
 
-  test('проверка classlist', () => {
+  test('проверка classList', () => {
     expect(v.wrap.classList).toContain('slider__wrp');
     expect(v.wrap.classList).toContain('slider__wrp_horizontal');
     expect(v.sliderLine.classList).toContain('slider__line');
@@ -297,7 +296,7 @@ describe('Тестирование View', () => {
     
     expect(localValue).toEqual(false);
 
-    localValue = v.changeType('single', 50); // возврат в исходное состояние
+    localValue = v.changeType('single', 50);
     expect(localValue).toEqual(true);
     expect(v.getValues().value).toEqual(50);
   });
@@ -320,7 +319,6 @@ describe('Тестирование View', () => {
     expect(v.changeValue(-50)).toEqual(0);
     expect(v.changeValue(789790)).toEqual(100);
     expect(v.changeValue([122, 900])).toEqual(new Error('введите корректное значение, а именно number'));
-    // expect(v.changeValue(Number('qweasdas'))).toEqual(new Error('введите корректное значение, а именно number'));
 
     expect(v2.changeValue([150, 170])).toEqual([150, 170]);
     expect(v2.changeValue([700, 1170])).toEqual([199, 200]);
@@ -328,7 +326,7 @@ describe('Тестирование View', () => {
     expect(v2.changeValue([150, 50])).toEqual([150, 151]);
     expect(v2.changeValue([150, 150])).toEqual([150, 151]);
     expect(v2.changeValue(77)).toEqual(new Error('введите корректное значение, а именно [number, number]'));
-    // возврат в исходное состояние v, v2
+
     v.changeValue(50);
     v2.changeValue([100, 200]);
 

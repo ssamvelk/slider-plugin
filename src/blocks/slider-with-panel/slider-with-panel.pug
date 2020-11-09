@@ -1,7 +1,7 @@
--var _num= -1
+-let num = -1
 mixin sliderWithPanel(id)
-  -var _id = id ? id : 'js-mySlider'+_num
-  -_num += 1 
-  .slider-with-panel(id='slider-with-panel-'+_num class='slider-with-panel-'+_num)
+  -let _id = id ? id : 'js-mySlider'+num
+  -num += 1 
+  .slider-with-panel(id='slider-with-panel-'+num class='slider-with-panel-'+num)
     .slider-with-panel__slider(id=_id)
     .slider-with-panel__panel

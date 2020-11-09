@@ -19,6 +19,7 @@ class Presenter implements IPresenter {
   
   update(action: string, parameters?: sliderValueType) {
     if (action === 'userMoveSlider') this.changeValue(parameters!);
+    return parameters;
   }
 
   changeDirection() {
